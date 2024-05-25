@@ -1,11 +1,11 @@
 [package]
 name = "render_cdk"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2021"
 authors = ["Irfan Ghat"]
 description = "This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease."
-homepage = "https://github.com/lexara-prime-ai/MPESA_SDK"
-repository = "https://github.com/lexara-prime-ai/MPESA_SDK"
+homepage = "https://github.com/lexara-prime-ai/RENDER_CDK"
+repository = "https://github.com/lexara-prime-ai/RENDER_CDK"
 readme = "README.md"
 keywords = ["cloud", "web", "http", "api"]
 categories = ["cdk"]
