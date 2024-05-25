@@ -134,4 +134,3 @@ For questions, issues, or suggestions, please open an issue on the [repository](
 
 Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.
 
-----------
