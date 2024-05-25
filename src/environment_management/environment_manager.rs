@@ -2,7 +2,7 @@
 
 use dotenv::dotenv;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 #[allow(non_snake_case)]
 pub struct EnvironmentManager {
     pub API_KEY: String,
