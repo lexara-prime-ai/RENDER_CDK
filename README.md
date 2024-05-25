@@ -130,7 +130,6 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 
 For questions, issues, or suggestions, please open an issue on the [repository](https://github.com/lexara-prime-ai/RENDER_CDK).
 
-----------
 
-Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.
+* Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.
 
