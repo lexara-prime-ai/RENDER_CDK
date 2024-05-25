@@ -60,7 +60,7 @@ impl EnvironmentManager {
 To configure the environment variables for use with the `render_cdk`, you need to set the `API_KEY` environment variable. You can do this by creating a `.env` file in the root of your project with the following content:
 
 ```.env
-`API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
+API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
 ``` 
 
 Make sure to replace `rnd_xxxxXXXXxxxxXXXXxxxXX` with your actual Render API key.
