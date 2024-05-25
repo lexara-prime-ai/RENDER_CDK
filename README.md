@@ -79,7 +79,7 @@ Before using `render_cdk`, ensure you have the following installed:
 Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
-`[dependencies]
+[dependencies]
 render_cdk = "0.0.1"
 ``` 
 
