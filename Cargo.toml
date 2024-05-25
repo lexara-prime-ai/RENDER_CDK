@@ -1,0 +1,26 @@
+[package]
+name = "render_cdk"
+version = "0.0.1"
+edition = "2021"
+authors = ["Irfan Ghat"]
+description = "This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease."
+homepage = "https://github.com/lexara-prime-ai/MPESA_SDK"
+repository = "https://github.com/lexara-prime-ai/MPESA_SDK"
+readme = "README.md"
+keywords = ["cloud", "web", "http", "api"]
+categories = ["cdk"]
+license = "MIT"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+anyhow = "1.0.86"
+base64 = "0.22.1"
+chrono = "0.4.38"
+dotenv = "0.15.0"
+futures = "0.3.30"
+reqwest = { version = "0.12.4", features = ["json"] }
+serde = { version = "1.0.202", features = ["derive"] }
+serde_json = "1.0.117"
+tokio = { version = "1.37.0", features = ["full"] }
+url = "2.5.0"
