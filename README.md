@@ -2,7 +2,7 @@
 
 ## Overview
 
-`render_cdk` provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease. This crate *abstracts* Render's API, making it easier to work with Render cloud ***programmatically***.
+`render_cdk` provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease. This crate _abstracts_ Render's API, making it easier to work with Render cloud _**programmatically**_.
 
 ### Crate Information
 
@@ -60,8 +60,9 @@ impl EnvironmentManager {
 To configure the environment variables for use with the `render_cdk`, you need to set the `API_KEY` environment variable. You can do this by creating a `.env` file in the root of your project with the following content:
 
 ```.env
-`API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX` 
-```
+`API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
+``` 
+
 Make sure to replace `rnd_xxxxXXXXxxxxXXXXxxxXX` with your actual Render API key.
 
 ## Getting Started
@@ -78,9 +79,9 @@ Before using `render_cdk`, ensure you have the following installed:
 Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
-[dependencies]
+`[dependencies]
 render_cdk = "0.0.1"
-```` 
+``` 
 
 ### Usage
 
@@ -95,7 +96,27 @@ fn main() {
 
     // Your code to interact with Render's API
 }
-```` 
+``` 
+
+## Service Manager
+
+### Code Sample
+
+Here's a sample using the `list_all_services` method from the `ServiceManager`:
+
+```rust
+#![allow(unused)]
+
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::list_all_services("20").await;
+    // Process the services as needed
+}
+``` 
 
 ## Contributing
 
@@ -112,3 +133,5 @@ For questions, issues, or suggestions, please open an issue on the [repository](
 ----------
 
 Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.
+
+----------

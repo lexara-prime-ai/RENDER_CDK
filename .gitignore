@@ -1,0 +1,5 @@
+/**/target
+*.env
+*.tfvars
+*.tfstate
+*.tfstate.backup

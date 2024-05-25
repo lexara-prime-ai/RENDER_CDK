@@ -20,4 +20,4 @@ COPY . .
 
 RUN cargo build --release
 
-CMD [ "./target/release/render_cdk" ]
+# CMD [ "./target/release/render_cdk" ]
