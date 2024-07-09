@@ -56,7 +56,7 @@ impl ServiceManager {
 
     /// Finding services by type.
     /// Reqquired arguments: <service_type>
-    pub fn find_service_by_name_and_type(
+    pub async fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
     ) -> Result<String, Error> {
@@ -77,11 +77,31 @@ impl ServiceManager {
         );
         let api_key = EnvironmentManager::retrieve_api_key().API_KEY;
 
-        println!("{:?}", api_url);
+        //////////////////////////////
+        ////// [DEBUG] logs. /////////
+        //////////////////////////////
+        // println!("[REQUEST] -> {}", api_url);
+        // println!("[REQUEST] -> {}", api_key.clone());
+        //////////////////////////////
 
-        // todo!()
+        let response = client
+            .get(api_url)
+            .header("ACCEPT", "application/json")
+            .header("AUTHORIZATION", format!("Bearer {}", api_key.trim()))
+            .send()
+            .await
+            .context("Error sending request.")?;
 
-        Ok("test".to_string())
+        //////////////////////////////
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            println!("{}", results);
+            Ok(results)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status: {}",
+                response.status()
+            ))
+        }
     }
 }
-
