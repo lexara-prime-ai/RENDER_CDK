@@ -44,6 +44,10 @@ impl ServiceManager {
             ))
         }
     }
+
+    pub fn find_service_by_name() {
+        todo!()
+    }
 }
 
 /*****************************************************
