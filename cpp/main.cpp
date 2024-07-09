@@ -30,7 +30,7 @@ class EnvironmentManager {
 public:
   static std::string getApiKey() {
     // Load <ENVIRONMENT> variables
-    dotenv::init();
+    dotenv::init("cpp.env");
     const std::string apiKey = getenv("API_KEY");
     return apiKey;
   }
@@ -44,6 +44,9 @@ public:
     const std::string API_KEY = EnvironmentManager::getApiKey();
 
     // CURL* cu
+    cout << "OUTPUT: " << API_KEY << endl;
+
+    return API_KEY;
 
   }
 };
@@ -51,6 +54,6 @@ public:
 
 
 int main() {
-
+  ServiceManager::listAllServices("10");
   return 0;
 }
