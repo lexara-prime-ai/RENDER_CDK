@@ -1,5 +1,5 @@
 #![allow(unused)]
-use anyhow::{Context, Error, Result};
+use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use reqwest::{self};
 
@@ -12,6 +12,15 @@ pub struct ServiceManager;
 
 impl ServiceManager {
     pub async fn list_all_services(limit: &str) -> Result<String, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url 'https://api.render.com/v1/services?limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
         //////////////////////////////
         let client = reqwest::Client::new();
         let api_url = format!("{}{}{}", BASE_URL, "/services?limit=", limit);
@@ -45,16 +54,34 @@ impl ServiceManager {
         }
     }
 
-    pub fn find_service_by_name() {
-        todo!()
+    /// Finding services by type.
+    /// Reqquired arguments: <service_type>
+    pub fn find_service_by_name_and_type(
+        service_name: &str,
+        service_type: &str,
+    ) -> Result<String, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+                --url 'https://api.render.com/v1/services?name=test-service&type=static_site' \
+                --header 'Accept: application/json' \
+                --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        //////////////////////////////
+        let client = reqwest::Client::new();
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/services?name=", service_name, "&type=", service_type
+        );
+        let api_key = EnvironmentManager::retrieve_api_key().API_KEY;
+
+        println!("{:?}", api_url);
+
+        // todo!()
+
+        Ok("test".to_string())
     }
 }
 
-/*****************************************************
- *
-    curl --request GET \
-      --url 'https://api.render.com/v1/services?limit=20' \
-      --header 'Accept: application/json' \
-      --header 'Authorization: Bearer {{render_api_token_goes_here}}'
-
-*****************************************************************/
