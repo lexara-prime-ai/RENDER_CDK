@@ -1,0 +1,29 @@
+name: Cargo Audit
+'on':
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+  schedule:
+    # Run audits every day at midnight.
+    - cron: 0 0 * * *
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Set up Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          profile: minimal
+          override: true
+      - name: Install cargo-audit
+        run: cargo install cargo-audit
+        working-directory: ./rust
+      - name: Run cargo audit
+        run: cargo audit
+        working-directory: ./rust
