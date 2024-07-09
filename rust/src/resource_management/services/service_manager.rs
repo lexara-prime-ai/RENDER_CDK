@@ -1,7 +1,6 @@
 #![allow(unused)]
 use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
-use reqwest::{self};
 
 use crate::environment_management::prelude::EnvironmentManager;
 use crate::state::state::State;
@@ -23,9 +22,9 @@ impl ServiceManager {
         *****************************************************************/
 
         //////////////////////////////
-        let client = reqwest::Client::new();
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
         let api_url = format!("{}{}{}", BASE_URL, "/services?limit=", limit);
-        let api_key = EnvironmentManager::retrieve_api_key().API_KEY;
 
         //////////////////////////////
         ////// [DEBUG] logs. /////////
@@ -37,7 +36,7 @@ impl ServiceManager {
         let response = client
             .get(api_url)
             .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key.trim()))
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
             .send()
             .await
             .context("Error sending request.")?;
