@@ -16,8 +16,6 @@
 *
 *****************************************************************/
 
-
-#include <cstdlib>
 #include <iostream>
 #include <string>
 #include <curl/curl.h>
@@ -36,6 +34,11 @@ public:
   }
 };
 
+size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
+  ((std::string*)userp)->append((char*)contents, size * nmemb);
+  return size * nmemb;
+}
+
 class ServiceManager {
 public:
   static std::string listAllServices(const std::string& limit) {
@@ -43,11 +46,51 @@ public:
     const std::string API_URL = BASE_URL + "/services?limit=" + limit;
     const std::string API_KEY = EnvironmentManager::getApiKey();
 
-    // CURL* cu
-    cout << "OUTPUT: " << API_KEY << endl;
+    // Check if <API_KEY> has been loaded
+    if (!API_KEY.empty()) {
+      cout << "\nOUTPUT: [Redacted]\n" << endl;
 
-    return API_KEY;
+      // CURL config.
+      CURL* curl;
+      CURLcode res;
+      std::string readBuffer;
 
+      curl_global_init(CURL_GLOBAL_DEFAULT);
+      curl = curl_easy_init();
+
+      if (curl) {
+        struct curl_slist* headers = NULL;
+        headers = curl_slist_append(headers, "Accept: application/json");
+        headers = curl_slist_append(headers, ("Authorization: Bearer " + API_KEY).c_str());
+
+        curl_easy_setopt(curl, CURLOPT_URL, API_URL.c_str());
+        curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+        curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+        curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
+
+        res = curl_easy_perform(curl);
+
+        if (res != CURLE_OK) {
+          fprintf(stderr, "curl_easy_perform() failed: %s\n", curl_easy_strerror(res));
+          curl_easy_cleanup(curl);
+          curl_global_cleanup();
+          return "An [ERROR] occurred!";
+        }
+
+          curl_easy_cleanup(curl);
+          curl_global_cleanup();
+
+          cout << readBuffer << endl;
+
+          return readBuffer;
+      } else {
+        cerr << "[CURL] initialization failed!" << endl;
+      }
+    } else {
+      cout << "[API_KEY] has NOT been set!" << endl;
+        return 0;
+    }
+    return 0;
   }
 };
 
