@@ -42,7 +42,7 @@ size_t WriteCallback(void* contents, size_t size, size_t nmemb, void* userp) {
 class ServiceManager {
 public:
   static std::string listAllServices(const std::string& limit) {
-    const std::string BASE_URL = "https://api.render.com/api/v1";
+    const std::string BASE_URL = "https://api.render.com/v1";
     const std::string API_URL = BASE_URL + "/services?limit=" + limit;
     const std::string API_KEY = EnvironmentManager::getApiKey();
 
