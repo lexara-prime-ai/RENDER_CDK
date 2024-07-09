@@ -7,6 +7,9 @@ use tokio::main;
 /// Examples
 #[main]
 async fn main() {
+    /// List all Services.
     // let services = ServiceManager::list_all_services("20").await;
-    let services = ServiceManager::find_service_by_name_and_type("whoami", "static_site");
+
+    /// List all Services by Name and Type.
+    let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 }
