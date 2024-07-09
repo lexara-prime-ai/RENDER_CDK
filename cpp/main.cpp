@@ -1,3 +1,9 @@
+/// user
+/// irfanghat
+/// \endcode
+///
+/// \see https://github.com/lexara-prime-api/RENDER_CDK
+
 /*****************************************************
  *
     <REFERENCE>
@@ -13,6 +19,13 @@
     <BUILD>
     g++ -o list_services list_services.cpp -lcurl -ljsoncpp -I/usr/include/jsoncpp
 
+
+    <DOCS>
+    LINK : https://riptutorial.com/cmake/example/7501/simple--hello-world--project
+
+    LINk: https://iq.opengenus.org/create-shared-library-in-cpp/
+
+    LINK: https://en.cppreference.com/w/cpp/links/libs
 *
 *****************************************************************/
 
