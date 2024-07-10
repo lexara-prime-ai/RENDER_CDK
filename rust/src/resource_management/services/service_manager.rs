@@ -11,6 +11,7 @@ const BASE_URL: &str = "https://api.render.com/v1";
 pub struct ServiceManager;
 
 impl ServiceManager {
+    /// List all resources.
     pub async fn list_all_services(limit: &str) -> Result<String, Error> {
         /*****************************************************
          *
@@ -75,6 +76,56 @@ impl ServiceManager {
         let api_url = format!(
             "{}{}{}{}{}",
             BASE_URL, "/services?name=", service_name, "&type=", service_type
+        );
+
+        //////////////////////////////
+        ////// [DEBUG] logs. /////////
+        //////////////////////////////
+        // println!("[REQUEST] -> {}", api_url);
+        // println!("[REQUEST] -> {}", api_key.clone());
+        //////////////////////////////
+
+        let response = client
+            .get(api_url)
+            .header("ACCEPT", "application/json")
+            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error sending request.")?;
+
+        //////////////////////////////
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            println!("{}", results);
+            Ok(results)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status: {}",
+                response.status()
+            ))
+        }
+    }
+
+    /// Finding services by region.
+    pub async fn find_service_by_region(
+        service_region: &str,
+        limit: &str,
+    ) -> Result<String, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+                --url 'https://api.render.com/v1/services?region=oregon&limit=20' \
+                --header 'Accept: application/json' \
+                --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        //////////////////////////////
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/services?region=", service_region, "&limit=", limit
         );
 
         //////////////////////////////
