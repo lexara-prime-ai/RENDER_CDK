@@ -155,4 +155,53 @@ impl ServiceManager {
             ))
         }
     }
+
+    /// Filtering for environments.
+    pub async fn find_service_by_environment(
+        service_env: &str,
+        limit: &str,
+    ) -> Result<String, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+                --url 'https://api.render.com/v1/services?env=docker&limit=20' \
+                --header 'Accept: application/json' \
+                --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        //////////////////////////////////
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/services?env=", service_env, "&limit=", limit
+        );
+
+        //////////////////////////////
+        ////// [DEBUG] logs. /////////
+        //////////////////////////////
+        println!("[REQUEST] -> {}", api_url);
+        println!("[REQUEST] -> {}", api_key.clone());
+        //////////////////////////////
+        let response = client
+            .get(api_url)
+            .header("ACCEPT", "application/json")
+            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error sending request.")?;
+
+        //////////////////////////////
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            println!("{}", results);
+            Ok(results)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status: {}",
+                response.status()
+            ))
+        }
+    }
 }
