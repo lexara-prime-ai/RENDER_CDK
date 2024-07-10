@@ -8,7 +8,7 @@ homepage = "https://github.com/lexara-prime-ai/RENDER_CDK"
 repository = "https://github.com/lexara-prime-ai/RENDER_CDK"
 readme = "README.md"
 keywords = ["cloud", "web", "http", "api"]
-categories = ["cdk"]
+categories = ["web-programming::http-client"]
 license = "MIT"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
