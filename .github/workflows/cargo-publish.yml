@@ -25,6 +25,7 @@ jobs:
         run: |
           current_version=$(grep '^version' Cargo.toml | sed -E 's/version = "(.*)"/\1/')
           echo "current_version=${current_version}" >> $GITHUB_ENV
+        working-directory: ./rust
 
       - name: Get latest published version
         id: get_latest_version
@@ -32,6 +33,7 @@ jobs:
           crate_name=$(grep '^name' Cargo.toml | sed -E 's/name = "(.*)"/\1/')
           latest_version=$(curl -s https://crates.io/api/v1/crates/${crate_name} | jq -r .crate.max_version)
           echo "latest_version=${latest_version}" >> $GITHUB_ENV
+        working-directory: ./rust
 
       - name: Compare versions
         id: compare_versions
@@ -43,13 +45,16 @@ jobs:
             echo "New version detected."
             echo "should_publish=true" >> $GITHUB_ENV
           fi
+        working-directory: ./rust
 
       - name: Publish to crates.io
         if: env.should_publish == 'true'
         run: 'cargo publish --token ${CRATES_IO_TOKEN}'
         env:
           CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
+        working-directory: ./rust
 
       - name: Skip publishing
         if: env.should_publish == 'false'
         run: echo "Skipping publish as the version is already up to date."
+        working-directory: ./rust
