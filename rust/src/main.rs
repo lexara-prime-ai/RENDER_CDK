@@ -13,6 +13,9 @@ async fn main() {
     // List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 
-    // 'https://api.render.com/v1/services?region=oregon&limit=20'
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+    // List all Services by Region.
+    // let services = ServiceManager::find_service_by_region("oregon", "10").await;
+
+    // List all Services by Environment.
+    let services = ServiceManager::find_service_by_environment("image", "10").await;
 }
