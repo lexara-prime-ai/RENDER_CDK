@@ -1,0 +1,147 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    letter-spacing: 1px;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: "Poppins", sans-serif;
+    background-color: #131321;
+    color: #D8DEE9;
+    margin: 0;
+    display: flex;
+}
+
+.sidebar {
+    background-color: #1B1B2F;
+    padding: 20px;
+    width: 300px;
+    box-shadow: 0 4rem 4rem 0 rgba(0, 0, 0, 0.3);
+}
+
+.sidebar h1 {
+    font-size: 28px;
+    font-weight: 600;
+    background: #131321;
+    box-shadow: 0 1rem 4rem 0 rgba(19, 166, 211, 0.3);
+    border-radius: 9px;
+    color: #bec4c5;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    text-align: right;
+    transition: 200ms all ease;
+    cursor: pointer;
+}
+
+.sidebar h1 span {
+    font-size: 16px;
+    font-weight: 500;
+    color: #608b97;
+}
+
+.sidebar h1:hover {
+    color: #D8DEE9;
+}
+
+.sidebar nav {
+    width: 330px;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+}
+
+.sidebar a {
+    width: 90%;
+    color: #b7bbc2;
+    text-decoration: none;
+    margin-bottom: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    transition: background 0.1s;
+    border-radius: 21px;
+}
+
+.sidebar a:hover {
+    background-color: #1B1B2F;
+    box-shadow: 0 1rem 9rem 0 rgba(0, 0, 0, 0.3);
+}
+
+.content {
+    flex-grow: 1;
+    padding: 40px;
+}
+
+.content section {
+    margin-bottom: 40px;
+    width: 1000px;
+}
+
+.content h2 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.content p {
+    font-size: 16px;
+    line-height: 1.6;
+}
+
+.content ul {
+    list-style-type: disc;
+    padding-left: 20px;
+}
+
+.content a {
+    color: #88C0D0;
+    text-decoration: none;
+}
+
+.content a:hover {
+    text-decoration: underline;
+}
+
+pre {
+    background-color: #3B4252;
+    padding: 20px;
+    border-radius: 5px;
+    overflow-x: auto;
+    opacity: .5;
+    transition: 200ms all ease;
+}
+
+pre:hover {
+    opacity: 1;
+    box-shadow: 0 2rem 2rem 0 rgba(0, 0, 0, 0.3);
+}
+
+code {
+    color: #a1b391;
+}
+
+@media (max-width: 1366px) {
+    .sidebar {
+        width: 700px;
+    }
+
+    .sidebar nav {
+        width: 328px;
+    }
+}
+
+@media (max-width: 1300px) {
+    .sidebar {
+        width: 700px;
+    }
+
+    .sidebar nav {
+        width: 280px;
+    }
+}
