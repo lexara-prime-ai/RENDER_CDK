@@ -8,6 +8,8 @@ use tokio::main;
 #[main]
 async fn main() {
     /// Examples
+    /// 1. Querying for deployed Services.
+    /// 
     /// List all Services.
     let services = ServiceManager::list_all_services("20").await;
 
@@ -19,6 +21,7 @@ async fn main() {
 
     /// List all Services by Environment.
     let services = ServiceManager::find_service_by_environment("image", "10").await;
+    ////////////////////////////////////////////////
 }
 
 /// Checks for regression of service management functions
