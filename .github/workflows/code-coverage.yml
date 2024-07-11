@@ -1,3 +1,11 @@
+- name: Code Coverage
+
+'on':
+  push:
+    branches: [ "master" ]
+    tags: '*'
+
+
 - name: Install toolchain
     id: toolchain
     uses: actions-rs/toolchain@v1
