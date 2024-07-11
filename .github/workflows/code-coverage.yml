@@ -1,2 +1,7 @@
 - name: Code Coverage Summary
   uses: irongut/CodeCoverageSummary@v1.3.0
+
+  'on':
+  push:
+    branches: [ "master" ]
+    tags: '*'
