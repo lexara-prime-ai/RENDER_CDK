@@ -86,4 +86,16 @@ mod tests {
         let services = result.unwrap();
         assert!(!services.is_empty());
     }
+
+    #[tokio::test]
+    async fn test_find_service_by_environment() {
+        let result = ServiceManager::find_service_by_environment("image", "10").await;
+
+        // The reult should be Ok().
+        assert!(result.is_ok());
+
+        // Validate data.
+        let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
 }
