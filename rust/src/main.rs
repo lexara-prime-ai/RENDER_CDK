@@ -7,16 +7,17 @@ use tokio::main;
 /// Examples
 #[main]
 async fn main() {
+    /// Examples
     /// List all Services.
     let services = ServiceManager::list_all_services("20").await;
 
-    // List all Services by Name and Type.
+    /// List all Services by Name and Type.
     let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 
-    // List all Services by Region.
+    /// List all Services by Region.
     let services = ServiceManager::find_service_by_region("oregon", "10").await;
 
-    // List all Services by Environment.
+    /// List all Services by Environment.
     let services = ServiceManager::find_service_by_environment("image", "10").await;
 }
 
@@ -48,6 +49,7 @@ async fn main() {
 ///     let services = result.unwrap();
 ///     assert!(!services.is_empty());
 /// }
+/// 
 /// More tests...
 
 #[cfg(test)]
