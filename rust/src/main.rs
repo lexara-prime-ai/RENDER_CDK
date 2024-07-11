@@ -19,3 +19,28 @@ async fn main() {
     // List all Services by Environment.
     let services = ServiceManager::find_service_by_environment("image", "10").await;
 }
+
+
+
+/// Checks for regression of service management functions
+///
+/// These checks are there to validate that it is functioning properly
+/// and returning the right results, after which we shall describe each test case.
+/// List all Services.
+///
+/// This test confirms if the function list_all_services returns all services available.
+/// 
+/// #[tokio::test]
+/// async fn test_list_all_services() {
+/// let services = ServiceManager::list_all_services("20").await;
+/// assert!(services.is_ok());
+/// let services = services.unwrap();
+/// assert!(!services.is_empty());
+/// }
+///
+
+#[#[cfg(tests)]]
+mod tests {
+    u
+}
+
