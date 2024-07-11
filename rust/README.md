@@ -24,7 +24,7 @@ Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.1"
+render_cdk = "0.0.4"
 ```
 
 ### Usage
