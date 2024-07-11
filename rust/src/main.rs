@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 use render_cdk::environment_management::prelude::*;
+use render_cdk::iaas::prelude::*;
 use render_cdk::resource_management::prelude::*;
 use tokio::main;
 
@@ -9,19 +10,43 @@ use tokio::main;
 async fn main() {
     /// Examples
     /// 1. Querying for deployed Services.
-    /// 
+    ///
     /// List all Services.
-    let services = ServiceManager::list_all_services("20").await;
+    // let services = ServiceManager::list_all_services("20").await;
 
     /// List all Services by Name and Type.
-    let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
+    // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 
     /// List all Services by Region.
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+    // let services = ServiceManager::find_service_by_region("oregon", "10").await;
 
     /// List all Services by Environment.
-    let services = ServiceManager::find_service_by_environment("image", "10").await;
+    // let services = ServiceManager::find_service_by_environment("image", "10").await;
     ////////////////////////////////////////////////
+    ///
+    /// 2. Using Terraform for resource provisioning
+    let input = r#"
+    provider "render" {
+        api_key = "rnd_xxxxXXXXxxxxXXXXxxxXX"
+    }
+
+    resource "render_service" "example" {
+        name        = "example-service"
+        environment = "production"
+        replicas    = 3
+    }
+    "#;
+
+    let lexer = Lexer::new(input);
+    let mut parser = Parser::new(lexer);
+    let ast = parser.parse();
+    let interpreter = Interpreter::new();
+    let results = interpreter.interpret(ast).await;
+
+    for result in results {
+        println!("lol");
+        println!("{}", result);
+    }
 }
 
 /// Checks for regression of service management functions
@@ -52,7 +77,7 @@ async fn main() {
 ///     let services = result.unwrap();
 ///     assert!(!services.is_empty());
 /// }
-/// 
+///
 /// More tests...
 
 #[cfg(test)]
