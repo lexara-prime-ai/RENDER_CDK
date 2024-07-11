@@ -1,2 +1,2 @@
-pub mod tf_parser;
+pub mod parser;
 pub mod lexer;

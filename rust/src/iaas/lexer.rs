@@ -1,5 +1,7 @@
 #![allow(unused)]
 
+#[derive(Debug)]
+#[derive(PartialEq)]
 pub enum Token {
     Provider,
     Resource,
@@ -13,6 +15,7 @@ pub enum Token {
 }
 
 #[derive(Debug)]
+#[derive(PartialEq)]
 pub struct Lexer<'l> {
     pub input: &'l str,
     pub position: usize,
