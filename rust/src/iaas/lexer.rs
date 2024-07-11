@@ -115,7 +115,24 @@ impl<'l> Lexer<'l> {
             }
 
             Some(c) if c.is_alphabetic() => Token::Identifier(self.read_identifier()),
-            Some('"') => Token::StringLiteral(self.read_s)
-        }
+            Some('"') => Token::StringLiteral(self.read_string()),
+            Some('=') => {
+                self.advance();
+                Token::Equals
+            }
+            Some('{') => {
+                self.advance();
+                Token::LeftBrace
+            }
+            Some('}') => {
+                self.advance();
+                Token::RightBrace
+            }
+            Some(c) if c.is_digit(10) => Token::NumberLiteral(self.read_number()),
+            None => Token::EOF,
+            _ => panic!("Unexpected character: {:?}", self.current_char),
+        };
+
+        token
     }
 }
