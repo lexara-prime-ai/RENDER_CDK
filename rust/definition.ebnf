@@ -1,0 +1,7 @@
+configuration = { block } ;
+block         = block_type identifier "{" { key_value_pair } "}" ;
+block_type    = "provider" | "resource" ;
+identifier    = letter { letter | digit | "_" } ;
+key_value_pair= identifier "=" ( string | number ) ;
+string        = '"' { character } '"' ;
+number        = digit { digit } ;
