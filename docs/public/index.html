@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Render CDK Documentation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="./assets/css/main.css">
+</head>
+
+<body>
+    <div class="sidebar">
+        <h1>Render CDK
+            <span>
+                Reference
+            </span>
+        </h1>
+        <nav>
+            <a href="#overview">Overview</a>
+            <a href="#crate-information">Crate Information</a>
+            <a href="#current-features">Current Features</a>
+            <a href="#examples">Examples</a>
+            <a href="#tests">Tests</a>
+            <a href="#contributing">Contributing</a>
+            <a href="#license">License</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+    <div class="content">
+        <section id="overview">
+            <h2>Overview</h2>
+            <p><span>Render CDK</span> provides a streamlined interface for interacting with Render, a platform that
+                allows you to
+                build, deploy, and scale your apps with ease. This crate <span class="highlight">abstracts</span>
+                Render's API, making it easier to work with Render cloud <strong>programmatically</strong>.</p>
+        </section>
+        <section id="crate-information">
+            <h2>Crate Information</h2>
+            <ul>
+                <li><strong>Name:</strong> render_cdk</li>
+                <li><strong>Version:</strong> 0.0.3</li>
+                <li><strong>Authors:</strong> Irfan Ghat</li>
+                <li><strong>Description:</strong> This crate provides a streamlined interface for interacting with
+                    Render, a platform that allows you to build, deploy, and scale your apps with ease.</li>
+                <li><strong>Homepage:</strong> <a href="https://render.com/">Cloud Application Hosting for Developers |
+                        Render</a></li>
+                <li><strong>Repository:</strong> <a href="https://github.com/renderinc">Render (github.com)</a></li>
+                <li><strong>License:</strong> MIT</li>
+            </ul>
+        </section>
+        <section id="current-features">
+            <h2>Current Features</h2>
+            <p>Work on the resource management module is currently under way. The API supports many of the same actions
+                available from the Render Dashboard. It currently provides endpoints for managing:</p>
+            <ul>
+                <li>Services</li>
+                <li>Deploys</li>
+                <li>Custom domains</li>
+                <li>Jobs</li>
+            </ul>
+            <p>The CDK will provide an abstraction that will make it easier to work with the Render cloud
+                programmatically.</p>
+        </section>
+        <section id="examples">
+            <h2>Examples</h2>
+            <pre><code>#![allow(unused)]
+
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+/// Examples
+#[main]
+async fn main() {
+    // 1. Querying for deployed Services.
+    // 
+    // List all Services.
+    let services = ServiceManager::list_all_services("20").await;
+
+    // List all Services by Name and Type.
+    let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
+
+    // List all Services by Region.
+    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+
+    // List all Services by Environment.
+    let services = ServiceManager::find_service_by_environment("image", "10").await;
+}
+            </code></pre>
+        </section>
+        <section id="tests">
+            <h2>Tests</h2>
+            <pre><code>#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_list_all_services() {
+        let result = ServiceManager::list_all_services("10").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_service_by_name_and_type() {
+        let result = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_service_by_region() {
+        let result = ServiceManager::find_service_by_region("oregon", "10").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_service_by_environment() {
+        let result = ServiceManager::find_service_by_environment("image", "10").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate data.
+        let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
+}
+            </code></pre>
+        </section>
+        <section id="contributing">
+            <h2>Contributing</h2>
+            <p>Contributions are welcome! Please see the <a
+                    href="https://github.com/lexara-prime-ai/RENDER_CDK">repository</a> for more information on how to
+                contribute.</p>
+        </section>
+        <section id="license">
+            <h2>License</h2>
+            <p>This project is licensed under the MIT License. See the <a
+                    href="https://github.com/lexara-prime-ai/MPESA_SDK/blob/master/LICENSE">LICENSE</a> file for
+                details.</p>
+        </section>
+        <section id="contact">
+            <h2>Contact</h2>
+            <p>For questions, issues, or suggestions, please open an issue on the <a
+                    href="https://github.com/lexara-prime-ai/RENDER_CDK">repository</a>.</p>
+            <p>Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.</p>
+        </section>
+    </div>
+</body>
+
+</html>
