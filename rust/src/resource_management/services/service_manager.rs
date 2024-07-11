@@ -10,9 +10,18 @@ const BASE_URL: &str = "https://api.render.com/v1";
 #[derive(Debug)]
 pub struct ServiceManager;
 
-impl ServiceManager {
+
+pub trait ServiceManagerOperations {
+    fn list_all_services(limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_name_and_type(service_name: &str, service_type: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_region(service_region: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_environment(service_env: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+}
+
+
+impl ServiceManagerOperations for ServiceManager {
     /// List all resources.
-    pub async fn list_all_services(limit: &str) -> Result<String, Error> {
+    async fn list_all_services(limit: &str) -> Result<String, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -57,7 +66,7 @@ impl ServiceManager {
 
     /// Finding services by type.
     /// Reqquired arguments: <service_type>
-    pub async fn find_service_by_name_and_type(
+    async fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
     ) -> Result<String, Error> {
@@ -107,7 +116,7 @@ impl ServiceManager {
     }
 
     /// Finding services by region.
-    pub async fn find_service_by_region(
+    async fn find_service_by_region(
         service_region: &str,
         limit: &str,
     ) -> Result<String, Error> {
@@ -157,7 +166,7 @@ impl ServiceManager {
     }
 
     /// Filtering for environments.
-    pub async fn find_service_by_environment(
+    async fn find_service_by_environment(
         service_env: &str,
         limit: &str,
     ) -> Result<String, Error> {
@@ -181,8 +190,8 @@ impl ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        println!("[REQUEST] -> {}", api_url);
-        println!("[REQUEST] -> {}", api_key.clone());
+        // println!("[REQUEST] -> {}", api_url);
+        // println!("[REQUEST] -> {}", api_key.clone());
         //////////////////////////////
         let response = client
             .get(api_url)
