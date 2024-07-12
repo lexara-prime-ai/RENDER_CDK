@@ -60,10 +60,22 @@ impl Conf {
 
 #[cfg(test)]
 mod config_test {
+    // use crate::iaas::Conf;
     use super::*;
+
+    /////////////////////////////////
+    // Configuration Initialization.
+    ////////////////////////////////
+    #[test]
+    fn test_read_configuration_file() {
+        // Validate that the result is Ok().
+        let config = Conf::read_configuration_file();
+        assert!(config.is_ok());
+    }
 
     #[test]
     fn test_generate_random_string() {
+        // Validate that the output is NOT empty.
         let config = Conf::read_configuration_file().unwrap();
         let result = config.generate_random_string(10);
         assert!(!result.is_empty());
