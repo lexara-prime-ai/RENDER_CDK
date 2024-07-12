@@ -25,28 +25,9 @@ async fn main() {
     ////////////////////////////////////////////////
     ///
     /// 2. Using Terraform for resource provisioning
-    let input = r#"
-    provider "render" {
-        api_key = "rnd_xxxxXXXXxxxxXXXXxxxXX"
-    }
+    let input = "";
 
-    resource "render_service" "example" {
-        name        = "example-service"
-        environment = "production"
-        replicas    = 3
-    }
-    "#;
 
-    let lexer = Lexer::new(input);
-    let mut parser = Parser::new(lexer);
-    let ast = parser.parse();
-    let interpreter = Interpreter::new();
-    let results = interpreter.interpret(ast).await;
-
-    for result in results {
-        println!("lol");
-        println!("{}", result);
-    }
 }
 
 /// Checks for regression of service management functions
