@@ -24,10 +24,9 @@ async fn main() {
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
     ////////////////////////////////////////////////
     ///
-    /// 2. Using Terraform for resource provisioning
-    let input = "";
-
-
+    /// 2. Using simple .conf files for resource provisioning
+    let config = config::Conf::read_configuration_file();
+    println!("{:?}", config);
 }
 
 /// Checks for regression of service management functions
