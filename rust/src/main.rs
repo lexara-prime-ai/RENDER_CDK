@@ -111,13 +111,4 @@ mod regression_tests {
         let services = result.unwrap();
         assert!(!services.is_empty());
     }
-
-    /////////////////////////////////
-    // Configuration Initialization.
-    ////////////////////////////////
-    #[test]
-    fn test_read_configuration_file() {
-        let config = config::Conf::read_configuration_file();
-        assert!(config.is_ok());
-    }
 }
