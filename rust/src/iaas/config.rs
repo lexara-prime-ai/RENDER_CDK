@@ -1,4 +1,5 @@
 #![allow(unused)]
+use anyhow::Error;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 use serde::Deserialize;
@@ -33,13 +34,14 @@ impl Conf {
         }
     }
 
-    pub fn read_configuration_file() -> Self {
+    pub fn read_configuration_file() -> Result<Self, Error> {
         let conf_path = "./samples/sample.conf";
         let contents = fs::read_to_string(conf_path)
-            .expect(format!("Unable to read <{conf_path:?}>").as_str());
+            .expect(format!("Unable to read configuration: <{conf_path:?}>").as_str());
 
         // Parse config. file.
-        let mut config: Conf = toml::from_str(&contents).expect("Unable to parse config. file!");
+        let mut config: Conf = toml::from_str(&contents)
+            .expect(format!("Unable to parse configuration: <{conf_path:?}>").as_str());
 
         // Populate any <black>/"" fields.
         Self::populate_blank_values(&mut config);
@@ -49,9 +51,9 @@ impl Conf {
         ///////////////////////
         // println!("[DEBUG] -> {:?}", config);
 
-        Self {
+        Ok(Self {
             database: config.database,
             redis: config.redis,
-        }
+        })
     }
 }

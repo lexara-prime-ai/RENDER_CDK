@@ -25,7 +25,7 @@ async fn main() {
     ////////////////////////////////////////////////
     ///
     /// 2. Using simple .conf files for resource provisioning
-    let config = config::Conf::read_configuration_file();
+    let config = config::Conf::read_configuration_file().unwrap();
     println!("{:?}", config);
 }
 
@@ -64,6 +64,9 @@ async fn main() {
 mod tests {
     use super::*;
 
+    ///////////////////////
+    // Service Management.
+    ////////////////////////
     #[tokio::test]
     async fn test_list_all_services() {
         let result = ServiceManager::list_all_services("10").await;
@@ -107,5 +110,14 @@ mod tests {
         // Validate data.
         let services = result.unwrap();
         assert!(!services.is_empty());
+    }
+
+    /////////////////////////////////
+    // Configuration Initialization.
+    ////////////////////////////////
+    #[test]
+    fn test_read_configuration_file() {
+        let config = config::Conf::read_configuration_file();
+        assert!(config.is_ok());
     }
 }
