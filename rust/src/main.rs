@@ -1,6 +1,7 @@
 #![allow(unused)]
 
 use render_cdk::environment_management::prelude::*;
+use render_cdk::iaas::prelude::*;
 use render_cdk::resource_management::prelude::*;
 use tokio::main;
 
@@ -9,19 +10,23 @@ use tokio::main;
 async fn main() {
     /// Examples
     /// 1. Querying for deployed Services.
-    /// 
+    ///
     /// List all Services.
-    let services = ServiceManager::list_all_services("20").await;
+    // let services = ServiceManager::list_all_services("20").await;
 
     /// List all Services by Name and Type.
-    let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
+    // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 
     /// List all Services by Region.
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+    // let services = ServiceManager::find_service_by_region("oregon", "10").await;
 
     /// List all Services by Environment.
-    let services = ServiceManager::find_service_by_environment("image", "10").await;
+    // let services = ServiceManager::find_service_by_environment("image", "10").await;
     ////////////////////////////////////////////////
+    ///
+    /// 2. Using simple .conf files for resource provisioning
+    let config = config::Conf::read_configuration_file().unwrap();
+    println!("{:?}", config);
 }
 
 /// Checks for regression of service management functions
@@ -52,13 +57,16 @@ async fn main() {
 ///     let services = result.unwrap();
 ///     assert!(!services.is_empty());
 /// }
-/// 
+///
 /// More tests...
 
 #[cfg(test)]
 mod tests {
     use super::*;
 
+    ///////////////////////
+    // Service Management.
+    ////////////////////////
     #[tokio::test]
     async fn test_list_all_services() {
         let result = ServiceManager::list_all_services("10").await;
@@ -102,5 +110,14 @@ mod tests {
         // Validate data.
         let services = result.unwrap();
         assert!(!services.is_empty());
+    }
+
+    /////////////////////////////////
+    // Configuration Initialization.
+    ////////////////////////////////
+    #[test]
+    fn test_read_configuration_file() {
+        let config = config::Conf::read_configuration_file();
+        assert!(config.is_ok());
     }
 }
