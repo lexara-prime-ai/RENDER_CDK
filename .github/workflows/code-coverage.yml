@@ -9,9 +9,6 @@ on:
 jobs:
   code-coverage:
     runs-on: ubuntu-latest
-  defaults:
-    run:
-      working-directory: ./rust
 
     steps:
     - name: Checkout code
@@ -27,9 +24,11 @@ jobs:
 
     - name: Install grcov
       run: cargo install grcov
+      working-directory: ./rust
 
     - name: Install x86_64-unknown-linux-gnu target
       run: rustup target add x86_64-unknown-linux-gnu
+      working-directory: ./rust
 
     - name: Set up coverage configuration
       run: |
@@ -38,6 +37,7 @@ jobs:
         echo 'rustflags = ["-Zinstrument-coverage","-Ccodegen-units=1","-Cinline-threshold=0","-Clink-dead-code","-Coverflow-checks=off","-Zno-profiler-runtime"]' >> .cargo/config.toml
         echo "[unstable]" >> .cargo/config.toml
         echo 'build-std = ["std"]' >> .cargo/config.toml
+      working-directory: ./rust
 
     - name: Run tests with coverage
       env:
@@ -45,12 +45,14 @@ jobs:
         RUSTFLAGS: "-Zinstrument-coverage"
         LLVM_PROFILE_FILE: "coverage-%p-%m.profraw"
       run: cargo test --target x86_64-unknown-linux-gnu
+      working-directory: ./rust
 
     - name: Generate coverage report
       run: |
         grcov . -s . -t html --llvm --branch --ignore-not-existing -o ./coverage
         mkdir -p coverage-report
         cp -r ./coverage/* coverage-report/
+      working-directory: ./rust
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
