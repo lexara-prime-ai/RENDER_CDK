@@ -57,3 +57,15 @@ impl Conf {
         })
     }
 }
+
+#[cfg(test)]
+mod config_test {
+    use super::*;
+
+    #[test]
+    fn test_generate_random_string() {
+        let config = Conf::read_configuration_file().unwrap();
+        let result = config.generate_random_string(10);
+        assert!(!result.is_empty());
+    }
+}

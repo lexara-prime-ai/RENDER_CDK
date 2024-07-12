@@ -61,7 +61,7 @@ async fn main() {
 /// More tests...
 
 #[cfg(test)]
-mod tests {
+mod regression_tests {
     use super::*;
 
     ///////////////////////
