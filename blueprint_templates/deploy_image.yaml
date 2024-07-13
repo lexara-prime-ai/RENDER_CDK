@@ -1,7 +1,8 @@
+# Docker sample.
 services:
 - type: <service_type> e.g web.
   name: <service_name>
-  runtime: <service_runtime> e.g image.
+  runtime: <service_runtime> -> image.
   image:
     # e.g docker.io/<organization>/<image_name>:latest
     url: <registry>/<organization>/<image_name>:<image_tag>

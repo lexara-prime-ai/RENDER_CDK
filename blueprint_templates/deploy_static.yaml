@@ -1,0 +1,9 @@
+# Static content sample e.g HTML, CSS & JS etc.
+services:
+- type: <service_type> -> web.
+  name: <service_name>
+  runtime: <service_runtime> -> static.
+  repo: <repository_url> e.g https://github.com/<username>/<repo_name>
+  staticPublishPath: <publish_path> e.g ./
+  rootDir: <root_dir> e.g ./ or ./website
+version: "1"
