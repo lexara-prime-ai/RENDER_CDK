@@ -1,0 +1,1 @@
+* Generated **blueprints** will be stored in the current directory i.e *blueprint_output*.

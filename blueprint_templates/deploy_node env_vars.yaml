@@ -1,0 +1,16 @@
+# Nodejs sample configuration with environment variables.
+services:
+- type: <service_type> e.g web.
+  name: <service_name>
+  runtime: <service_runtime> -> node.
+  repo: <repository_url> e.g https://github.com/<username>/<repo_name>
+  plan: <service_plan> e.g free.
+  envVars:
+  - key: CLIENT_URL
+    sync: false
+  - key: STRIPE_PRIVATE_KEY
+    sync: false
+  region: <service_region> e.g oregon.
+  buildCommand: e.g yarn.
+  startCommand: e.g npm start.
+version: "1"
