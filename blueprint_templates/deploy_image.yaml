@@ -6,6 +6,7 @@ services:
   image:
     # e.g docker.io/<organization>/<image_name>:latest
     url: <registry>/<organization>/<image_name>:<image_tag>
-  plan: <service_plan> e.g free.
+  # Render API does NOT support 'free' plans.
+  plan: starter
   region: <service_region> e.g oregon.
 version: "1"
