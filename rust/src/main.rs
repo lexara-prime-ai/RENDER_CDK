@@ -3,6 +3,7 @@
 use render_cdk::environment_management::prelude::*;
 use render_cdk::iaas::prelude::*;
 use render_cdk::resource_management::prelude::*;
+use render_cdk::state_management::prelude::*;
 use tokio::main;
 
 /// Examples
@@ -24,9 +25,15 @@ async fn main() {
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
     ////////////////////////////////////////////////
     ///
-    /// 2. Using simple .conf files for resource provisioning
-    let config = config::Conf::read_configuration_file().unwrap();
-    println!("{:?}", config);
+    /// 2. Using simple .conf files for resource provisioning.
+    // let config = config::Conf::read_configuration_file().unwrap();
+    // println!("Sample Configuration: {:?}\n", config);
+
+    /// 3. Retrieve a list of authorized 'users'.
+    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+        .await
+        .unwrap();
+    println!("Owner Info.: {:?}\n", authorized_users);
 }
 
 /// Checks for regression of service management functions

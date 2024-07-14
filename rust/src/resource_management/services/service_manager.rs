@@ -3,7 +3,7 @@ use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 
 use crate::environment_management::prelude::EnvironmentManager;
-use crate::state::state::State;
+use crate::state_management::state::State;
 
 const BASE_URL: &str = "https://api.render.com/v1";
 
@@ -12,10 +12,16 @@ pub struct ServiceManager;
 
 
 pub trait ServiceManagerOperations {
+    ///////////////////////////////
+    /// Querying services.
     fn list_all_services(limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
     fn find_service_by_name_and_type(service_name: &str, service_type: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
     fn find_service_by_region(service_region: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
     fn find_service_by_environment(service_env: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ////////////////////////////////
+    ///////////////////////////////
+    // /// Creating services.
+    // fn create_service
 }
 
 
