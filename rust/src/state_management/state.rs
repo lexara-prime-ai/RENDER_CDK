@@ -89,3 +89,16 @@ impl Owner {
         }
     }
 }
+
+#[cfg(test)]
+mod state_tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_list_authorized_users() {
+        let result = Owner::list_authorized_users("<user>@<email>.com", "100").await;
+
+        // The result should be Ok().
+        assert!(result.is_ok());
+    }
+}
