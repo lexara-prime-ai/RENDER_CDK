@@ -30,7 +30,7 @@ async fn main() {
     // println!("Sample Configuration: {:?}\n", config);
 
     /// 3. Retrieve a list of authorized 'users'.
-    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+    let authorized_users = Owner::list_authorized_users("<user>@<email>.com", "100")
         .await
         .unwrap();
     println!("Owner Info.: {:?}\n", authorized_users);
@@ -117,5 +117,13 @@ mod regression_tests {
         // Validate data.
         let services = result.unwrap();
         assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_list_authorized_users() {
+        let result = Owner::list_authorized_users("irfanghat@gmail.com", "100").await;
+
+        // The result should be Ok().
+        assert!(result.is_ok());
     }
 }
