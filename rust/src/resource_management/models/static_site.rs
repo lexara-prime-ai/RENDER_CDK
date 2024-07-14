@@ -1,70 +1,70 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, Serialize)]
-struct StaticSite {
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct StaticSite {
     #[serde(rename = "type")]
-    type_: String,
-    name: String,
-    owner_id: String,
-    repo: String,
-    auto_deploy: bool,
-    branch: String,
-    image: Image,
-    build_filter: BuildFilter,
-    root_dir: String,
-    env_vars: Vec<EnvVar>,
-    secret_files: Vec<SecretFile>,
-    service_details: ServiceDetails,
+    pub type_: String,
+    pub name: String,
+    pub owner_id: String,
+    pub repo: String,
+    pub auto_deploy: bool,
+    pub branch: String,
+    pub image: Image,
+    pub build_filter: BuildFilter,
+    pub root_dir: String,
+    pub env_vars: Vec<EnvVar>,
+    pub secret_files: Vec<SecretFile>,
+    pub service_details: ServiceDetails,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Image {
-    owner_id: String,
-    registry_credential_id: String,
-    image_path: String,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Image {
+    pub owner_id: String,
+    pub registry_credential_id: String,
+    pub image_path: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct BuildFilter {
-    paths: Vec<String>,
-    ignored_paths: Vec<String>,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct BuildFilter {
+    pub paths: Vec<String>,
+    pub ignored_paths: Vec<String>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct EnvVar {
-    key: String,
-    value: Option<String>,
-    generate_value: bool,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct EnvVar {
+    pub key: String,
+    pub value: Option<String>,
+    pub generate_value: bool,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct SecretFile {
-    name: String,
-    content: String,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct SecretFile {
+    pub name: String,
+    pub content: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct ServiceDetails {
-    build_command: String,
-    headers: Vec<Header>,
-    publish_path: String,
-    pull_request_previews_enabled: bool,
-    routes: Vec<Route>,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct ServiceDetails {
+    pub build_command: String,
+    pub headers: Vec<Header>,
+    pub publish_path: String,
+    pub pull_request_previews_enabled: bool,
+    pub routes: Vec<Route>,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Header {
-    path: String,
-    name: String,
-    value: String,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Header {
+    pub path: String,
+    pub name: String,
+    pub value: String,
 }
 
-#[derive(Debug, Deserialize, Serialize)]
-struct Route {
-    type_: String,
-    source: String,
-    destination: String,
-    priority: u32,
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct Route {
+    pub type_: String,
+    pub source: String,
+    pub destination: String,
+    pub priority: u32,
 }
 
 // fn main() {
