@@ -22,6 +22,10 @@ jobs:
         override: true
         components: llvm-tools-preview
 
+    - name: Update nightly toolchain
+      run: rustup update nightly
+      working-directory: ./rust
+
     - name: Install grcov
       run: cargo install grcov
       working-directory: ./rust
