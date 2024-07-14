@@ -18,21 +18,15 @@ jobs:
       uses: actions-rs/toolchain@v1
       with:
         profile: minimal
-        toolchain: nightly
+        toolchain: nightly-2021-03-24 # Replace with a specific nightly date that works
         override: true
         components: llvm-tools-preview
 
-    - name: Update nightly toolchain
-      run: rustup update nightly
-      working-directory: ./rust
-
     - name: Install grcov
       run: cargo install grcov
-      working-directory: ./rust
 
     - name: Install x86_64-unknown-linux-gnu target
       run: rustup target add x86_64-unknown-linux-gnu
-      working-directory: ./rust
 
     - name: Set up coverage configuration
       run: |
@@ -41,7 +35,6 @@ jobs:
         echo 'rustflags = ["-Zinstrument-coverage","-Ccodegen-units=1","-Cinline-threshold=0","-Clink-dead-code","-Coverflow-checks=off","-Zno-profiler-runtime"]' >> .cargo/config.toml
         echo "[unstable]" >> .cargo/config.toml
         echo 'build-std = ["std"]' >> .cargo/config.toml
-      working-directory: ./rust
 
     - name: Run tests with coverage
       env:
@@ -49,14 +42,12 @@ jobs:
         RUSTFLAGS: "-Zinstrument-coverage"
         LLVM_PROFILE_FILE: "coverage-%p-%m.profraw"
       run: cargo test --target x86_64-unknown-linux-gnu
-      working-directory: ./rust
 
     - name: Generate coverage report
       run: |
         grcov . -s . -t html --llvm --branch --ignore-not-existing -o ./coverage
         mkdir -p coverage-report
         cp -r ./coverage/* coverage-report/
-      working-directory: ./rust
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v2
