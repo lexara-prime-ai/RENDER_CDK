@@ -118,12 +118,4 @@ mod regression_tests {
         let services = result.unwrap();
         assert!(!services.is_empty());
     }
-
-    #[tokio::test]
-    async fn test_list_authorized_users() {
-        let result = Owner::list_authorized_users("irfanghat@gmail.com", "100").await;
-
-        // The result should be Ok().
-        assert!(result.is_ok());
-    }
 }

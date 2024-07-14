@@ -2,42 +2,45 @@ name: Code Coverage
 
 on:
   push:
-    branches: [master]
+    branches: [ master ]
   pull_request:
-    branches: [master]
+    branches: [ master ]
 
 jobs:
   code-coverage:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-    - name: Install toolchain
-        id: toolchain
-        uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-          target: x86_64-unknown-linux-musl
-          override: true
-          components: llvm-tools-preview
-    
-    - name: Download grcov
-        run: |
-          mkdir -p "${HOME}/.local/bin"
-          curl -sL https://github.com/mozilla/grcov/releases/download/v0.8.10/grcov-x86_64-unknown-linux-gnu.tar.bz2 | tar jxf - -C "${HOME}/.local/bin"
-          echo "$HOME/.local/bin" >> $GITHUB_PATH
-        working-directory: ./rust
+    - name: Set up Rust
+      uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        override: true
 
+    - name: Install Tarpaulin
+      run: cargo install cargo-tarpaulin
+      working-directory: ./rust
 
-    - name: Run xtask coverage
-        uses: actions-rs/cargo@v1
-        with:
-          command: xtask
-          args: coverage
+    - name: Run tests with coverage
+      env:
+        API_KEY: ${{ secrets.API_KEY }}
+      run: cargo tarpaulin --out Xml
+      working-directory: ./rust
 
-    - name: Upload to codecov.io
-        uses: codecov/codecov-action@v3
-        with:
-          files: coverage/*.lcov
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: ./rust/tarpaulin-report.xml
+
+    - name: Publish coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: ./rust/tarpaulin-report.xml
+        flags: unittests
+        name: codecov-umbrella
+        fail_ci_if_error: true
+      working-directory: ./rust
