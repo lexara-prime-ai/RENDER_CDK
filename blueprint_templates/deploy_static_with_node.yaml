@@ -1,0 +1,22 @@
+# Nodejs sample.
+services:
+- type: web
+  name: <service_name>
+  runtime: node
+  repo: https://github.com/<username>/<backend_repo>
+  # Render API does NOT support 'free' plans.
+  plan: starter
+  envVars:
+  - key: CLIENT_URL
+    sync: false
+  - key: STRIPE_PRIVATE_KEY
+    sync: false
+  region: e.g oregon
+  buildCommand: e.g yarn
+  startCommand: e.g node server.js
+- type: web
+  name: <service_name>
+  runtime: static
+  repo: https://github.com/<username>/<frontend_repo>
+  staticPublishPath: .
+version: "1"

@@ -1,0 +1,13 @@
+# Postgres sample.
+databases:
+- name: <service_name>
+  databaseName: <database_name>
+  user: <service_user>
+  # Render API does NOT support 'free' plans.
+  plan: starter
+  region: e.g oregon
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: everywhere
+  postgresMajorVersion: "16"
+version: "1"
