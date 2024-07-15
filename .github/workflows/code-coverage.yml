@@ -34,12 +34,12 @@ jobs:
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: ./rust/tarpaulin-report.xml
+        path: ./tarpaulin-report.xml
 
     - name: Publish coverage to Codecov
       uses: codecov/codecov-action@v3
       with:
-        files: ./rust/tarpaulin-report.xml
+        files: ./tarpaulin-report.xml
         flags: unittests
         name: codecov-umbrella
         fail_ci_if_error: true
