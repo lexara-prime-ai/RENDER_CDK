@@ -1,1 +1,2 @@
-pub mod static_site;
+pub mod prelude;
+pub mod template;

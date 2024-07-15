@@ -2,7 +2,7 @@
 
 use render_cdk::environment_management::prelude::*;
 use render_cdk::iaas::prelude::*;
-use render_cdk::resource_management::prelude::*;
+use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
 use render_cdk::state_management::prelude::*;
 use tokio::main;
 
@@ -30,10 +30,106 @@ async fn main() {
     // println!("Sample Configuration: {:?}\n", config);
 
     /// 3. Retrieve a list of authorized 'users'.
-    let authorized_users = Owner::list_authorized_users("<user>@<email>.com", "100")
+    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
         .await
         .unwrap();
-    println!("Owner Info.: {:?}\n", authorized_users);
+
+    ////////////////////////////
+    // [DEBUG] logs.
+    ///////////////////////////
+    // println!("Owner Info.: {:?}\n", authorized_users);
+
+    ///////////////////////////
+    // Retrieving the <owner_id>. This is used to tie a <resource> to the user who created it.
+    let owner_id = authorized_users
+        .get(0)
+        .map(|owner_response| owner_response.owner.id.clone())
+        .expect("No authorized users found.");
+
+    /// 4. Creating services.
+    // The following is a sample deployment configuration.
+    let deployment_config = template::Template {
+        type_: "static_site".to_owned(), // Options ->
+        name: "test_deployment".to_owned(),
+        owner_id,
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        auto_deploy: "yes".to_owned(),
+        branch: None,
+        image: None,
+        build_filter: None,
+        root_dir: "./public".to_owned(),
+        env_vars: vec![],
+        secret_files: vec![],
+        service_details: Some(ServiceDetails {
+            build_command: None,
+            headers: vec![],
+            publish_path: Some("./".to_owned()),
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            routes: vec![],
+        }),
+    };
+
+    //////////////////////////
+    // [DEBUG] logs.
+    /////////////////////////
+    // println!("Deployment Config.: {:?}\n", deployment_config);
+
+    let service = ServiceManager::create_service(deployment_config)
+        .await
+        .unwrap();
+
+    ///////////////////////////////
+    // Other sample configurations.
+    ///////////////////////////////
+    // let template_with_image = Template {
+    //     type_: "static_site".to_owned(),
+    //     name: "test".to_owned(),
+    //     owner_id: "test".to_owned(),
+    //     repo: "httpe".to_owned(),
+    //     auto_deploy: true,
+    //     branch: Some("main".to_owned()),
+    //     image: Some(Image {
+    //         owner_id: "owner123".to_owned(),
+    //         registry_credential_id: "cred123".to_owned(),
+    //         image_path: "path/to/image".to_owned(),
+    //     }),
+    //     build_filter: BuildFilter {
+    //         Initialize your fields here.
+    //     },
+    //     root_dir: "./".to_owned(),
+    //     env_vars: vec![
+    //         EnvVar {
+    //             key: "EXAMPLE".to_owned(),
+    //             value: Some("EXAMPLE".to_owned()),
+    //             generate_value: false,
+    //         }
+    //     ],
+    //     secret_files: vec![],
+    //     service_details: ServiceDetails {
+    //         Initialize your fields here
+    //     },
+    // };
+
+    // This example doesn't contain an image, branch, env_vars and secret_files.
+    //
+    // let template_without_image = Template {
+    //     type_: "static_site".to_owned(),
+    //     name: "test".to_owned(),
+    //     owner_id: "test".to_owned(),
+    //     repo: "httpe".to_owned(),
+    //     auto_deploy: true,
+    //     branch: None,
+    //     image: None,
+    //     build_filter: BuildFilter {
+    //         Initialize your fields here
+    //     },
+    //     root_dir: "./".to_owned(),
+    //    env_vars: vec![],
+    //     secret_files: vec![],
+    //     service_details: ServiceDetails {
+    //         Initialize your fields here
+    //     },
+    // };
 }
 
 /// Checks for regression of service management functions
