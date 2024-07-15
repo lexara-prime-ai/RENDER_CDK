@@ -34,8 +34,8 @@ pub struct Owner {
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct OwnerResponse {
-    owner: Owner,
-    cursor: String,
+    pub owner: Owner,
+    pub cursor: String,
 }
 
 impl State {

@@ -1,8 +1,14 @@
 #![allow(unused)]
+extern crate serde;
+extern crate serde_json;
+
+use std::fmt::format;
+
 use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 
 use crate::environment_management::prelude::EnvironmentManager;
+use crate::resource_management::models::template::Template;
 use crate::state_management::state::State;
 
 const BASE_URL: &str = "https://api.render.com/v1";
@@ -10,20 +16,31 @@ const BASE_URL: &str = "https://api.render.com/v1";
 #[derive(Debug)]
 pub struct ServiceManager;
 
-
 pub trait ServiceManagerOperations {
     ///////////////////////////////
     /// Querying services.
-    fn list_all_services(limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
-    fn find_service_by_name_and_type(service_name: &str, service_type: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
-    fn find_service_by_region(service_region: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
-    fn find_service_by_environment(service_env: &str, limit: &str) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn list_all_services(
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_name_and_type(
+        service_name: &str,
+        service_type: &str,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_region(
+        service_region: &str,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn find_service_by_environment(
+        service_env: &str,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
     ////////////////////////////////
     ///////////////////////////////
     // /// Creating services.
-    // fn create_service
+    fn create_service(
+        deployment_config: Template,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
 }
-
 
 impl ServiceManagerOperations for ServiceManager {
     /// List all resources.
@@ -122,10 +139,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Finding services by region.
-    async fn find_service_by_region(
-        service_region: &str,
-        limit: &str,
-    ) -> Result<String, Error> {
+    async fn find_service_by_region(service_region: &str, limit: &str) -> Result<String, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -172,10 +186,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Filtering for environments.
-    async fn find_service_by_environment(
-        service_env: &str,
-        limit: &str,
-    ) -> Result<String, Error> {
+    async fn find_service_by_environment(service_env: &str, limit: &str) -> Result<String, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -216,6 +227,72 @@ impl ServiceManagerOperations for ServiceManager {
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
+            ))
+        }
+    }
+
+    ///////////////////////////
+    /// Creating services.
+    //////////////////////////
+    async fn create_service(deployment_config: Template) -> Result<String, Error> {
+        /// Currently supported - Github(https://github.com/username/reponame.git)
+        /******************************************************
+         *
+            curl --request POST \
+                --url https://api.render.com/v1/services \
+                --header 'Accept: application/json' \
+                --header 'Content-Type: application/json' \
+                --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+                --data '
+                    {
+                    "type": "static_site",
+                    "autoDeploy": "yes",
+                    "serviceDetails": {
+                        "pullRequestPreviewsEnabled": "no"
+                    },
+                    "name": "test",
+                    "ownerId": "test",
+                    "repo": "httpe",
+                    "rootDir": "./",
+                    "envVars": [
+                        {
+                        "key": "EXAMPLE",
+                        "value": "EXAMPLE"
+                        }
+                    ]
+                }'
+
+        **************************************************************/
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!("{}{}", BASE_URL, "/services");
+        let payload = serde_json::to_string_pretty(&deployment_config).unwrap();
+
+        //////////////////////////////
+        ////// [DEBUG] logs. /////////
+        //////////////////////////////
+        // println!("[REQUEST] -> {}", api_url);
+        // println!("[REQUEST] -> {}", api_key.clone());
+        println!("[PAYLOAD] -> {}", payload.clone());
+        //////////////////////////////
+        let response = client
+            .post(api_url)
+            .header("ACCEPT", "application/json")
+            .header("CONTENT-TYPE", "application/json")
+            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .body(payload)
+            .send()
+            .await
+            .context("Error processing request.")?;
+
+        ////////////////////////////
+        if response.status().is_success() {
+            let result = response.text().await.context("Error parsing response.")?;
+            Ok(result)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status: {:?}",
+                response
             ))
         }
     }
