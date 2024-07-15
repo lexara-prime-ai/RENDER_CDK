@@ -63,7 +63,7 @@ async fn main() {
         service_details: Some(ServiceDetails {
             build_command: None,
             headers: vec![],
-            publish_path: None,
+            publish_path: Some("./".to_owned()),
             pull_request_previews_enabled: Some("yes".to_owned()),
             routes: vec![],
         }),
