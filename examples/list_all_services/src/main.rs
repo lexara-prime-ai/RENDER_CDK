@@ -1,7 +1,6 @@
 use render_cdk::resource_management::{prelude::*};
 use tokio::main;
 
-
   
 #[main]
 async fn main() {
