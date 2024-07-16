@@ -130,7 +130,10 @@ plan = "free"              # Pricing plan for the Redis instance`
 * **[redis] Section**:
 
   * **plan**: The pricing plan for the Redis instance. Options may include "free", "standard", "premium", etc.
+
+
     > **_Note_** **free** plan will result in failed deployments.
+
 
 This configuration file allows you to easily set up _**managed database**_ and _**caching**_ services with _specific plans_ and options suited to your project's needs.
 
