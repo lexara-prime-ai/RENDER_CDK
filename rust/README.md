@@ -38,7 +38,8 @@ use tokio::main;
 async fn main() {
     let services = ServiceManager::list_all_services("10").await;
     // Process the services as needed.
-}` 
+}
+``` 
 
 #### List All Services by Name and Type
 

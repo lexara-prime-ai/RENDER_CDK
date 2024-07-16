@@ -12,7 +12,7 @@
 ### Crate Information
 
 -   **Name:** render_cdk
--   **Version:** 0.0.3
+-   **Version:** 0.0.8
 -   **Authors:** Irfan Ghat
 -   **Description:** This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease.
 -   **Homepage:** [Cloud Application Hosting for Developers | Render](https://render.com/)
