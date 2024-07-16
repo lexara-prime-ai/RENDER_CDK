@@ -101,7 +101,7 @@ The following is a _sample configuration__ file. This will be used to provision 
 name = ""                  # Replace with the desired database name 
 user = ""                  # Replace with the desired database user
 enable_high_availability = false  # Set to true to enable high availability
-plan = "free"              # Pricing plan for the database instance
+plan = "starter"              # Pricing plan for the database instance
 version = "11"             # Postgres version
 ```
 
@@ -112,7 +112,7 @@ version = "11"             # Postgres version
 
 ```conf
 [redis]
-plan = "free"              # Pricing plan for the Redis instance` 
+plan = "starter"              # Pricing plan for the Redis instance` 
 ```
 
 ### Explanation
@@ -131,9 +131,7 @@ plan = "free"              # Pricing plan for the Redis instance`
 
   * **plan**: The pricing plan for the Redis instance. Options may include "free", "standard", "premium", etc.
 
-
     > **_Note_** **free** plan will result in failed deployments.
-
 
 This configuration file allows you to easily set up _**managed database**_ and _**caching**_ services with _specific plans_ and options suited to your project's needs.
 
