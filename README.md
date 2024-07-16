@@ -1,6 +1,7 @@
 # Render CDK Documentation
 
-* Reference Docs - [Reference](https://cdk-c1wu.onrender.com/)
+* Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
+* Technical Documentation - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/rust/README.md)
 
 ![docs](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/docs.png?raw=true)
 
