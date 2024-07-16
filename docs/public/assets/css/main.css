@@ -1,7 +1,15 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+            box-sizing: border-box;
     letter-spacing: 1px;
 }
 
@@ -14,6 +22,8 @@ body {
     background-color: #131321;
     color: #D8DEE9;
     margin: 0;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
 }
 
@@ -21,22 +31,32 @@ body {
     background-color: #1B1B2F;
     padding: 20px;
     width: 300px;
-    box-shadow: 0 4rem 4rem 0 rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 4rem 4rem 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 4rem 4rem 0 rgba(0, 0, 0, 0.3);
 }
 
 .sidebar h1 {
     font-size: 28px;
     font-weight: 600;
     background: #131321;
-    box-shadow: 0 1rem 4rem 0 rgba(19, 166, 211, 0.3);
+    -webkit-box-shadow: 0 1rem 4rem 0 rgba(16, 89, 117, 0.3);
+            box-shadow: 0 1rem 4rem 0 rgba(16, 89, 117, 0.3);
     border-radius: 9px;
     color: #bec4c5;
     padding: 1rem;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
     gap: 2px;
     text-align: right;
+    -webkit-transition: 200ms all ease;
+    -o-transition: 200ms all ease;
     transition: 200ms all ease;
+    margin-bottom: 60px;
     cursor: pointer;
 }
 
@@ -51,10 +71,15 @@ body {
 }
 
 .sidebar nav {
-    width: 330px;
+    width: 14%;
     margin-top: 40px;
+    display: -webkit-box;
+    display: -ms-flexbox;
     display: flex;
-    flex-direction: column;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
     position: fixed;
 }
 
@@ -65,17 +90,22 @@ body {
     margin-bottom: 10px;
     padding: 10px;
     border-radius: 5px;
+    -webkit-transition: background 0.1s;
+    -o-transition: background 0.1s;
     transition: background 0.1s;
     border-radius: 21px;
 }
 
 .sidebar a:hover {
     background-color: #1B1B2F;
-    box-shadow: 0 1rem 9rem 0 rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 1rem 9rem 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1rem 9rem 0 rgba(0, 0, 0, 0.3);
 }
 
 .content {
-    flex-grow: 1;
+    -webkit-box-flex: 1;
+        -ms-flex-positive: 1;
+            flex-grow: 1;
     padding: 40px;
 }
 
@@ -114,16 +144,30 @@ pre {
     border-radius: 5px;
     overflow-x: auto;
     opacity: .5;
+    -webkit-transition: 200ms all ease;
+    -o-transition: 200ms all ease;
     transition: 200ms all ease;
 }
 
 pre:hover {
     opacity: 1;
-    box-shadow: 0 2rem 2rem 0 rgba(0, 0, 0, 0.3);
+    -webkit-box-shadow: 0 2rem 2rem 0 rgba(0, 0, 0, 0.3);
+            box-shadow: 0 2rem 2rem 0 rgba(0, 0, 0, 0.3);
 }
 
 code {
     color: #a1b391;
+}
+
+.usage-section {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+        -ms-flex-direction: column;
+            flex-direction: column;
+    gap: 2rem;
 }
 
 @media (max-width: 1366px) {
