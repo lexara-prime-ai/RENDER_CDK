@@ -1,7 +1,8 @@
 # Render CDK Documentation
 
-* Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
-* Technical Documentation - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/rust/README.md)
+- Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
+- Technical Documentation(Rust) - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/rust/README.md)
+- Technical Documentation(CPP) - _Coming Soon_
 
 ![docs](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/docs.png?raw=true)
 
@@ -11,22 +12,22 @@
 
 ### Crate Information
 
--   **Name:** render_cdk
--   **Version:** 0.0.8
--   **Authors:** Irfan Ghat
--   **Description:** This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease.
--   **Homepage:** [Cloud Application Hosting for Developers | Render](https://render.com/)
--   **Repository:** [Render (github.com)](https://github.com/renderinc)
--   **License:** MIT
+- **Name:** render_cdk
+- **Version:** 0.0.8
+- **Authors:** Irfan Ghat
+- **Description:** This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease.
+- **Homepage:** [Cloud Application Hosting for Developers | Render](https://render.com/)
+- **Repository:** [Render (github.com)](https://github.com/renderinc)
+- **License:** MIT
 
 ### Current Features
 
 Work on the resource management module is currently under way. The API supports many of the same actions available from the Render Dashboard. It currently provides endpoints for managing:
 
--   Services
--   Deploys
--   Custom domains
--   Jobs
+- Services
+- Deploys
+- Custom domains
+- Jobs
 
 The CDK will provide an abstraction that will make it easier to work with the Render cloud programmatically.
 
