@@ -22,19 +22,19 @@ jobs:
 
     - name: Install Tarpaulin
       run: cargo install cargo-tarpaulin
-      working-directory: ./rust
+      working-directory: ./render_cdk
 
     - name: Run tests with coverage
       env:
         API_KEY: ${{ secrets.API_KEY }}
       run: cargo tarpaulin --out Xml
-      working-directory: ./rust
+      working-directory: ./render_cdk
 
     - name: Upload coverage report
       uses: actions/upload-artifact@v3
       with:
         name: coverage-report
-        path: ./tarpaulin-report.xml
+        path: ./render_cdk/tarpaulin-report.xml
 
     # To do -> Implement publish to [Codecov]
     # - name: Publish coverage to Codecov
