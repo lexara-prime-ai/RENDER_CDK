@@ -1,9 +1,15 @@
-#include "environment_manager.h"
+#include "environment_management.h"
+#include "state_management.h"
 #include <iostream>
 
 /**
  * @file lib.cpp
  * @brief This file contains examples of how to use librender_cdk.
+ *
+ * @brief For quick compilation, run:
+ * g++ lib.cpp <dep1> <dep2>... -lcurl -ljsoncpp -I/usr/include/jsoncpp -o
+ * <executable_name>
+ *
  */
 
 /**
@@ -17,4 +23,9 @@ void retrieveApiKey() {
   std::cout << EnvironmentManager::getApiKey() << std::endl;
 }
 
-int main() { retrieveApiKey(); }
+void retrieveAuthorizedUser() { retrieveAuthorizedUser(); }
+
+int main() {
+  // retrieveApiKey();
+  retrieveAuthorizedUser();
+}

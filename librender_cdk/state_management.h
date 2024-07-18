@@ -3,7 +3,8 @@
 
 #include "common/common.h"
 #include "common/constants.h"
-#include "environment_manager.h"
+#include "environment_management.h"
+#include <cstddef>
 #include <memory>
 #include <vector>
 
@@ -12,17 +13,9 @@ public:
   CURL *client;
   std::string apiKey;
 
-  State() {
-    client = curl_easy_init();
-    apiKey = EnvironmentManager::getApiKey();
-  }
-
-  ~State() {
-    if (client)
-      curl_easy_cleanup(client);
-  }
-
-  static std::shared_ptr<State> init() { return std::make_shared<State>(); }
+  State();
+  ~State();
+  static std::shared_ptr<State> init();
 };
 
 struct Owner {
@@ -36,5 +29,9 @@ struct Owner {
                                                     const std::string &limit);
 };
 
+struct OwnerResponse {
+  Owner owner;
+  std::string cursor;
+};
 
 #endif
