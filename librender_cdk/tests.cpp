@@ -1,4 +1,4 @@
-#include "../include/environment_manager.h"
+#include "environment_manager.h"
 #include <iostream>
 
 int main() {
