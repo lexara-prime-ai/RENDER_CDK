@@ -9,10 +9,12 @@
 /**
  * @brief Retrieves and prints the API key to the standard output.
  *
- * This example demonstrates how to retrieve the API key using the EnvironmentManager
- * and print it to the console.
+ * This example demonstrates how to retrieve the API key using the
+ * EnvironmentManager and print it to the console.
  */
 
 void retrieveApiKey() {
-  std::cout << "[API_KEY] -> " << EnvironmentManager::getApiKey() << std::endl;
+  std::cout << EnvironmentManager::getApiKey() << std::endl;
 }
+
+int main() { retrieveApiKey(); }
