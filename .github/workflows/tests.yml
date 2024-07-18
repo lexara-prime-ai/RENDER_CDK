@@ -20,9 +20,9 @@ jobs:
 
     - name: Build
       run: cargo build --verbose
-      working-directory: ./rust
+      working-directory: ./render_cdk
 
     - name: Run tests
       run: cargo test --verbose
-      working-directory: ./rust
+      working-directory: ./render_cdk
 
