@@ -1,9 +1,13 @@
 cmake_minimum_required(VERSION 3.10)
 
-project(ListServices)
+project(RenderCdk)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+add_subdirectory(librender_cdk)
+
+include_directories(${CMAKE_SOURCE_DIR}/librender_cdk/librender_cdk)
 
 find_package(jsoncpp QUIET)
 if(NOT jsoncpp_FOUND)
@@ -27,23 +31,29 @@ if(NOT CURL_FOUND)
     find_package(CURL REQUIRED)
 endif()
 
-add_executable(list_services main.cpp)
+add_executable(render_cdk librender_cdk/librender_cdk/main.cpp)
 
+# Include JsonCpp and cURL header directories.
 include_directories(${JSONCPP_INCLUDE_DIRS})
-
 include_directories(${CURL_INCLUDE_DIRS})
 
 # Link the libraries.
-target_link_libraries(list_services ${CURL_LIBRARIES} ${JSONCPP_LIBRARIES})
+target_link_libraries(render_cdk ${CURL_LIBRARIES} ${JSONCPP_LIBRARIES})
 
 ##############################################
 # Build docs:
 #
 # cmake_minimum_required: Specifies the minimum version of CMake required.
-# project: <project_name>.
-# set(CMAKE_CXX_STANDARD 11): Set C++ standard to C++11.
-# add_executable: Define executable target (list_services).
-# find_package(jsoncpp REQUIRED): Find JsonCpp package.
-# include_directories: Includes directories for JsonCpp and cURL headers.
-# find_package(CURL REQUIRED): Finds cURL package.
-# target_link_libraries: Links found libraries (JsonCpp and cURL) to the executable.
+# project: <project_name>: Defines the project name.
+# set(CMAKE_CXX_STANDARD 11): Sets the C++ standard to C++11.
+# add_subdirectory: Adds the subdirectory for the library.
+# include_directories: Adds include directories for library and packages.
+# find_package(jsoncpp REQUIRED): Finds the JsonCpp package.
+# find_package(CURL REQUIRED): Finds the cURL package.
+# add_executable: Defines the executable target.
+# target_link_libraries: Links the found libraries (JsonCpp and cURL) to the executable.
+#
+#  Building with the GNU compiler.
+#  > g++ lib.cpp environment_manager.cpp -o <executable_name>
+#
+###############################################

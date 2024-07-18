@@ -9,7 +9,7 @@ For more details and sample code, please visit the [repository](https://github.c
 1. Navigate to your _project_ directory:
 
 ```sh
-cd cpp
+cd librender_cdk
 ```
 
 2. Create a _build_ directory and navigate into it:
