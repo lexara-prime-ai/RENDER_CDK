@@ -6,7 +6,7 @@ RUN cargo install cargo-chef --locked
 
 FROM chef AS planner
 
-COPY ./rust .
+COPY ./render_cdk .
 
 RUN cargo chef prepare --recipe-path recipe.json
 
@@ -16,7 +16,7 @@ COPY --from=planner /render_cdk/recipe.json recipe.json
 
 RUN cargo chef cook --release --recipe-path recipe.json
 
-COPY ./rust .
+COPY ./render_cdk .
 
 RUN cargo build --release
 
