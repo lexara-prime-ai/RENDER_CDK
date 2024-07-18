@@ -60,7 +60,7 @@
 #include <string>
 #include <curl/curl.h>
 #include <jsoncpp/json/json.h>
-#include "../include/dotenv.h"
+#include "dotenv.h"
 
 using namespace std;
 

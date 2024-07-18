@@ -1,5 +1,5 @@
-#include "../../include/environment_manager.h"
-#include "../../include/dotenv.h"
+#include "environment_manager.h"
+#include "dotenv.h"
 #include <cstdlib>
 #include <iostream>
 

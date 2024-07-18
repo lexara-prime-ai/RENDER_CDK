@@ -1,4 +1,7 @@
 /**/target
+/**/build
+/**/.cache
+/**/.vscode
 *.env
 *.tfvars
 *.tfstate
