@@ -25,7 +25,7 @@ pub trait ServiceManagerOperations {
     fn list_all_services(
         limit: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
-    fn list_all_suspended_services(
+    fn list_services_with_status(
         service_status: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
@@ -98,7 +98,7 @@ impl ServiceManagerOperations for ServiceManager {
 
     /// Finding all suspended services.
     /// Reqquired arguments: <service_status> i.e suspended/not_suspended.
-    async fn list_all_suspended_services(
+    async fn list_services_with_status(
         service_status: &str,
         limit: &str,
     ) -> Result<String, Error> {
@@ -180,8 +180,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         let response = client
             .get(api_url)
-            .header("ACCEPT", "application/json")
-            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
             .send()
             .await
             .context("Error sending request.")?;
@@ -228,8 +228,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         let response = client
             .get(api_url)
-            .header("ACCEPT", "application/json")
-            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
             .send()
             .await
             .context("Error sending request.")?;
@@ -275,8 +275,8 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         let response = client
             .get(api_url)
-            .header("ACCEPT", "application/json")
-            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
             .send()
             .await
             .context("Error sending request.")?;
@@ -342,9 +342,9 @@ impl ServiceManagerOperations for ServiceManager {
 
         let response = client
             .post(api_url)
-            .header("ACCEPT", "application/json")
-            .header("CONTENT-TYPE", "application/json")
-            .header("AUTHORIZATION", format!("Bearer {}", api_key))
+            .header(ACCEPT, "application/json")
+            .header(CONTENT_TYPE, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
             .body(payload)
             .send()
             .await

@@ -21,7 +21,7 @@ async fn main() {
     // let services = ServiceManager::list_all_services("50").await;
 
     // List all Services that are suspended/not_suspended.
-    let services = ServiceManager::list_all_suspended_services("suspended", "50").await;
+    let services = ServiceManager::list_services_with_status("suspended", "50").await;
 
     // List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
@@ -190,6 +190,17 @@ mod regression_tests {
 
         // Validate content.
         let services = result.unwrap();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_list_services_with_status() {
+        let results = ServiceManager::list_services_with_status("suspended", "10").await;
+        // The result should be Ok().
+        assert!(results.is_ok());
+
+        // Validate content.
+        let services = results.unwrap();
         assert!(!services.is_empty());
     }
 
