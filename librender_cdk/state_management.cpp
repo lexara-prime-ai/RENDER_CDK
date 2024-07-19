@@ -15,11 +15,11 @@ std::vector<OwnerResponse> OwnerResponse::parseJson(const Json::Value &json) {
 
   for (const auto &item : json) {
     Owner owner;
-    owner.id = item["id"].asString();
-    owner.name = item["name"].asString();
-    owner.email = item["email"].asString();
-    owner.twoFactorAuthEnabled = item["twoFactorAuthEnabled"].asBool();
-    owner.type = item["type"].asString();
+    owner.id = item["owner"]["id"].asString();
+    owner.name = item["owner"]["name"].asString();
+    owner.email = item["owner"]["email"].asString();
+    owner.twoFactorAuthEnabled = item["owner"]["twoFactorAuthEnabled"].asBool();
+    owner.type = item["owner"]["type"].asString();
 
     OwnerResponse response;
     response.owner = owner;
@@ -45,7 +45,7 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, ("Authorization: " + apiKey).c_str());
 
-    std::cout << "[API_URL] -> " << apiUrl << std::endl;
+    std::cout << "\nCreating [REQUEST] -> " << apiUrl << "\n" << std::endl;
 
     curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -59,6 +59,11 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
               curl_easy_strerror(res));
     }
 
+    /////////////////////////////
+    // [DEBUG] logs.
+    // std::cout << "[RESPONSE] ->" << readBuffer << std::endl;
+    /////////////////////////////
+
     curl_easy_cleanup(curl);
     curl_slist_free_all(headers);
 
@@ -71,6 +76,10 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
     if (reader->parse(readBuffer.c_str(),
                       readBuffer.c_str() + readBuffer.size(), &jsonData,
                       &errs)) {
+      //////////////////////////
+      // [DEBUG] logs.
+      // std::cout << "\nJSON [PARSING] successful." << std::endl;
+      ///////////////////////////
       std::vector<OwnerResponse> ownerResponses =
           OwnerResponse::parseJson(jsonData);
       std::vector<Owner> owners;
@@ -82,7 +91,7 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
       }
       return owners;
     } else {
-      throw std::runtime_error("Error parsing response: " + errs);
+      throw std::runtime_error("\nError parsing response: " + errs);
     }
   }
 
