@@ -4,5 +4,5 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-render_cdk = { path = "../../rust" }
+render_cdk = { path = "../../../render_cdk" }
 tokio = "1.38.0"
