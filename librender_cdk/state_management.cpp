@@ -1,70 +1,90 @@
 #include "state_management.h"
-#include "environment_management.h"
+#include "common/constants.h"
+#include <iostream>
+#include <memory>
+#include <stdexcept>
 
-size_t WriteCallback(void *contents, size_t size, size_t nmemb,
-                     std::string *s) {
-  size_t newLength = size * nmemb;
-  s->append((char *)contents, newLength);
-  return newLength;
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb,
+                            void *userp) {
+  ((std::string *)userp)->append((char *)contents, size * nmemb);
+  return size * nmemb;
 }
 
-State::State() {
-  client = curl_easy_init();
-  apiKey = EnvironmentManager::getApiKey();
-}
+std::vector<OwnerResponse> OwnerResponse::parseJson(const Json::Value &json) {
+  std::vector<OwnerResponse> owners;
 
-State::~State() {
-  if (client)
-    curl_easy_cleanup(client);
-}
+  for (const auto &item : json) {
+    Owner owner;
+    owner.id = item["id"].asString();
+    owner.name = item["name"].asString();
+    owner.email = item["email"].asString();
+    owner.twoFactorAuthEnabled = item["twoFactorAuthEnabled"].asBool();
+    owner.type = item["type"].asString();
 
-std::shared_ptr<State> State::init() { return std::make_shared<State>(); }
+    OwnerResponse response;
+    response.owner = owner;
+    response.cursor = item["cursor"].asString();
+    owners.push_back(response);
+  }
+  return owners;
+}
 
 std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
                                                   const std::string &limit) {
-  auto state = State::init();
-  std::string apiUrl = BASE_URL + "/owners?limit=" + limit;
+  CURL *curl;
+  CURLcode res;
   std::string readBuffer;
+  std::string apiKey = "Bearer " + EnvironmentManager::getApiKey();
 
-  curl_easy_setopt(state->client, CURLOPT_URL, apiUrl.c_str());
-  struct curl_slist *headers = nullptr;
-  headers = curl_slist_append(headers, "Accept: application/json");
-  headers = curl_slist_append(
-      headers, ("Authorization: Bearer " + state->apiKey).c_str());
-  curl_easy_setopt(state->client, CURLOPT_HTTPHEADER, headers);
-  curl_easy_setopt(state->client, CURLOPT_WRITEFUNCTION, WriteCallback);
-  curl_easy_setopt(state->client, CURLOPT_WRITEDATA, &readBuffer);
+  curl = curl_easy_init();
 
-  CURLcode res = curl_easy_perform(state->client);
-  curl_slist_free_all(headers);
+  if (curl) {
+    std::string apiUrl = BASE_URL + "/owners?limit=" + limit;
 
-  if (res != CURLE_OK) {
-    throw std::runtime_error("Request failed: " +
-                             std::string(curl_easy_strerror(res)));
-  }
+    struct curl_slist *headers = nullptr;
+    headers = curl_slist_append(headers, "Accept: application/json");
+    headers = curl_slist_append(headers, ("Authorization: " + apiKey).c_str());
 
-  Json::CharReaderBuilder reader;
-  Json::Value root;
-  std::string errs;
-  std::istringstream s(readBuffer);
+    std::cout << "[API_URL] -> " << apiUrl << std::endl;
 
-  if (!Json::parseFromStream(reader, s, &root, &errs)) {
-    throw std::runtime_error("Failed to parse JSON: " + errs);
-  }
+    curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
+    curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
+    curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
+    curl_easy_setopt(curl, CURLOPT_WRITEDATA, &readBuffer);
 
-  std::vector<Owner> authorizedUsers;
-  for (const auto &item : root) {
-    Owner owner;
-    owner.id = item["owner"]["id"].asString();
-    owner.name = item["owner"]["name"].asString();
-    owner.email = item["owner"]["email"].asString();
-    owner.twoFactorAuthEnabled = item["owner"]["twoFactorAuthEnabled"].asBool();
-    owner.type = item["owner"]["type"].asString();
+    res = curl_easy_perform(curl);
 
-    if (owner.email == email) {
-      authorizedUsers.push_back(owner);
+    if (res != CURLE_OK) {
+      fprintf(stderr, "curl_easy_perform() failed: %s\n",
+              curl_easy_strerror(res));
+    }
+
+    curl_easy_cleanup(curl);
+    curl_slist_free_all(headers);
+
+    Json::CharReaderBuilder readerBuilder;
+    Json::Value jsonData;
+    std::string errs;
+
+    std::unique_ptr<Json::CharReader> reader(readerBuilder.newCharReader());
+
+    if (reader->parse(readBuffer.c_str(),
+                      readBuffer.c_str() + readBuffer.size(), &jsonData,
+                      &errs)) {
+      std::vector<OwnerResponse> ownerResponses =
+          OwnerResponse::parseJson(jsonData);
+      std::vector<Owner> owners;
+
+      for (const auto &response : ownerResponses) {
+        if (response.owner.email == email) {
+          owners.push_back(response.owner);
+        }
+      }
+      return owners;
+    } else {
+      throw std::runtime_error("Error parsing response: " + errs);
     }
   }
 
-  return authorizedUsers;
+  return {};
 }

@@ -1,22 +1,11 @@
 #ifndef _STATE_MANAGEMENT_H_
 #define _STATE_MANAGEMENT_H_
 
-#include "common/common.h"
-#include "common/constants.h"
 #include "environment_management.h"
-#include <cstddef>
-#include <memory>
+#include <curl/curl.h>
+#include <jsoncpp/json/json.h>
+#include <string>
 #include <vector>
-
-class State {
-public:
-  CURL *client;
-  std::string apiKey;
-
-  State();
-  ~State();
-  static std::shared_ptr<State> init();
-};
 
 struct Owner {
   std::string id;
@@ -32,6 +21,11 @@ struct Owner {
 struct OwnerResponse {
   Owner owner;
   std::string cursor;
+
+  static std::vector<OwnerResponse> parseJson(const Json::Value &json);
 };
+
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb,
+                            void *userp);
 
 #endif

@@ -1,10 +1,14 @@
 #include <curl/curl.h>
-#include <jsoncpp/json/json.h>
+#include <json/json.h>
 #include <iostream>
 #include <string>
 #include <vector>
 #include <stdexcept>
 #include <memory>
+
+// sudo apt-get update
+// sudo apt-get install libcurl4-openssl-dev libjsoncpp-dev g++
+
 
 const std::string BASE_URL = "https://api.render.com/v1";
 
@@ -12,7 +16,7 @@ class EnvironmentManager {
 public:
     static std::string retrieve_api_key() {
         // Replace with the actual implementation to retrieve the API key.
-        return "rnd_cKJLynWFFybW0SJKhtxLlAURSZfe";
+        return "your_api_key";
     }
 };
 
