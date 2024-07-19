@@ -1,4 +1,5 @@
 #![allow(unused)]
+// #![deny(missing_docs)]
 
 use render_cdk::environment_management::prelude::*;
 use render_cdk::iaas::prelude::*;
@@ -19,68 +20,71 @@ async fn main() {
     /// List all Services.
     // let services = ServiceManager::list_all_services("50").await;
 
-    /// List all Services by Name and Type.
+    // List all Services that are suspended/not_suspended.
+    let services = ServiceManager::list_all_suspended_services("suspended", "50").await;
+
+    // List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
 
-    /// List all Services by Region.
+    // List all Services by Region.
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
 
-    /// List all Services by Environment.
+    // List all Services by Environment.
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
     ////////////////////////////////////////////////
-    ///
-    /// 2. Using simple .conf files for resource provisioning.
+    //
+    // 2. Using simple .conf files for resource provisioning.
     // let config = config::Conf::read_configuration_file().unwrap();
     // println!("Sample Configuration: {:?}\n", config);
 
-    /// 3. Retrieve a list of authorized 'users'.
-    let authorized_user = Owner::list_authorized_users("irfanghat@gmail.com", "100")
-        .await
-        .unwrap();
+    // 3. Retrieve a list of authorized 'users'.
+    // let authorized_user = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+    //     .await
+    //     .unwrap();
 
     ////////////////////////////
     // [DEBUG] logs.
     ///////////////////////////
-    println!("Owner Info.: {:?}\n", authorized_user);
+    // println!("Owner Info.: {:?}\n", authorized_user);
 
     ///////////////////////////
     // Retrieving the <owner_id>. This is used to tie a <resource> to the user who created it.
-    let owner_id = authorized_user
-        .get(0)
-        .map(|owner_response| owner_response.owner.id.clone())
-        .expect("No authorized users found.");
+    // let owner_id = authorized_user
+    //     .get(0)
+    //     .map(|owner_response| owner_response.owner.id.clone())
+    //     .expect("No authorized users found.");
 
     // /// 4. Creating services.
     // The following is a sample deployment configuration.
-    let deployment_config = template::Template {
-        type_: "static_site".to_owned(), // Options ->
-        name: "test_deployment".to_owned(),
-        owner_id,
-        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-        auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
-        branch: None,
-        image: None,
-        build_filter: None,
-        root_dir: Some("./public".to_owned()),
-        env_vars: vec![],
-        secret_files: vec![],
-        service_details: Some(ServiceDetails {
-            build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
-            headers: vec![],
-            publish_path: Some("./".to_owned()), // This will translate to /public/
-            pull_request_previews_enabled: Some("yes".to_owned()),
-            routes: vec![],
-        }),
-    };
+    // let deployment_config = template::Template {
+    //     type_: "static_site".to_owned(), // Options ->
+    //     name: "test_deployment".to_owned(),
+    //     owner_id,
+    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+    //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
+    //     branch: None,
+    //     image: None,
+    //     build_filter: None,
+    //     root_dir: Some("./public".to_owned()),
+    //     env_vars: vec![],
+    //     secret_files: vec![],
+    //     service_details: Some(ServiceDetails {
+    //         build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
+    //         headers: vec![],
+    //         publish_path: Some("./".to_owned()), // This will translate to /public/
+    //         pull_request_previews_enabled: Some("yes".to_owned()),
+    //         routes: vec![],
+    //     }),
+    // };
 
     //////////////////////////
     // [DEBUG] logs.
     /////////////////////////
-    LOGGER::INFO(
-        "Deployment Config. : ",
-        &deployment_config.to_json_string(),
-        LogLevel::WARN,
-    );
+    // LOGGER::INFO(
+    //     "Deployment Config. : ",
+    //     &deployment_config.to_json_string(),
+    //     LogLevel::WARN,
+    // );
 
     // let service = ServiceManager::create_service(deployment_config)
     //     .await

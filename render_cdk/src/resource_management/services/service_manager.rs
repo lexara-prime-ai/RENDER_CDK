@@ -25,6 +25,10 @@ pub trait ServiceManagerOperations {
     fn list_all_services(
         limit: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    fn list_all_suspended_services(
+        service_status: &str,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
     fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
@@ -37,6 +41,7 @@ pub trait ServiceManagerOperations {
         service_env: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+
     ////////////////////////////////
     ///////////////////////////////
     // /// Creating services.
@@ -65,7 +70,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
         // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
@@ -83,6 +88,59 @@ impl ServiceManagerOperations for ServiceManager {
             LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            Err(anyhow::anyhow!(
+                "Request failed with status: {}",
+                response.status()
+            ))
+        }
+    }
+
+    /// Finding all suspended services.
+    /// Reqquired arguments: <service_status> i.e suspended/not_suspended.
+    async fn list_all_suspended_services(
+        service_status: &str,
+        limit: &str,
+    ) -> Result<String, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url  'https://api.render.com/v1/services?suspended=suspended&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        /////////////////////////////
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/services?suspended=", service_status, "&limit=", limit
+        );
+
+        //////////////////////////////
+        ////// [DEBUG] logs. /////////
+        //////////////////////////////
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
+        //////////////////////////////
+
+        let response = client
+            .get(api_url)
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error sending request.")?;
+
+        //////////////////////////////
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            Ok(results)
+        } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -116,7 +174,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
         // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
@@ -134,6 +192,7 @@ impl ServiceManagerOperations for ServiceManager {
             LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -163,7 +222,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
         // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
@@ -181,6 +240,7 @@ impl ServiceManagerOperations for ServiceManager {
             LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -210,7 +270,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
         // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
         let response = client
@@ -227,6 +287,7 @@ impl ServiceManagerOperations for ServiceManager {
             LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
