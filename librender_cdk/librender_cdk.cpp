@@ -1,5 +1,6 @@
 #include "environment_management.h"
 #include "state_management.h"
+#include <cstdlib>
 #include <iostream>
 
 /**
@@ -19,11 +20,11 @@
  * EnvironmentManager and print it to the console.
  */
 
-void testRetrieveApiKey() {
+void retrieveApiKey() {
   std::cout << EnvironmentManager::getApiKey() << std::endl;
 }
 
-void testRetrieveOwnerInfo() {
+void retrieveOwnerInfo() {
   std::vector<Owner> result =
       Owner::retrieveAuthorizedUsers("irfanghat@gmail.com", "50");
 
@@ -44,6 +45,6 @@ void testRetrieveOwnerInfo() {
 }
 
 int main() {
-  // testRetrieveApiKey();
-  testRetrieveOwnerInfo();
+  // retrieveApiKey();
+  retrieveOwnerInfo();
 }
