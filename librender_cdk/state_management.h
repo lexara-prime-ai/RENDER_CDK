@@ -1,29 +1,11 @@
 #ifndef _STATE_MANAGEMENT_H_
 #define _STATE_MANAGEMENT_H_
 
-#include "common/common.h"
-#include "common/constants.h"
-#include "environment_manager.h"
-#include <memory>
+#include "environment_management.h"
+#include <curl/curl.h>
+#include <jsoncpp/json/json.h>
+#include <string>
 #include <vector>
-
-class State {
-public:
-  CURL *client;
-  std::string apiKey;
-
-  State() {
-    client = curl_easy_init();
-    apiKey = EnvironmentManager::getApiKey();
-  }
-
-  ~State() {
-    if (client)
-      curl_easy_cleanup(client);
-  }
-
-  static std::shared_ptr<State> init() { return std::make_shared<State>(); }
-};
 
 struct Owner {
   std::string id;
@@ -36,5 +18,14 @@ struct Owner {
                                                     const std::string &limit);
 };
 
+struct OwnerResponse {
+  Owner owner;
+  std::string cursor;
+
+  static std::vector<OwnerResponse> parseJson(const Json::Value &json);
+};
+
+static size_t WriteCallback(void *contents, size_t size, size_t nmemb,
+                            void *userp);
 
 #endif
