@@ -4,6 +4,10 @@ use render_cdk::environment_management::prelude::*;
 use render_cdk::iaas::prelude::*;
 use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
 use render_cdk::state_management::prelude::*;
+
+// [DEBUG] utils.
+use render_cdk::logger::prelude::*;
+
 use tokio::main;
 
 /// Examples
@@ -13,7 +17,7 @@ async fn main() {
     /// 1. Querying for deployed Services.
     ///
     /// List all Services.
-    let services = ServiceManager::list_all_services("50").await;
+    // let services = ServiceManager::list_all_services("50").await;
 
     /// List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
@@ -30,49 +34,53 @@ async fn main() {
     // println!("Sample Configuration: {:?}\n", config);
 
     /// 3. Retrieve a list of authorized 'users'.
-    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+    let authorized_user = Owner::list_authorized_users("irfanghat@gmail.com", "100")
         .await
         .unwrap();
 
     ////////////////////////////
     // [DEBUG] logs.
     ///////////////////////////
-    // println!("Owner Info.: {:?}\n", authorized_users);
+    println!("Owner Info.: {:?}\n", authorized_user);
 
     ///////////////////////////
     // Retrieving the <owner_id>. This is used to tie a <resource> to the user who created it.
-    let owner_id = authorized_users
+    let owner_id = authorized_user
         .get(0)
         .map(|owner_response| owner_response.owner.id.clone())
         .expect("No authorized users found.");
 
     // /// 4. Creating services.
     // The following is a sample deployment configuration.
-    // let deployment_config = template::Template {
-    //     type_: "static_site".to_owned(), // Options ->
-    //     name: "test_deployment".to_owned(),
-    //     owner_id,
-    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-    //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
-    //     branch: None,
-    //     image: None,
-    //     build_filter: None,
-    //     root_dir: "./public".to_owned(),
-    //     env_vars: vec![],
-    //     secret_files: vec![],
-    //     service_details: Some(ServiceDetails {
-    //         build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
-    //         headers: vec![],
-    //         publish_path: Some("./".to_owned()), // This will translate to /public/
-    //         pull_request_previews_enabled: Some("yes".to_owned()),
-    //         routes: vec![],
-    //     }),
-    // };
+    let deployment_config = template::Template {
+        type_: "static_site".to_owned(), // Options ->
+        name: "test_deployment".to_owned(),
+        owner_id,
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
+        branch: None,
+        image: None,
+        build_filter: None,
+        root_dir: Some("./public".to_owned()),
+        env_vars: vec![],
+        secret_files: vec![],
+        service_details: Some(ServiceDetails {
+            build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
+            headers: vec![],
+            publish_path: Some("./".to_owned()), // This will translate to /public/
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            routes: vec![],
+        }),
+    };
 
     //////////////////////////
     // [DEBUG] logs.
     /////////////////////////
-    // println!("Deployment Config.: {:?}\n", deployment_config);
+    LOGGER::INFO(
+        "Deployment Config. : ",
+        &deployment_config.to_json_string(),
+        LogLevel::WARN,
+    );
 
     // let service = ServiceManager::create_service(deployment_config)
     //     .await

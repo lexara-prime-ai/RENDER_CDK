@@ -1,6 +1,6 @@
 [package]
 name = "render_cdk"
-version = "0.0.8"
+version = "0.0.9"
 edition = "2021"
 authors = ["Irfan Ghat"]
 description = "This crate provides a streamlined interface for interacting with Render, a platform that allows you to build, deploy, and scale your apps with ease."
@@ -17,6 +17,7 @@ license = "MIT"
 anyhow = "1.0.86"
 base64 = "0.22.1"
 chrono = "0.4.38"
+colored = "2.1.0"
 dotenv = "0.15.0"
 futures = "0.3.30"
 rand = "0.8.5"
