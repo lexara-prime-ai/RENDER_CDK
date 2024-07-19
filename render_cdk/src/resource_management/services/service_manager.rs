@@ -11,6 +11,9 @@ use crate::environment_management::prelude::EnvironmentManager;
 use crate::resource_management::models::template::Template;
 use crate::state_management::state::State;
 
+// [DEBUG] utils.
+use crate::logger::prelude::*;
+
 const BASE_URL: &str = "https://api.render.com/v1";
 
 #[derive(Debug)]
@@ -62,8 +65,8 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // println!("[REQUEST] -> {}", api_url);
-        // println!("[REQUEST] -> {}", api_key.clone());
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
         let response = client
@@ -77,7 +80,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            println!("{}", results);
+            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
             Err(anyhow::anyhow!(
@@ -113,8 +116,8 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // println!("[REQUEST] -> {}", api_url);
-        // println!("[REQUEST] -> {}", api_key.clone());
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
         let response = client
@@ -128,7 +131,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            println!("{}", results);
+            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
             Err(anyhow::anyhow!(
@@ -160,8 +163,8 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // println!("[REQUEST] -> {}", api_url);
-        // println!("[REQUEST] -> {}", api_key.clone());
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
 
         let response = client
@@ -175,7 +178,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            println!("{}", results);
+            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
             Err(anyhow::anyhow!(
@@ -207,8 +210,8 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // println!("[REQUEST] -> {}", api_url);
-        // println!("[REQUEST] -> {}", api_key.clone());
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
         //////////////////////////////
         let response = client
             .get(api_url)
@@ -221,7 +224,7 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            println!("{}", results);
+            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
             Err(anyhow::anyhow!(
@@ -271,10 +274,11 @@ impl ServiceManagerOperations for ServiceManager {
         //////////////////////////////
         ////// [DEBUG] logs. /////////
         //////////////////////////////
-        // println!("[REQUEST] -> {}", api_url);
-        // println!("[REQUEST] -> {}", api_key.clone());
-        println!("[PAYLOAD] -> {}", payload.clone());
+        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
+        LOGGER::INFO("[PAYLOAD] -> ", &payload, LogLevel::WARN);
         //////////////////////////////
+
         let response = client
             .post(api_url)
             .header("ACCEPT", "application/json")
@@ -288,8 +292,10 @@ impl ServiceManagerOperations for ServiceManager {
         ////////////////////////////
         if response.status().is_success() {
             let result = response.text().await.context("Error parsing response.")?;
+            LOGGER::INFO("[RESPONSE]", &result, LogLevel::SUCCESS);
             Ok(result)
         } else {
+            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {:?}",
                 response

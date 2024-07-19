@@ -27,7 +27,7 @@ void retrieveApiKey() {
 
 void retrieveOwnerInfo() {
   std::vector<Owner> result =
-      Owner::retrieveAuthorizedUsers("irfanghat@gmail.com", "50");
+      Owner::retrieveAuthorizedUsers("<user>@<email>.com", "50");
 
   if (!result.empty()) {
     std::cout << "Found [AUTHORIZED] user:" << std::endl;

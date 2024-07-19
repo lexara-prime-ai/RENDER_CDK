@@ -18,7 +18,8 @@ pub struct Template {
     #[serde(skip_serializing_if = "Option::is_none")]
     pub build_filter: Option<BuildFilter>,
     #[serde(rename = "rootDir")]
-    pub root_dir: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub root_dir: Option<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     #[serde(rename = "envVars")]
     pub env_vars: Vec<EnvVar>,
@@ -92,4 +93,10 @@ pub struct Route {
     pub source: String,
     pub destination: String,
     pub priority: u32,
+}
+
+impl Template {
+    pub fn to_json_string(&self) -> String {
+        serde_json::to_string(self).unwrap()
+    }
 }
