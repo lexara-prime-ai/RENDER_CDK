@@ -13,7 +13,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.9
+- **Version:** 0.0.10
 - **License:** MIT
 
 ### Current Features
@@ -121,7 +121,7 @@ use render_cdk::resource_management::prelude::*;
 
 #[main]
 async fn main() {
-    let authorized_user = Owner::list_authorized_users("irfanghat@gmail.com", "100").await.unwrap();
+    let authorized_user = Owner::list_authorized_users("<user>@<email>.com", "100").await.unwrap();
     println!("Authorized User: {:?}", authorized_user);
 }
 ```
@@ -139,7 +139,7 @@ async fn main() {
         type_: "static_site".to_owned(),
         name: "test_deployment".to_owned(),
         owner_id: "owner_id_value".to_owned(),
-        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        repo: "https://github.com/<username>/<repo_name>".to_owned(),
         auto_deploy: "yes".to_owned(),
         branch: None,
         image: None,
