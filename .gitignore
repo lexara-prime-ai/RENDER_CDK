@@ -7,3 +7,6 @@
 *.tfstate
 *.tfstate.backup
 .terraform
+
+# Executables.
+librender_cdk/librender_cdk_DEBUG
