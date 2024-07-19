@@ -8,7 +8,8 @@
  * @brief This file contains examples of how to use librender_cdk.
  *
  * @brief For quick compilation, run:
- * g++ lib.cpp <dep1> <dep2>... -lcurl -ljsoncpp -I/usr/include/jsoncpp -o
+ * g++ librender_cdk.cpp <dep1> <dep2>... -lcurl -ljsoncpp -I/usr/include/jsoncpp -o
+ * g++ -o librender_cdk_DEBUG librender_cdk.cpp environment_management.cpp state_management.cpp -lcurl -ljsoncpp
  * <executable_name>
  *
  */
