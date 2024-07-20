@@ -75,7 +75,8 @@
                     <a href="#installation">Installation</a>
                 </li>
                 <li class="side-bar-link-item">
-                    <a href="#cpp">Cpp Reference</a>
+                    <a href="#cpp" title="Coming Soon!">Cpp Reference</a>
+                    <ion-icon name="alert-circle" class="side-bar-link-item-icon"></ion-icon>
                 </li>
                 <li class="side-bar-link-item">
                     <a href="#usage">Usage</a>
@@ -121,13 +122,15 @@
                 <div class="section-content">
                     <p>Add <strong>render_cdk</strong> to your <strong>Cargo.toml</strong>:</p>
 
-<pre>
+                    <pre>
 <code class="language-toml">[dependencies]
 render_cdk = "0.0.10"
 </code>
 </pre>
-                    <p>Alternatively, running <strong>cargo add render_cdk</strong> at the root of your project will also
-                        add <code>render_cdk</code> to your project.</p>
+                    <p>Alternatively, running <strong>cargo add render_cdk</strong> at the root of your project will
+                        also
+                        add <code>render_cdk</code> to your project.
+                    </p>
                 </div>
             </div>
 
@@ -143,6 +146,216 @@ render_cdk = "0.0.10"
                     Usage
                     <span>#</span>
                 </h2>
+
+                <h3 class="section-title sub-section-title">
+                    Configuration
+                </h3>
+
+                <div class="section-content">
+                    <p class="sub-section-info">
+                        To configure the environment variables for use with <strong>render_cdk</strong>, you need to set
+                        the <strong>API_KEY</strong>
+                        environment variable. You can do this by creating a .env file in the root of your project with
+                        the
+                        following content:
+                    </p>
+
+                    <p>Add <strong>render_cdk</strong> to your <strong>Cargo.toml</strong>:</p>
+
+<pre>
+<code class="language-ruby">API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
+</code>
+</pre>
+                    <p>Alternatively, running <strong>cargo add render_cdk</strong> at the root of your project will
+                        also
+                        add <code>render_cdk</code> to your project.
+                    </p>
+
+                    <p>
+                        Make sure to replace <strong>rnd_xxxxXXXXxxxxXXXXxxxXX</strong> with your actual Render API key.
+                    </p>
+
+                    <!-- Examples section -->
+                    <h3 class="section-title sub-section-title">
+                        Examples
+                    </h3>
+
+                    <p>
+                        Here are basic examples of how to use the render_cdk crate to interact with <a href="https://render.com" class="external-links">Render Cloud</a>:
+                    </p>
+
+                    <h1 class="section-title sub-section-title">
+                        1. Querying for Deployed Services
+                    </h1>
+
+                    <!-- Example wrapper -->
+                    <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::list_all_services("10").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                     <!-- Example wrapper -->
+                     <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Name and Type
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                      <!-- Example wrapper -->
+                      <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Region
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                      <!-- Example wrapper -->
+                      <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Environment
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_environment("image", "10").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                      <!-- Example wrapper -->
+                      <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Name and Type
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                      <!-- Example wrapper -->
+                      <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Name and Type
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+
+                      <!-- Example wrapper -->
+                      <div class="example-wrapper">
+                        <h2 class="example-title">
+                            List All Services by Name and Type
+                            <span>
+                                with LIMIT options
+                            </span>
+                        </h2>
+
+<pre>
+<code class="language-rust">
+use render_cdk::environment_management::prelude::*;
+use render_cdk::resource_management::prelude::*;
+use tokio::main;
+
+#[main]
+async fn main() {
+    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
+    // Process the services as needed.
+}
+</code>
+</pre>
+                    </div>
+                </div>
             </div>
 
             <div class="contribution" id="contribution">
@@ -158,5 +371,8 @@ render_cdk = "0.0.10"
     </div>
     <!-- =================== -->
 </body>
+
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
 
 </html>

@@ -12,17 +12,17 @@
     --white-level-4: #e0e0e0;
     --white-level-5: #e4e4e4;
     /* Dark Blue */
-    --dark-blue-level-1: #181c30;
+    --dark-blue-level-1: #131321;
     --dark-blue-level-2: #1f253f;
     --dark-blue-level-3: #1f2335;
     --dark-blue-level-4: #11193f;
     --dark-blue-level-5: #262f5c;
     /* Purple */
-    --purple-level-1: #6930b9;
+    --purple-level-1: #986ada;
     --purple-level-2: #57279b;
-    --purple-level-3: #521f99;
-    --purple-level-4: #702ad3;
-    --purple-level-5: #8d58d8;
+    --purple-level-3: #936bca;
+    --purple-level-4: #935edd;
+    --purple-level-5: #ae8cdd;
     /* Shadows */
     --shadow-level-1: 0 1rem 1rem 0 rgba(0, 0, 0, .1);
     --shadow-level-2: 0 2rem 2rem 0 rgba(0, 0, 0, .2);
