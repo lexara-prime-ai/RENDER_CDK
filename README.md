@@ -232,7 +232,7 @@ async fn main() {
 
 ## Contributing
 
-Contributions are welcome! Please see the [repository](https://github.com/lexara-prime-ai/RENDER_CDK) for more information on how to contribute.
+Contributions are welcome! Please see the [repository](CONTRIBUTING.md) for more information on how to contribute.
 
 ## License
 

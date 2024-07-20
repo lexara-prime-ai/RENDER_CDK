@@ -4,197 +4,54 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Render CDK Documentation</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-        rel="stylesheet">
+    <title>Render CDK for Rust | Reference Documentation</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description"
+        content="Render CDK for Rust: Comprehensive reference documentation for using Render CDK for the Rust programming language.">
+    <meta name="keywords" content="Render CDK, Rust, documentation, reference, programming, library">
+    <meta name="author" content="Irfan Ghat">
+
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Render CDK for Rust | Reference Documentation">
+    <meta property="og:description"
+        content="Comprehensive reference documentation for using Render CDK for the Rust programming language.">
+    <meta property="og:image" content="https://rendercdk.onrender.com/assets/images/render_cdk_icon.png">
+    <meta property="og:url" content="https://rendercdk.onrender.com">
+
+    <!-- Twitter Card Meta Tags -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Render CDK for Rust | Reference Documentation">
+    <meta name="twitter:description"
+        content="Comprehensive reference documentation for using Render CDK for the Rust programming language.">
+    <meta name="twitter:image" content="https://rendercdk.onrender.com/assets/images/render_cdk_icon.png">
+
+    <!-- Link to the site manifest -->
+    <link rel="manifest" href="./assets/icons/site.webmanifest">
+    <!-- =========================== -->
+
+
+    <!-- Favicon -->
+    <link rel="icon" href="./assets/icons/favicon.ico" type="image/x-icon">
+    <!-- =========================== -->
+
+    <!-- Syntax highlighting library -->
+    <link rel="stylesheet" href="./assets/libs/highlight/styles/default.min.css">
+    <script src="./assets/libs/highlight/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+    <!-- =========================== -->
+
+    <!-- HTMX -->
+    <script src="./assets/libs/htmx.min.js"></script>
+    <!-- =========================== -->
+
+    <!-- Platform CSS -->
     <link rel="stylesheet" href="./assets/css/main.css">
+    <!-- =========================== -->
 </head>
 
 <body>
-    <div class="sidebar">
-        <nav>
-            <h1>Render CDK <span>Reference</span></h1>
-            <a href="#overview">Overview</a>
-            <a href="#crate-information">Crate Information</a>
-            <a href="#current-features">Current Features</a>
-            <a href="#examples">Examples</a>
-            <a href="#tests">Tests</a>
-            <a href="#contributing">Contributing</a>
-            <a href="#license">License</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </div>
-    <div class="content">
-        <section id="overview" class="overview-section">
-            <h2>Overview</h2>
-            <p>
-                <span>Render CDK</span> provides a streamlined interface for interacting with Render, a platform that
-                allows you to build, deploy, and scale your apps with ease. This crate <span class="highlight">abstracts</span>
-                Render's API, making it easier to work with Render cloud <strong>programmatically</strong>.
-            </p>
-        </section>
-        <section id="crate-information">
-            <h2>Crate Information</h2>
-            <ul>
-                <li><strong>Name:</strong> render_cdk</li>
-                <li><strong>Version:</strong> 0.0.10</li>
-                <li><strong>Description:</strong> This crate provides a streamlined interface for interacting with
-                    Render, a platform that allows you to build, deploy, and scale your apps with ease.</li>
-                <li><strong>Homepage:</strong> <a href="https://render.com/">Cloud Application Hosting for Developers |
-                        Render</a></li>
-                <li><strong>Repository:</strong> <a href="https://github.com/renderinc">Render (github.com)</a></li>
-                <li><strong>License:</strong> MIT</li>
-            </ul>
-        </section>
-        <section id="current-features">
-            <h2>Current Features</h2>
-            <p>Work on the resource management module is currently under way. The API supports many of the same actions
-                available from the Render Dashboard. It currently provides endpoints for managing:</p>
-            <ul>
-                <li>Services</li>
-                <li>Deploys</li>
-                <li>Custom domains</li>
-                <li>Jobs</li>
-            </ul>
-            <p>The CDK will provide an abstraction that will make it easier to work with the Render cloud programmatically.</p>
-        </section>
-        <section id="examples" class="usage-section">
-            <h2>Examples</h2>
-            <h3 id="technical-documentation">Technical Documentation</h3>
-            <h3 id="configuration">Configuration</h3>
-            <p>To configure the environment variables for use with the <code>render_cdk</code>, you need to set the
-                <code>API_KEY</code> environment variable. You can do this by creating a <code>.env</code> file in the
-                root of your project with the following content:
-            </p>
-            <pre><code class="lang-env">API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
-            </code></pre>
-            <p>Make sure to replace <code>rnd_xxxxXXXXxxxxXXXXxxxXX</code> with your actual Render API key.</p>
-            <h3 id="installation">Installation</h3>
-            <p>Add <code>render_cdk</code> to your <code>Cargo.toml</code>:</p>
-            <pre><code class="lang-toml">[dependencies]
-render_cdk = "0.0.7"
-            </code></pre>
-            <ul>
-                <li><em>Alternatively</em>, running <code>cargo add render_cdk</code> at the <strong>root</strong> of
-                    your project will also add <strong>render_cdk</strong> to your project.</li>
-            </ul>
-            <h3 id="usage-examples">Usage Examples</h3>
-            <p>Here are basic examples of how to use the <code>render_cdk</code> crate to interact with <a
-                    href="https://render.com/">Render Cloud</a>:</p>
-            <h4 id="1-querying-for-deployed-services">1. Querying for Deployed Services</h4>
-            <h5 id="list-all-services">List All Services</h5>
-            <pre><code class="lang-rust">use render_cdk::environment_management::prelude::*;
-use render_cdk::resource_management::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let services = ServiceManager::list_all_services("10").await;
-    // Process the services as needed.
-}
-            </code></pre>
-            <h5 id="list-all-services-by-name-and-type">List All Services by Name and Type</h5>
-            <pre><code class="lang-rust">use render_cdk::environment_management::prelude::*;
-use render_cdk::resource_management::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
-    // Process the services as needed.
-}
-            </code></pre>
-            <h5 id="list-all-services-by-region">List All Services by Region</h5>
-            <pre><code class="lang-rust">use render_cdk::environment_management::prelude::*;
-use render_cdk::resource_management::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
-    // Process the services as needed.
-}
-            </code></pre>
-            <h5 id="list-all-services-by-environment">List All Services by Environment</h5>
-            <pre><code class="lang-rust">use render_cdk::environment_management::prelude::*;
-use render_cdk::resource_management::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let services = ServiceManager::find_service_by_environment("image", "10").await;
-    // Process the services as needed.
-}
-            </code></pre>
-            <h4 id="2-using-simple-conf-files-for-resource-provisioning">2. Using Simple .conf Files for Resource Provisioning</h4>
-            <ul>
-                <li><code>.conf</code> files offer a convenient alternative to <em>programmatic resource provisioning</em>, allowing you to <strong>define</strong> and <strong>manage</strong> resources through <em>simple</em> configuration settings.</li>
-            </ul>
-            <h5 id="configuration-file-example">Configuration File Example</h5>
-            <p>The following is a <em>sample configuration</em> file. This will be used to provision a managed <strong>Postgres</strong> instance and a managed <strong>Redis</strong> instance.</p>
-            <ul>
-                <li><p>The <code>[database]</code> section specifies the configuration for a managed Postgres instance.</p></li>
-                <li><p>The <code>name</code> and <code>user</code> fields should be filled with the desired <strong>database name</strong> and <strong>user</strong>. The <code>enable_high_availability</code> field indicates whether high availability should be enabled. The <code>plan</code> field specifies the pricing plan for the instance, and the <code>version</code> field indicates the Postgres version.</p></li>
-            </ul>
-            <pre><code class="lang-conf">[database]
-name = ""                  # Replace with the desired database name
-user = ""                  # Replace with the desired database user
-enable_high_availability = false  # Set to true to enable high availability
-plan = "starter"              # Pricing plan for the database instance
-version = "11"             # Postgres version
-            </code></pre>
-            <p><strong><em>Note</em></strong> Blank fields will be <strong>autogenerated</strong>.</p>
-            <ul>
-                <li>The <code>[redis]</code> section specifies the configuration for a managed <strong>Redis</strong> instance. The <code>name</code> field should be filled with the desired <strong>Redis name</strong>. The <code>enable_high_availability</code> field indicates whether high availability should be enabled, and the <code>plan</code> field specifies the pricing plan for the instance.</li>
-            </ul>
-            <pre><code class="lang-conf">[redis]
-name = ""                  # Replace with the desired Redis name
-enable_high_availability = false  # Set to true to enable high availability
-plan = "starter"              # Pricing plan for the Redis instance
-            </code></pre>
-            <h5 id="code-implementation-example">Code Implementation Example</h5>
-            <p>The following is an example of how to <em>programmatically provision</em> resources using a <code>.conf</code> file.</p>
-            <pre><code class="lang-rust">use render_cdk::environment_management::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let config_path = "path_to_conf_file.conf";
-    let resource_manager = ResourceManager::new(config_path).await;
-    resource_manager.provision_resources().await;
-}
-            </code></pre>
-        </section>
-        <section id="tests" class="usage-section">
-            <h2>Tests</h2>
-            <p>Tests should be added for any new features. Tests can be run using <code>cargo test</code>.</p>
-        </section>
-        <section id="contributing" class="usage-section">
-            <h2>Contributing</h2>
-            <p>Contributions to this project are welcome. Please follow the guidelines below when submitting issues or pull requests:</p>
-            <ul>
-                <li>Check existing issues and pull requests to avoid duplicates.</li>
-                <li>Provide clear and concise descriptions of your changes.</li>
-                <li>Ensure that your code follows the project's coding standards.</li>
-                <li>Write tests for any new features or bug fixes.</li>
-            </ul>
-        </section>
-        <section id="license">
-            <h2>License</h2>
-            <p>This project is licensed under the MIT License. See the <a href="LICENSE">LICENSE</a> file for more
-                details.</p>
-        </section>
-        <section id="contact" class="usage-section">
-            <h2>Contact</h2>
-            <p>If you have any questions, suggestions, or feedback, please create an issue on our GitHub repository: 
-                <a href="https://github.com/lexara-prime-ai/RENDER_CDK/issues">GitHub Issues</a>.
-            </p>
-            <p>To make a pull request, visit: <a href="https://github.com/lexara-prime-ai/RENDER_CDK/pulls">GitHub Pull Requests</a>.</p>
-        </section>
-    </div>
+    
 </body>
 
 </html>
