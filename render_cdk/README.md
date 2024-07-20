@@ -1,3 +1,5 @@
+![crates.io](https://img.shields.io/crates/v/$CRATE.svg)
+
 # Technical Documentation
 
 ## Configuration
