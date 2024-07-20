@@ -4,7 +4,7 @@
 
 ## Configuration
 
-To configure the environment variables for use with the `render_cdk`, you need to set the `API_KEY` environment variable. You can do this by creating a `.env` file in the root of your project with the following content:
+To configure the environment variables for use with `render_cdk`, you need to set the `API_KEY` environment variable. You can do this by creating a `.env` file in the root of your project with the following content:
 
 ```.env
 API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
@@ -139,7 +139,7 @@ plan = "starter"              # Pricing plan for the Redis instance`
 This configuration file allows you to easily set up _**managed database**_ and _**caching**_ services with _specific plans_ and options suited to your project's needs.
 
 ```rust
-`use render_cdk::config;
+use render_cdk::config;
 
 fn main() {
     let config = config::Conf::read_configuration_file().unwrap();
