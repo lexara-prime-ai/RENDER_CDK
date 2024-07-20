@@ -36,7 +36,7 @@
     <!-- =========================== -->
 
     <!-- Syntax highlighting library -->
-    <link rel="stylesheet" href="./assets/libs/highlight/styles/default.min.css">
+    <link rel="stylesheet" href="./assets/libs/highlight/styles/tokyo-night-dark.min.css">
     <script src="./assets/libs/highlight/highlight.min.js"></script>
     <script>hljs.highlightAll();</script>
     <!-- =========================== -->
@@ -51,7 +51,112 @@
 </head>
 
 <body>
-    
+    <!-- Main container wrapper -->
+    <div class="main-container">
+        <!-- Side bar -->
+        <div class="side-bar">
+            <!-- Logo wrapper -->
+            <div class="logo-wrapper">
+                <img src="./assets/images/render_cdk_icon.png" alt="logo" class="logo">
+            </div>
+            <!-- ============ -->
+
+            <ul class="side-bar-nav-links">
+                <h2 class="logo-text">
+                    Render CDK for Rust
+                    <span>
+                        Reference Documentation
+                    </span>
+                </h2>
+                <li class="side-bar-link-item">
+                    <a href="#overview">Overview</a>
+                </li>
+                <li class="side-bar-link-item">
+                    <a href="#installation">Installation</a>
+                </li>
+                <li class="side-bar-link-item">
+                    <a href="#cpp">Cpp Reference</a>
+                </li>
+                <li class="side-bar-link-item">
+                    <a href="#usage">Usage</a>
+                </li>
+                <li class="side-bar-link-item">
+                    <a href="#contribution">Contibution</a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Main content -->
+        <div class="main-content">
+            <header>
+                <!-- Navigation -->
+                <nav class="navigation">
+                    <ul class="nav-links">
+                        <li class="link-item">
+                            <a href="#usage" class="link">
+                                Usage
+                            </a>
+                        </li>
+                        <li class="link-item">
+                            <a href="#usage" class="link">
+                                Examples
+                            </a>
+                        </li>
+                        <li class="link-item">
+                            <a href="https://github.com/lexara-prime-ai/RENDER_CDK" class="link">
+                                Repository
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- ========== -->
+            </header>
+
+            <div class="installation" id="installation">
+                <h2 class="section-title">
+                    Installation
+                    <span>#</span>
+                </h2>
+
+                <div class="section-content">
+                    <p>Add <strong>render_cdk</strong> to your <strong>Cargo.toml</strong>:</p>
+
+<pre>
+<code class="language-toml">[dependencies]
+render_cdk = "0.0.10"
+</code>
+</pre>
+                    <p>Alternatively, running <code>cargo add render_cdk</code> at the root of your project will also
+                        add <code>render_cdk</code> to your project.</p>
+                </div>
+            </div>
+
+            <div class="cpp" id="cpp">
+                <h2 class="section-title">
+                    Cpp Reference
+                    <span>#</span>
+                </h2>
+            </div>
+
+            <div class="usage" id="usage">
+                <h2 class="section-title">
+                    Usage
+                    <span>#</span>
+                </h2>
+            </div>
+
+            <div class="contribution" id="contribution">
+                <h2 class="section-title">
+                    Contribution
+                    <span>#</span>
+                </h2>
+            </div>
+
+        </div>
+        <!-- ============= -->
+
+    </div>
+    <!-- =================== -->
 </body>
 
 </html>

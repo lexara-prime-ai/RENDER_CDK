@@ -17,8 +17,125 @@ body {
     font-family: "Roboto", sans-serif;
     background-color: var(--dark-blue-level-3);
     color: var(--white-level-4);
-    margin: 0;
-    display: -webkit-box;
-    display: -ms-flexbox;
+    height: 100vh;
+}
+
+.main-container {
     display: flex;
+}
+
+.main-content {
+    flex-basis: 80%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    padding: 21px;
+}
+
+.logo-wrapper {
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    padding: 32px;
+    background: var(--dark-blue-level-2);
+    border-radius: 0 0 120px 60px;
+    border-bottom: 1px solid var(--dark-blue-level-1);
+    box-shadow: var(--purple--glow-level-1);
+}
+
+.logo-wrapper img {
+    width: 20%;
+}
+
+.logo-text {
+    font-size: 1rem;
+    font-weight: 800;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    color: #a5a5a5ee;
+}
+
+.logo-text span {
+    font-size: .6rem;
+    font-weight: 400;
+}
+
+.side-bar {
+    flex-basis: 20%;
+    background: var(--dark-blue-level-1);
+    box-shadow: var(--shadow-level-2);
+    height: 100vh;
+}
+
+.side-bar-nav-links {
+    display: flex;
+    align-items: flex-start;
+    flex-direction: column;
+    padding: 1rem;
+    margin-top: 2rem;
+    gap: 1.5rem;
+}
+
+.side-bar-link-item {
+    list-style: none;
+    font-size: .8rem;
+    font-weight: 200;
+}
+
+.side-bar-link-item a {
+    text-decoration: none;
+    color: var(--white-level-4);
+    transition: .2s all ease;
+}
+
+.side-bar-link-item a:hover {
+    opacity: .7;
+}
+
+.navigation {
+    display: flex;
+    justify-content: end;
+}
+
+.nav-links {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    list-style: none;
+    padding: 14px;
+}
+
+.link {
+    text-decoration: none;
+    color: #a5a5a5ee;
+    font-size: .8rem;
+}
+
+/* *************** */
+.section-title {
+    display: flex;
+    gap: 9px;
+    color: #a5a5a5ee;
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+}
+
+.section-content {
+    width: 700px;
+}
+
+.section-content p {
+    font-size: .9rem;
+    font-weight: 300;
+}
+
+code {
+    border-radius: 9px;
+    opacity: .8;
+}
+
+pre {
+    margin-top: 1rem;
+    padding: 3px;
 }

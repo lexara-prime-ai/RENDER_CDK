@@ -29,7 +29,7 @@
     --shadow-level-3: 0 3rem 3rem 0 rgba(0, 0, 0, .1);
     --shadow-level-4: 0 4rem 4rem 0 rgba(0, 0, 0, .2);
     /* Purple Glow */
-    --purple--glow-level-1: #6930b973;
-    --purple--glow-level-2: #6930b991;
-    --purple--glow-level-3: #6930b986;
+    --purple--glow-level-1: 0 1rem 1rem 0 #6930b90e;
+    --purple--glow-level-2: 0 2rem 2rem 0 #6930b91c;
+    --purple--glow-level-3: 0 3rem 3rem 0 #6930b905;
 }
