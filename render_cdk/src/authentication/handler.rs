@@ -1,3 +1,1 @@
-pub struct Owner {
-    
-}
+pub struct Owner {}

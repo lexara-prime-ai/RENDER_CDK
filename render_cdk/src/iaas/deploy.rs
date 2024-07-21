@@ -1,3 +1,4 @@
+#![allow(non_snake_case)]
 use crate::state_management::prelude::*;
 
 use anyhow::{Context, Error, Ok, Result};
@@ -10,6 +11,7 @@ use super::redis::RedisConf;
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
+use crate::utils::stringify::Stringify;
 
 const BASE_URL: &str = "https://api.render.com/v1";
 
@@ -26,9 +28,16 @@ impl Deploy {
         // Debug logs.
         ///////////////////////
         LOGGER::INFO(
-            "\n -> [Successfully] retrieved [CONFIG] file\n\n",
-            &config.to_json_string(),
+            "\n -> [Successfully] retrieved [postgres] [CONFIG] file\n\n",
+            &config.database.CONVERT_TO_JSON_STRING(),
             LogLevel::SUCCESS,
         );
+
+        LOGGER::INFO(
+            "\n -> [Successfully] retrieved [redis] [CONFIG] file\n\n",
+            &config.redis.CONVERT_TO_JSON_STRING(),
+            LogLevel::SUCCESS,
+        );
+        ///////////////////////
     }
 }

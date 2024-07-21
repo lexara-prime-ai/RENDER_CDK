@@ -11,39 +11,42 @@ use super::redis::RedisConf;
 
 // [DEBUG] utils.
 use crate::logger::info::*;
+use crate::utils::random::*;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Conf {
-    pub database: DatabaseConf,
-    pub redis: RedisConf,
+    pub database: Option<DatabaseConf>,
+    pub redis: Option<RedisConf>,
 }
 
 impl Conf {
-    fn generate_random_string(&self, length: usize) -> String {
-        thread_rng()
-            .sample_iter(&Alphanumeric)
-            .take(length)
-            .map(char::from)
-            .collect()
-    }
-
     fn populate_blank_values(config: &mut Conf) {
-        if config.database.name.as_deref() == Some("") {
-            config.database.name = Some(format!("db_{}", config.generate_random_string(10)));
+        // Validate [postgres] config.
+        if let Some(database) = config.database.as_mut() {
+            if database.databaseName.as_deref() == Some("") {
+                database.databaseName = Some(format!("db_{}", GENERATE_RANDOM_STRING(10)));
+            }
+
+            if database.databaseUser.as_deref() == Some("") {
+                database.databaseUser = Some(format!("user_{}", GENERATE_RANDOM_STRING(10)));
+            }
         }
 
-        if config.database.user.as_deref() == Some("") {
-            config.database.user = Some(format!("user_{}", config.generate_random_string(10)));
+        // Validate [redis] config.
+        if let Some(redis) = config.redis.as_mut() {
+            if redis.plan == "" {
+                redis.plan = "starter".to_owned();
+            }
         }
     }
 
     pub fn read_configuration_file(config_path: &str) -> Result<Self, Error> {
         let contents = fs::read_to_string(config_path)
-            .expect(format!("Unable to read configuration: <{config_path:?}>").as_str());
+            .expect(format!("Unable to read configuration: {config_path:?}").as_str());
 
         // Parse config. file.
         let mut config: Conf = toml::from_str(&contents)
-            .expect(format!("Unable to parse configuration: <{config_path:?}>").as_str());
+            .expect(format!("Unable to parse configuration: {config_path:?}").as_str());
 
         // Populate any <black>/"" fields.
         Self::populate_blank_values(&mut config);
@@ -51,7 +54,7 @@ impl Conf {
         ////////////////////////
         // Debug logs.
         ///////////////////////
-        LOGGER::INFO("\n -> Readng [CONFIG]\n\n", &config.to_json_string(), LogLevel::WARN);
+        // LOGGER::INFO("\n -> Reading [CONFIG]\n\n", &config.to_json_string(), LogLevel::WARN);
 
         Ok(Self {
             database: config.database,
@@ -86,7 +89,7 @@ mod config_test {
     fn test_generate_random_string() {
         // Validate that the output is NOT empty.
         let config = Conf::read_configuration_file(&CONFIG_PATH).unwrap();
-        let result = config.generate_random_string(10);
+        let result = GENERATE_RANDOM_STRING(10);
         assert!(!result.is_empty());
     }
 
