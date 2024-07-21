@@ -10,6 +10,21 @@
     letter-spacing: 1px;
 }
 
+::-webkit-scrollbar {
+    height: 4px;
+    border-radius: 24px;
+    background: #272727;
+}
+
+::-webkit-scrollbar-thumb {
+    width: 1px;
+    background: transparent;
+}
+
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -74,7 +89,8 @@ body {
     padding: 1rem;
     margin-top: 2rem;
     gap: 1.5rem;
-    background: var(--dark-blue-level-1);
+    background: transparent;
+    position: fixed;
 }
 
 .side-bar-link-item {
@@ -140,7 +156,7 @@ body {
 }
 
 .section-content {
-    width: 700px;
+    width: 800px;
     display: flex;
     flex-direction: column;
     gap: 1rem;
@@ -193,4 +209,22 @@ pre {
 .external-links {
     font-weight: 600;
     color: var(--purple-level-3);
+}
+
+/* Example descriptions */
+.example-disclaimer {
+    background: #292c44;
+    border-radius: 9px;
+    width: 100%;
+    color: #777777;
+    padding: 9px;
+    margin: 9px;
+    font-weight: 900;
+    font-size: .8rem;
+    cursor: help;
+}
+
+.contribution-info a {
+    color: var(--purple-level-3);
+    font-weight: 900;
 }

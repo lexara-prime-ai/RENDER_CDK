@@ -1,7 +1,7 @@
 # Render CDK Documentation
 
 - Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
-- Technical Documentation(Rust) - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/rust/README.md)
+- Technical Documentation(Rust) - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/render_cdk/README.md)
 - Technical Documentation(CPP) - _Coming Soon_
 
 ![docs](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/docs.jpeg?raw=true)
