@@ -9,7 +9,10 @@ use toml;
 use super::db::DatabaseConf;
 use super::redis::RedisConf;
 
-#[derive(Debug, Deserialize, Serialize)]
+// [DEBUG] utils.
+use crate::logger::info::*;
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Conf {
     pub database: DatabaseConf,
     pub redis: RedisConf,
@@ -48,7 +51,7 @@ impl Conf {
         ////////////////////////
         // Debug logs.
         ///////////////////////
-        // println!("[DEBUG] -> {:?}", config);
+        LOGGER::INFO("\n -> Readng [CONFIG]\n\n", &config.to_json_string(), LogLevel::WARN);
 
         Ok(Self {
             database: config.database,

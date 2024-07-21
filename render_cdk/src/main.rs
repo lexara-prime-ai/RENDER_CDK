@@ -2,7 +2,7 @@
 // #![deny(missing_docs)]
 
 use render_cdk::environment_management::prelude::*;
-use render_cdk::iaas::prelude::*;
+use render_cdk::iaas::prelude::{deploy::*, *};
 use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
 use render_cdk::state_management::prelude::*;
 
@@ -143,9 +143,8 @@ async fn main() {
     //     },
     // };
 
-    // Deploying services via .conf files.
-    let config = config::Conf::read_configuration_file("./samples/sample.conf").unwrap();
-    LOGGER::INFO("[CONFIG] -> ", &config.to_json_string(), LogLevel::WARN);
+    // 5. Deploying services via .conf files.
+    Deploy::deploy_configuration("./samples/sample.conf").await;
 }
 
 /// Mandatory Regression Tests.
