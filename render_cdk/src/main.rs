@@ -2,7 +2,7 @@
 // #![deny(missing_docs)]
 
 use render_cdk::environment_management::prelude::*;
-use render_cdk::iaas::prelude::*;
+use render_cdk::iaas::prelude::{deploy::*, *};
 use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
 use render_cdk::state_management::prelude::*;
 
@@ -14,14 +14,14 @@ use tokio::main;
 /// Examples
 #[main]
 async fn main() {
-    /// Examples
-    /// 1. Querying for deployed Services.
-    ///
-    /// List all Services.
+    // Examples
+    // 1. Querying for deployed Services.
+
+    // List all Services.
     // let services = ServiceManager::list_all_services("50").await;
 
     // List all Services that are suspended/not_suspended.
-    let services = ServiceManager::list_services_with_status("suspended", "50").await;
+    // let services = ServiceManager::list_services_with_status("suspended", "50").await;
 
     // List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
@@ -122,7 +122,7 @@ async fn main() {
     //     },
     // };
 
-    // This example doesn't contain an image, branch, env_vars and secret_files.
+    // The following example doesn't contain an image, branch, env_vars and secret_files.
     //
     // let template_without_image = Template {
     //     type_: "static_site".to_owned(),
@@ -142,9 +142,12 @@ async fn main() {
     //         Initialize your fields here
     //     },
     // };
+
+    // 5. Deploying services via .conf files.
+    Deploy::deploy_configuration("./samples/sample.conf").await;
 }
 
-/// Checks for regression of service management functions
+/// Mandatory Regression Tests.
 ///
 /// These checks are there to validate that it is functioning properly
 /// and returning the right results, after which we shall describe each test case.

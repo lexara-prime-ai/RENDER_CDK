@@ -1,4 +1,4 @@
-![crates.io](https://img.shields.io/crates/v/$CRATE.svg)
+![crates.io](https://img.shields.io/crates/v/render_cdk.svg)
 
 # Technical Documentation
 
@@ -156,7 +156,7 @@ use tokio::main;
 
 #[main]
 async fn main() {
-    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+    let authorized_users = Owner::list_authorized_users("<registered>@<email>.com", "100")
         .await
         .unwrap();
 
@@ -180,7 +180,7 @@ use tokio::main;
 
 #[main]
 async fn main() {
-    let authorized_users = Owner::list_authorized_users("irfanghat@gmail.com", "100")
+    let authorized_users = Owner::list_authorized_users("<registered>@<email>.com", "100")
         .await
         .unwrap();
 
@@ -193,7 +193,7 @@ async fn main() {
         type_: "static_site".to_owned(), // Options ->
         name: "test_deployment".to_owned(),
         owner_id,
-        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        repo: "https://github.com/<username>/<repo_name>".to_owned(),
         auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
         branch: None,
         image: None,

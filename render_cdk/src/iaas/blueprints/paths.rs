@@ -1,8 +1,8 @@
 #![allow(unused)]
 #![allow(non_snake_case)]
 
-const BLUEPRINT_OUTPUT_PATH: &'static str = "../blueprint_output";
-const BLUEPRINT_TEMPLATES_PATH: &'static str = "../blueprint_templates";
+const BLUEPRINT_OUTPUT_PATH: &str = "../blueprint_output";
+const BLUEPRINT_TEMPLATES_PATH: &str = "../blueprint_templates";
 
 #[derive(Debug, Clone)]
 pub struct BlueprintPaths<'b> {
@@ -17,8 +17,8 @@ pub trait OnInit {
 impl<'b> OnInit for BlueprintPaths<'b> {
     fn new(&self) -> Self {
         Self {
-            BLUEPRINT_OUTPUT_PATH: &BLUEPRINT_OUTPUT_PATH,
-            BLUEPRINT_TEMPLATES_PATH: &BLUEPRINT_TEMPLATES_PATH,
+            BLUEPRINT_OUTPUT_PATH,
+            BLUEPRINT_TEMPLATES_PATH,
         }
     }
 }
