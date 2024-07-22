@@ -1,0 +1,2 @@
+# Binaries ,such as <garage>, will be stored in this directory.
+# Exisiting Docker cofigurations will copy over contents of this folder where necessary.
