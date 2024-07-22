@@ -37,7 +37,7 @@ impl Conf {
         if let Some(redis) = config.redis.as_mut() {
             if redis.plan == "" {
                 redis.plan = "starter".to_owned();
-            }
+            }            
         }
     }
 
@@ -68,7 +68,7 @@ impl Conf {
         LOGGER::INFO(
             "\n -> Reading [CONFIG]\n\n",
             &config.CONVERT_TO_JSON_STRING(),
-            LogLevel::WARN,
+            LogLevel::SUCCESS,
         );
 
         Ok(Self {
