@@ -98,10 +98,7 @@ impl ServiceManagerOperations for ServiceManager {
 
     /// Finding all suspended services.
     /// Reqquired arguments: <service_status> i.e suspended/not_suspended.
-    async fn list_services_with_status(
-        service_status: &str,
-        limit: &str,
-    ) -> Result<String, Error> {
+    async fn list_services_with_status(service_status: &str, limit: &str) -> Result<String, Error> {
         /*****************************************************
          *
             curl --request GET \
