@@ -1,3 +1,9 @@
+[![Cargo Audit](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/audit.yaml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/audit.yaml)
+[![Code Coverage](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/code-coverage.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/code-coverage.yml)
+[![Publish to crates.io](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/cargo-publish.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/cargo-publish.yml)
+[![Publish to Docker Hub](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml)
+
+
 # Render CDK Documentation
 
 - Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
