@@ -1,15 +1,13 @@
 #![allow(non_snake_case)]
-// #![allow(unused)]
-use crate::state_management::prelude::*;
+#![allow(unused)]
 
 use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use serde::{Deserialize, Serialize};
 
 use super::config::Conf;
-use super::db::DatabaseConf;
-use super::redis::RedisConf;
-use crate::state_management::state::State;
+use super::models::postgres::PostgresConf;
+use crate::state_management::state::{Owner, State};
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
@@ -24,75 +22,83 @@ pub struct Deploy {
 
 pub trait DeploymentOperations {
     fn deploy_configuration(
-        config: &str,
+        config_path: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
 }
 
 impl DeploymentOperations for Deploy {
     async fn deploy_configuration(config_path: &str) -> Result<String, Error> {
-        let config = Conf::read_configuration_file(config_path).unwrap();
+        let state = State::init().await;
+        let client = state.CLIENT;
+        let api_key = state.API_KEY;
+        let CONFIG = Conf::read_configuration_file(config_path).unwrap();
 
-        // -> Skip processing.
-        if config.database.is_none() {
-            ////////////////////////
-            // Debug logs.
-            ///////////////////////
+        LOGGER::INFO(
+            "Retrieving [CONFIG] -> ",
+            &CONFIG.CONVERT_TO_JSON_STRING(),
+            LogLevel::WARN,
+        );
+
+        /////////////////////////
+        //// Authorization
+        ////////////////////////
+
+        // To do -> Store and retrieve all credentials from Garage Object Storage e.g emails, passwords, api keys etc.
+        let authorized_users = Owner::list_authorized_users("<user>@<email>.com", "100")
+            .await
+            .unwrap();
+
+        let owner_id = authorized_users
+            .get(0)
+            .map(|owner_response| owner_response.owner.id.clone())
+            .expect("No authorized users found.");
+
+        ////////////////////////////
+        //// [CONFIG] validation.
+        ///////////////////////////
+        if CONFIG.database.is_some() {
+            let api_url = format!("{}{}", BASE_URL, "/postgres");
+
+            //////////////////////////
+            //// Initialize [PAYLOAD]
+            /*
+            * Payload struct.
+
+               pub struct PostgresConf {
+                   pub databaseName: Option<String>,
+                   pub databaseUser: Option<String>,
+                   pub enableHighAvailability: bool,
+                   pub plan: String,
+                   pub version: String,
+                   pub name: String,
+                   pub ownerId: String,
+               }
+            */
+
+            let payload = PostgresConf {
+                databaseName: CONFIG.database.clone().unwrap().databaseName,
+                databaseUser: CONFIG.database.clone().unwrap().databaseUser,
+                enableHighAvailability: CONFIG.database.clone().unwrap().enableHighAvailability,
+                plan: CONFIG.database.clone().unwrap().plan,
+                version: CONFIG.database.clone().unwrap().version,
+                name: CONFIG.database.clone().unwrap().name,
+                ownerId: owner_id,
+            }
+            .CONVERT_TO_JSON_STRING();
+            //////////////////////////
+
+            //////////////////////
+            //// [DEBUG] logs.
+            //////////////////////
             LOGGER::INFO(
-                "\n -> Skipping [postgres] [CONFIG]\n",
-                "[Reason] -> No database configuration provided...",
-                LogLevel::SUCCESS,
+                "[REQUEST] :: Creating request -> ",
+                &api_url,
+                LogLevel::WARN,
             );
-        }
 
-        // -> Skip processing.
-        if config.redis.is_none() {
-            ////////////////////////
-            // Debug logs.
-            ///////////////////////
             LOGGER::INFO(
-                "\n -> Skipping [redis] [CONFIG]\n",
-                "[Reason] -> No redis configuration provided...",
-                LogLevel::SUCCESS,
-            );
-        }
-
-        /*****************************************************
-         *
-            curl --request GET \
-            --url 'https://api.render.com/v1/postgres' \
-            --header 'Accept: application/json' \
-            --header 'Content-Type: application/json' \
-            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
-            --data '{
-                "databaseName": "randomly generated",
-                "databaseUser": "randomly generated",
-                "enableHighAvailability": false,
-                "plan": "free",
-                "version": "11"
-            }'
-
-        *****************************************************************/
-
-        //////////////////////////////
-        let client = State::init().await.CLIENT;
-        let api_key = State::init().await.API_KEY;
-        let api_url = format!("{}{}", BASE_URL, "/postgres");
-
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
-
-        // Process retrieved deployment configuration.
-        if config.database.is_some() {
-            ////////////////////////
-            // Debug logs.
-            ///////////////////////
-            LOGGER::INFO(
-                "\n -> Processing configuration...\n\n",
-                &config.CONVERT_TO_JSON_STRING(),
+                "[PAYLOAD] :: Creating request -> ",
+                &payload,
                 LogLevel::WARN,
             );
 
@@ -101,36 +107,80 @@ impl DeploymentOperations for Deploy {
                 .header(ACCEPT, "application/json")
                 .header(CONTENT_TYPE, "application/json")
                 .header(AUTHORIZATION, format!("Bearer {}", api_key))
-                .body(config.database.CONVERT_TO_JSON_STRING())
+                .body(payload.clone())
                 .send()
                 .await
-                .context("<deploy.rs> -> Error processing request.")?;
+                .context("Config :: [POSTGRES] -> Error processing request.")?;
 
-            ////////////////////////////
             if response.status().is_success() {
-                let result = response
-                    .text()
-                    .await
-                    .context("<deploy.rs> -> Error parsing response.")?;
-                LOGGER::INFO("[RESPONSE]", &result, LogLevel::SUCCESS);
+                let result = response.text().await.context("Error parsing response.")?;
+                LOGGER::INFO(
+                    "[POSTGRES] :: Deployment successful. -> ",
+                    &result.CONVERT_TO_JSON_STRING(),
+                    LogLevel::SUCCESS,
+                );
                 Ok(result)
             } else {
-                LOGGER::INFO("[RESPONSE STATUS]", "FAILED", LogLevel::CRITICAL);
+                println!("{:?}", payload);
+                LOGGER::INFO(
+                    "[POSTGRES] :: Deployment failed. -> ",
+                    "FAILED",
+                    LogLevel::CRITICAL,
+                );
+                Err(anyhow::anyhow!(
+                    "Request failed with status: {:?}",
+                    response
+                ))
+            }
+        } else if CONFIG.redis.is_some() {
+            let api_url = format!("{}{}", BASE_URL, "/redis");
+            let payload = serde_json::to_string_pretty(&CONFIG.redis).unwrap();
+
+            //////////////////////
+            //// [DEBUG] logs.
+            //////////////////////
+            LOGGER::INFO(
+                "[REQUEST] :: Creating request -> ",
+                &api_url,
+                LogLevel::WARN,
+            );
+
+            let response = client
+                .post(api_url)
+                .header(ACCEPT, "application/json")
+                .header(CONTENT_TYPE, "application/json")
+                .header(AUTHORIZATION, format!("Bearer {}", api_key))
+                .body(payload)
+                .send()
+                .await
+                .context("Config :: [REDIS] -> Error processing request.")?;
+
+            if response.status().is_success() {
+                let result = response.text().await.context("Error parsing response.")?;
+                LOGGER::INFO(
+                    "[REDIS] :: Deployment successful. -> ",
+                    &result.CONVERT_TO_JSON_STRING(),
+                    LogLevel::SUCCESS,
+                );
+                Ok(result)
+            } else {
+                LOGGER::INFO(
+                    "[REDIS] :: Deployment failed. -> ",
+                    "FAILED",
+                    LogLevel::CRITICAL,
+                );
                 Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
                     response
                 ))
             }
         } else {
-            ////////////////////////
-            // Debug logs.
-            ///////////////////////
             LOGGER::INFO(
-                "\n -> No deployment configurations found...\n",
-                "Config. [EMPTY]",
+                "[INFO] :: No configuration to process. -> ",
+                "SKIPPED",
                 LogLevel::WARN,
             );
-            Err(anyhow::anyhow!("No deployment configurations found."))
+            Err(anyhow::anyhow!("No configuration to process."))
         }
     }
 }

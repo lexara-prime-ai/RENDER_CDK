@@ -3,4 +3,5 @@ pub mod config;
 pub mod db;
 pub mod deploy;
 pub mod prelude;
-pub mod redis;
+pub mod cache;
+pub mod models;

@@ -144,7 +144,10 @@ async fn main() {
     // };
 
     // 5. Deploying services via .conf files.
-    Deploy::deploy_configuration("./samples/sample.conf").await;
+    // config::Conf::read_configuration_file("./samples/sample.conf");
+    Deploy::deploy_configuration("./samples/sample.conf")
+        .await
+        .unwrap();
 }
 
 /// Mandatory Regression Tests.
