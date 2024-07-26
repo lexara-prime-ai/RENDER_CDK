@@ -3,11 +3,12 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DatabaseConf {
+pub struct PostgresConf {
     pub databaseName: Option<String>,
     pub databaseUser: Option<String>,
     pub enableHighAvailability: bool,
     pub plan: String,
     pub version: String,
     pub name: Option<String>,
+    pub ownerId: String,
 }

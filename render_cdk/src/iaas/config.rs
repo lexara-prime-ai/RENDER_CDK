@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use toml;
 
+use super::cache::CacheConf;
 use super::db::DatabaseConf;
-use super::redis::RedisConf;
 
 // [DEBUG] utils.
 use crate::logger::info::*;
@@ -17,7 +17,7 @@ use crate::utils::stringify::Stringify;
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Conf {
     pub database: Option<DatabaseConf>,
-    pub redis: Option<RedisConf>,
+    pub redis: Option<CacheConf>,
 }
 
 impl Conf {
@@ -31,13 +31,17 @@ impl Conf {
             if database.databaseUser.as_deref() == Some("") {
                 database.databaseUser = Some(format!("user_{}", GENERATE_RANDOM_STRING(10)));
             }
+
+            if database.name.as_deref() == Some("") {
+                database.name = Some(format!("pg_{}", GENERATE_RANDOM_STRING(10)));
+            }
         }
 
         // Validate [redis] config.
         if let Some(redis) = config.redis.as_mut() {
             if redis.plan == "" {
                 redis.plan = "starter".to_owned();
-            }            
+            }
         }
     }
 
