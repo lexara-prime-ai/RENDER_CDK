@@ -1,4 +1,5 @@
 [![Cargo Audit](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/audit.yaml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/audit.yaml)
+[![Run unit tests](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/tests.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/tests.yml)
 [![Code Coverage](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/code-coverage.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/code-coverage.yml)
 [![Publish to crates.io](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/cargo-publish.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/cargo-publish.yml)
 [![Publish to Docker Hub](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml)
