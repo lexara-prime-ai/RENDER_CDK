@@ -148,6 +148,13 @@ async fn main() {
     Deploy::deploy_configuration("./samples/sample.conf")
         .await
         .unwrap();
+
+    // Preview environment variables.
+    // dbg!("{}", EnvironmentManager::retrieve_env_config().API_KEY);
+    // dbg!(
+    //     "{}",
+    //     EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS
+    // );
 }
 
 /// Mandatory Regression Tests.

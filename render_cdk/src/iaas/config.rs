@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use toml;
 
-use super::cache::CacheConf;
-use super::db::DatabaseConf;
+use super::caching::CacheConf;
+use super::storage::{CidrBlock, DatabaseConf};
 
 // [DEBUG] utils.
 use crate::logger::info::*;
@@ -25,15 +25,23 @@ impl Conf {
         // Validate [postgres] config.
         if let Some(database) = config.database.as_mut() {
             if database.databaseName.as_deref() == Some("") {
-                database.databaseName = Some(format!("db_{}", GENERATE_RANDOM_STRING(10)));
+                database.databaseName = Some(format!("{}", GENERATE_UNIQUE_NAME()));
             }
 
             if database.databaseUser.as_deref() == Some("") {
-                database.databaseUser = Some(format!("user_{}", GENERATE_RANDOM_STRING(10)));
+                database.databaseUser = Some(format!("{}", GENERATE_UNIQUE_NAME()));
             }
 
             if database.name.as_deref() == Some("") {
-                database.name = Some(format!("pg_{}", GENERATE_RANDOM_STRING(10)));
+                database.name = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+            }
+
+            // Provide <default> CIDR block.
+            if database.cidrBlocks.is_empty() {
+                database.cidrBlocks.push(CidrBlock {
+                    cidrBlock: "0.0.0.0/0".to_string(),
+                    description: "Everywhere".to_string(),
+                });
             }
         }
 
@@ -105,6 +113,14 @@ mod config_test {
         // Validate that the output is NOT empty.
         let config = Conf::read_configuration_file(&CONFIG_PATH).unwrap();
         let result = GENERATE_RANDOM_STRING(10);
+        assert!(!result.is_empty());
+    }
+
+    #[test]
+    fn test_generate_unique_name() {
+        // Validate that the output is NOT empty.
+        let config = Conf::read_configuration_file(&CONFIG_PATH).unwrap();
+        let result = GENERATE_UNIQUE_NAME();
         assert!(!result.is_empty());
     }
 

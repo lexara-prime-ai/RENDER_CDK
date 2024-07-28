@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use super::config::Conf;
 use super::models::postgres::PostgresConf;
+use crate::authentication::owner::*;
 use crate::state_management::state::{Owner, State};
 
 // [DEBUG] utils.
@@ -44,14 +45,7 @@ impl DeploymentOperations for Deploy {
         ////////////////////////
 
         // To do -> Store and retrieve all credentials from Garage Object Storage e.g emails, passwords, api keys etc.
-        let authorized_users = Owner::list_authorized_users("<user>@<email>.com", "100")
-            .await
-            .unwrap();
-
-        let owner_id = authorized_users
-            .get(0)
-            .map(|owner_response| owner_response.owner.id.clone())
-            .expect("No authorized users found.");
+        let owner_id = Info::get_owner_id().await.OWNER_ID;
 
         ////////////////////////////
         //// [CONFIG] validation.
@@ -72,6 +66,7 @@ impl DeploymentOperations for Deploy {
                    pub version: String,
                    pub name: String,
                    pub ownerId: String,
+                   pub ipAllowList: Option<Vec<CidrBlock>>,
                }
             */
 
@@ -83,6 +78,7 @@ impl DeploymentOperations for Deploy {
                 version: CONFIG.database.clone().unwrap().version,
                 name: CONFIG.database.clone().unwrap().name,
                 ownerId: owner_id,
+                ipAllowList: Some(CONFIG.database.clone().unwrap().cidrBlocks),
             }
             .CONVERT_TO_JSON_STRING();
             //////////////////////////
