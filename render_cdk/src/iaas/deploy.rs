@@ -7,6 +7,7 @@ use serde::{Deserialize, Serialize};
 
 use super::config::Conf;
 use super::models::postgres::PostgresConf;
+use super::storage::IpAllowList;
 use crate::authentication::owner::*;
 use crate::state_management::state::{Owner, State};
 
@@ -66,6 +67,7 @@ impl DeploymentOperations for Deploy {
                    pub version: String,
                    pub name: String,
                    pub ownerId: String,
+                   pub ipAllowList: Option<IpAllowList>
                }
             */
 
@@ -77,6 +79,10 @@ impl DeploymentOperations for Deploy {
                 version: CONFIG.database.clone().unwrap().version,
                 name: CONFIG.database.clone().unwrap().name,
                 ownerId: owner_id,
+                ipAllowList: Some(IpAllowList {
+                    cidrBlock: CONFIG.database.clone().unwrap().cidrBlock,
+                    description: CONFIG.database.clone().unwrap().accessLevelDescription,
+                }),
             }
             .CONVERT_TO_JSON_STRING();
             //////////////////////////

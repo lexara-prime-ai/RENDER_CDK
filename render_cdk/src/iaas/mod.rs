@@ -1,7 +1,7 @@
 pub mod blueprints;
-pub mod cache;
+pub mod caching;
 pub mod config;
-pub mod db;
+pub mod storage;
 pub mod deploy;
 pub mod models;
 pub mod prelude;
