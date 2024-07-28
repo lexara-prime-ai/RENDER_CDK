@@ -42,7 +42,7 @@ impl State {
     /// This method returns an instance of the applications current [State].
     pub async fn init() -> Self {
         let client = reqwest::Client::new();
-        let api_key = EnvironmentManager::retrieve_api_key().API_KEY;
+        let api_key = EnvironmentManager::retrieve_env_config().API_KEY;
 
         Self {
             CLIENT: client.into(),

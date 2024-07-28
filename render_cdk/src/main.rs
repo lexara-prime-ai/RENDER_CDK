@@ -145,9 +145,16 @@ async fn main() {
 
     // 5. Deploying services via .conf files.
     // config::Conf::read_configuration_file("./samples/sample.conf");
-    Deploy::deploy_configuration("./samples/sample.conf")
-        .await
-        .unwrap();
+    // Deploy::deploy_configuration("./samples/sample.conf")
+    //     .await
+    //     .unwrap();
+
+    // Preview environment variables.
+    dbg!("{}", EnvironmentManager::retrieve_env_config().API_KEY);
+    dbg!(
+        "{}",
+        EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS
+    );
 }
 
 /// Mandatory Regression Tests.
