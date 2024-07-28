@@ -7,7 +7,7 @@ use std::fs;
 use toml;
 
 use super::caching::CacheConf;
-use super::storage::DatabaseConf;
+use super::storage::{CidrBlock, DatabaseConf};
 
 // [DEBUG] utils.
 use crate::logger::info::*;
@@ -34,6 +34,14 @@ impl Conf {
 
             if database.name.as_deref() == Some("") {
                 database.name = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+            }
+
+            // Provide <default> CIDR block.
+            if database.cidrBlocks.is_empty() {
+                database.cidrBlocks.push(CidrBlock {
+                    cidrBlock: "0.0.0.0/0".to_string(),
+                    description: "Everywhere".to_string(),
+                });
             }
         }
 

@@ -10,12 +10,11 @@ pub struct DatabaseConf {
     pub plan: String,
     pub version: String,
     pub name: Option<String>,
-    pub cidrBlock: String,
-    pub accessLevelDescription: String,
+    pub cidrBlocks: Vec<CidrBlock>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct IpAllowList {
+pub struct CidrBlock {
     pub cidrBlock: String,
     pub description: String,
 }
