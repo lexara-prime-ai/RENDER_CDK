@@ -1,17 +1,17 @@
 #![allow(unused)]
 
 use render_cdk::authentication::owner::Info;
-use render_cdk::environment_management::prelude::*;
-use render_cdk::iaas::prelude::{deploy::*, *};
-use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
-use render_cdk::state_management::prelude::*;
+use render_cdk::iaas::prelude::config::*;
+use render_cdk::iaas::prelude::deploy::*;
+use render_cdk::resource_management::models::template::*;
+use render_cdk::resource_management::prelude::*;
 
 // [DEBUG] utils.
 use render_cdk::logger::prelude::*;
 
 use tokio::main;
 
-/// Examples
+/// Usage Examples.
 #[main]
 async fn main() {
     // let services = ServiceManager::list_all_services("50").await;
@@ -20,40 +20,44 @@ async fn main() {
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
 
-    // let config = config::Conf::read_configuration_file().unwrap();
-    // println!("Sample Configuration: {:?}\n", config);
+    let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
+    println!("Sample Configuration: {:?}\n", config);
 
-    let deployment_config = template::Template {
-        type_: "static_site".to_owned(), // Options ->
-        name: "test_deployment".to_owned(),
-        owner_id: Info::get_owner_id().await,
-        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-        auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
-        branch: None,
-        image: None,
-        build_filter: None,
-        root_dir: Some("./public".to_owned()),
-        env_vars: vec![],
-        secret_files: vec![],
-        service_details: Some(ServiceDetails {
-            build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
-            headers: vec![],
-            publish_path: Some("./".to_owned()), // This will translate to /public/
-            pull_request_previews_enabled: Some("yes".to_owned()),
-            routes: vec![],
-        }),
-    };
+    // let deployment_config = Template {
+    //     type_: "static_site".to_owned(), // Options ->
+    //     name: "test_deployment".to_owned(),
+    //     owner_id: Info::get_owner_id().await,
+    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+    //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
+    //     branch: None,
+    //     image: None,
+    //     build_filter: None,
+    //     root_dir: Some("./public".to_owned()),
+    //     env_vars: vec![],
+    //     secret_files: vec![],
+    //     service_details: Some(ServiceDetails {
+    //         build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
+    //         headers: vec![],
+    //         publish_path: Some("./".to_owned()), // This will translate to /public/
+    //         pull_request_previews_enabled: Some("yes".to_owned()),
+    //         routes: vec![],
+    //     }),
+    // };
 
     //////////////////////////
     // [DEBUG] logs.
     /////////////////////////
-    LOGGER::INFO(
-        "Deployment Config. : ",
-        &deployment_config.to_json_string(),
-        LogLevel::WARN,
-    );
+    // LOGGER::INFO(
+    //     "Deployment Config. : ",
+    //     &deployment_config.to_json_string(),
+    //     LogLevel::WARN,
+    // );
 
     // let service = ServiceManager::create_service(deployment_config)
+    //     .await
+    //     .unwrap();
+
+    // Deploy::deploy_configuration("./samples/sample.conf")
     //     .await
     //     .unwrap();
 }

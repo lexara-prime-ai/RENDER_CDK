@@ -52,7 +52,7 @@
 //! This example demonstrates how to retrieve a list of deployed services
 //! based on specified criteria.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use render_cdk::resource_management::services::service_manager::ServiceManager;
 //! use tokio::main;
 //!
@@ -70,7 +70,7 @@
 
 //! ## 2. Using simple .conf files for resource provisioning.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
@@ -89,7 +89,7 @@
 //! The `owner_id` is used to tie the resource/service to the Owner
 //! or Acting Service Principal.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use render_cdk::authentication::owner::Info;
 //! use tokio::main;
 //!
@@ -102,7 +102,7 @@
 //! ## 4. Creating services.
 //! The following is a sample deployment configuration.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use render_cdk::resource_management::{models::prelude::*, prelude::*};
 //! use tokio::main;
 //!
@@ -137,10 +137,10 @@
 //! ```
 
 //! #### Here are other sample configurations that include image configurations.
-//! 
+//!
 //! `NOTE` - The following section demostrates functionality that's currently under development.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! #[main]
 //! asycn fn main() {
 //!     let template_with_image = Template {
@@ -180,7 +180,7 @@
 //!
 //! #### The following example doesn't contain an image, branch, env_vars and secret_files.
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use tokio::main;
 //!
 //! #[main]
@@ -212,12 +212,12 @@
 //! ```
 
 //! ## 5. Deploying services via .conf files.
-//! 
+//!
 //! This method makes everything easier, the only thing you need to have setup is the
 //! `.conf` file, your Render `API_KEY` and `OWNER_CREDENTIALS` i.e the email that acts as the Service Principal on Render Cloud(Identity Access Management.)
 //!
 //! Here's a sample of a simple configuration file.
-//! 
+//!
 //! ```toml
 //! # The following is a sample configuration file.
 //! # This will be used to provision a
@@ -236,19 +236,19 @@
 //!     # { cidrBlock = "0.0.0.0/0", description = "Everywhere" }
 //!     # Add more CIDR blocks here...
 //! ]
-//! 
+//!
 //! # [redis]
 //! # plan = "starter"
 //! ```
 //!
-//! ```no_run
+//! ```rust,ignore
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
 //! #[main]
 //! async fn main() {
 //!     // Specify the patch to the .conf file...
-//!     config::Conf::read_configuration_file("./samples/sample.conf");
+//!     Conf::read_configuration_file("./samples/sample.conf");
 //!     Deploy::deploy_configuration("./samples/sample.conf")
 //!         .await
 //!         .unwrap();
