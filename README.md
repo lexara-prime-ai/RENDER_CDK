@@ -34,6 +34,9 @@ Work on the resource management module is currently under way. The API supports 
 
 The CDK will provide an abstraction that will make it easier to work with the Render cloud programmatically.
 
+### To do
+_Automate_ tests for deployed services _e.g Connecting and running queries on created database instances etc._
+
 # Render CDK Crate Documentation
 
 The `render_cdk` crate provides a comprehensive toolkit for managing cloud environments, IaaS, resource management, and state management within a Continuous Deployment/Continuous Integration (CDK) environment. This documentation provides an overview of the primary components and usage examples to help you get started.
