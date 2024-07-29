@@ -1,65 +1,32 @@
 #![allow(unused)]
-// #![deny(missing_docs)]
 
-use render_cdk::environment_management::prelude::*;
-use render_cdk::iaas::prelude::{deploy::*, *};
-use render_cdk::resource_management::{self, models::prelude::*, prelude::*};
-use render_cdk::state_management::prelude::*;
+use render_cdk::authentication::owner::Info;
+use render_cdk::iaas::prelude::config::*;
+use render_cdk::iaas::prelude::deploy::*;
+use render_cdk::resource_management::models::template::*;
+use render_cdk::resource_management::prelude::*;
 
 // [DEBUG] utils.
 use render_cdk::logger::prelude::*;
 
 use tokio::main;
 
-/// Examples
+/// Usage Examples.
 #[main]
 async fn main() {
-    // Examples
-    // 1. Querying for deployed Services.
-
-    // List all Services.
     // let services = ServiceManager::list_all_services("50").await;
-
-    // List all Services that are suspended/not_suspended.
     // let services = ServiceManager::list_services_with_status("suspended", "50").await;
-
-    // List all Services by Name and Type.
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
-
-    // List all Services by Region.
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
-
-    // List all Services by Environment.
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
-    ////////////////////////////////////////////////
-    //
-    // 2. Using simple .conf files for resource provisioning.
-    // let config = config::Conf::read_configuration_file().unwrap();
-    // println!("Sample Configuration: {:?}\n", config);
 
-    // 3. Retrieve a list of authorized 'users'.
-    // let authorized_user = Owner::list_authorized_users("irfanghat@gmail.com", "100")
-    //     .await
-    //     .unwrap();
+    let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
+    println!("Sample Configuration: {:?}\n", config);
 
-    ////////////////////////////
-    // [DEBUG] logs.
-    ///////////////////////////
-    // println!("Owner Info.: {:?}\n", authorized_user);
-
-    ///////////////////////////
-    // Retrieving the <owner_id>. This is used to tie a <resource> to the user who created it.
-    // let owner_id = authorized_user
-    //     .get(0)
-    //     .map(|owner_response| owner_response.owner.id.clone())
-    //     .expect("No authorized users found.");
-
-    // /// 4. Creating services.
-    // The following is a sample deployment configuration.
-    // let deployment_config = template::Template {
+    // let deployment_config = Template {
     //     type_: "static_site".to_owned(), // Options ->
     //     name: "test_deployment".to_owned(),
-    //     owner_id,
+    //     owner_id: Info::get_owner_id().await,
     //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
     //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
     //     branch: None,
@@ -90,71 +57,9 @@ async fn main() {
     //     .await
     //     .unwrap();
 
-    ///////////////////////////////
-    // Other sample configurations.
-    ///////////////////////////////
-    // let template_with_image = Template {
-    //     type_: "static_site".to_owned(),
-    //     name: "test".to_owned(),
-    //     owner_id: "test".to_owned(),
-    //     repo: "httpe".to_owned(),
-    //     auto_deploy: true,
-    //     branch: Some("main".to_owned()),
-    //     image: Some(Image {
-    //         owner_id: "owner123".to_owned(),
-    //         registry_credential_id: "cred123".to_owned(),
-    //         image_path: "path/to/image".to_owned(),
-    //     }),
-    //     build_filter: BuildFilter {
-    //         Initialize your fields here.
-    //     },
-    //     root_dir: "./".to_owned(),
-    //     env_vars: vec![
-    //         EnvVar {
-    //             key: "EXAMPLE".to_owned(),
-    //             value: Some("EXAMPLE".to_owned()),
-    //             generate_value: false,
-    //         }
-    //     ],
-    //     secret_files: vec![],
-    //     service_details: ServiceDetails {
-    //         Initialize your fields here
-    //     },
-    // };
-
-    // The following example doesn't contain an image, branch, env_vars and secret_files.
-    //
-    // let template_without_image = Template {
-    //     type_: "static_site".to_owned(),
-    //     name: "test".to_owned(),
-    //     owner_id: "test".to_owned(),
-    //     repo: "httpe".to_owned(),
-    //     auto_deploy: true,
-    //     branch: None,
-    //     image: None,
-    //     build_filter: BuildFilter {
-    //         Initialize your fields here
-    //     },
-    //     root_dir: "./".to_owned(),
-    //    env_vars: vec![],
-    //     secret_files: vec![],
-    //     service_details: ServiceDetails {
-    //         Initialize your fields here
-    //     },
-    // };
-
-    // 5. Deploying services via .conf files.
-    // config::Conf::read_configuration_file("./samples/sample.conf");
-    Deploy::deploy_configuration("./samples/sample.conf")
-        .await
-        .unwrap();
-
-    // Preview environment variables.
-    // dbg!("{}", EnvironmentManager::retrieve_env_config().API_KEY);
-    // dbg!(
-    //     "{}",
-    //     EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS
-    // );
+    // Deploy::deploy_configuration("./samples/sample.conf")
+    //     .await
+    //     .unwrap();
 }
 
 /// Mandatory Regression Tests.

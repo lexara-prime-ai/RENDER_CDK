@@ -45,7 +45,7 @@ impl DeploymentOperations for Deploy {
         ////////////////////////
 
         // To do -> Store and retrieve all credentials from Garage Object Storage e.g emails, passwords, api keys etc.
-        let owner_id = Info::get_owner_id().await.OWNER_ID;
+        let owner_id = Info::get_owner_id().await;
 
         ////////////////////////////
         //// [CONFIG] validation.
