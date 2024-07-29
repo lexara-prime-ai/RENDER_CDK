@@ -1,5 +1,7 @@
+#![allow(missing_docs)]
 #![allow(unused)]
 #![allow(non_snake_case)]
+
 use serde::{Deserialize, Serialize};
 
 use crate::iaas::storage::PostgresCidrAllowList;

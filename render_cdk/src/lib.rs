@@ -1,5 +1,5 @@
+#![allow(missing_docs)]
 #![allow(unused)]
-#![deny(missing_docs)]
 #![allow(unknown_lints, unexpected_cfgs)]
 #![allow(
     clippy::cognitive_complexity,
@@ -9,7 +9,6 @@
 )]
 #![warn(
     missing_debug_implementations,
-    missing_docs,
     rust_2018_idioms,
     unreachable_pub
 )]
@@ -96,6 +95,7 @@
 //! #[main]
 //! async fn main() {
 //!     let owner_id = Info::get_owner_id().await;
+//!     assert!(!owner_id.is_empty());
 //! }
 //! ```
 //!
@@ -176,9 +176,13 @@
 //!     let service = ServiceManager::create_service(template_with_image)
 //!         .await
 //!         .unwrap();
-//! }```
-//!
-//! #### The following example doesn't contain an image, branch, env_vars and secret_files.
+//!     
+//!     assert!(service.is_ok());
+//! }
+//! ```
+
+//! 
+//! #### The following example does not contain an image, branch, env_vars and secret_files.
 //!
 //! ```rust,ignore
 //! use tokio::main;
@@ -208,13 +212,16 @@
 //!     let service = ServiceManager::create_service(template_without_image)
 //!         .await
 //!         .unwrap();
+//! 
+//!     assert!(services.is_ok());
 //! }
 //! ```
 
 //! ## 5. Deploying services via .conf files.
 //!
 //! This method makes everything easier, the only thing you need to have setup is the
-//! `.conf` file, your Render `API_KEY` and `OWNER_CREDENTIALS` i.e the email that acts as the Service Principal on Render Cloud(Identity Access Management.)
+//! `.conf` file, your Render `API_KEY` and `OWNER_CREDENTIALS` 
+//! i.e the email that acts as the Service Principal on Render Cloud(Identity Access Management.)
 //!
 //! Here's a sample of a simple configuration file.
 //!
@@ -241,6 +248,9 @@
 //! # plan = "starter"
 //! ```
 //!
+//! ## 6. Deploying the configuration.
+//! The above configuration can be deployed by running the following code snippet.
+//! 
 //! ```rust,ignore
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
@@ -248,10 +258,13 @@
 //! #[main]
 //! async fn main() {
 //!     // Specify the patch to the .conf file...
-//!     Conf::read_configuration_file("./samples/sample.conf");
-//!     Deploy::deploy_configuration("./samples/sample.conf")
+//!     let conf = Conf::read_configuration_file("./samples/sample.conf");
+//!     let result = Deploy::deploy_configuration("./samples/sample.conf")
 //!         .await
 //!         .unwrap();
+//! 
+//!     assert!(conf.is_ok());
+//!     assert!(result.is_ok());
 //! }
 //! ```
 

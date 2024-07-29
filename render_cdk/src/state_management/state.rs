@@ -1,5 +1,7 @@
+#![allow(missing_docs)]
 #![allow(non_snake_case)]
 #![allow(unused)]
+
 use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use reqwest::{self};

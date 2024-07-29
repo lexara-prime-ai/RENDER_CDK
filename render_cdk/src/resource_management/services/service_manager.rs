@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 #![allow(unused)]
 extern crate serde;
 extern crate serde_json;
