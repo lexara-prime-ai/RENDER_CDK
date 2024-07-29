@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 #![allow(non_snake_case)]
 #![allow(unused)]
 
@@ -7,6 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use super::config::Conf;
 use super::models::postgres::PostgresConf;
+use super::models::redis::RedisConf;
 use crate::authentication::owner::*;
 use crate::state_management::state::{Owner, State};
 
@@ -40,35 +42,14 @@ impl DeploymentOperations for Deploy {
             LogLevel::WARN,
         );
 
-        /////////////////////////
-        //// Authorization
-        ////////////////////////
-
-        // To do -> Store and retrieve all credentials from Garage Object Storage e.g emails, passwords, api keys etc.
+        // Authorization.
         let owner_id = Info::get_owner_id().await;
 
-        ////////////////////////////
-        //// [CONFIG] validation.
-        ///////////////////////////
+        // [CONFIG] validation.
+        let mut results = Vec::new();
+
         if CONFIG.database.is_some() {
             let api_url = format!("{}{}", BASE_URL, "/postgres");
-
-            //////////////////////////
-            //// Initialize [PAYLOAD]
-            /*
-            * Payload struct.
-
-               pub struct PostgresConf {
-                   pub databaseName: Option<String>,
-                   pub databaseUser: Option<String>,
-                   pub enableHighAvailability: bool,
-                   pub plan: String,
-                   pub version: String,
-                   pub name: String,
-                   pub ownerId: String,
-                   pub ipAllowList: Option<Vec<CidrBlock>>,
-               }
-            */
 
             let payload = PostgresConf {
                 databaseName: CONFIG.database.clone().unwrap().databaseName,
@@ -77,15 +58,11 @@ impl DeploymentOperations for Deploy {
                 plan: CONFIG.database.clone().unwrap().plan,
                 version: CONFIG.database.clone().unwrap().version,
                 name: CONFIG.database.clone().unwrap().name,
-                ownerId: owner_id,
+                ownerId: owner_id.clone(),
                 ipAllowList: Some(CONFIG.database.clone().unwrap().cidrBlocks),
             }
             .CONVERT_TO_JSON_STRING();
-            //////////////////////////
 
-            //////////////////////
-            //// [DEBUG] logs.
-            //////////////////////
             LOGGER::INFO(
                 "[REQUEST] :: Creating request -> ",
                 &api_url,
@@ -99,7 +76,7 @@ impl DeploymentOperations for Deploy {
             );
 
             let response = client
-                .post(api_url)
+                .post(&api_url)
                 .header(ACCEPT, "application/json")
                 .header(CONTENT_TYPE, "application/json")
                 .header(AUTHORIZATION, format!("Bearer {}", api_key))
@@ -115,38 +92,49 @@ impl DeploymentOperations for Deploy {
                     &result.CONVERT_TO_JSON_STRING(),
                     LogLevel::SUCCESS,
                 );
-                Ok(result)
+                results.push(Ok(result));
             } else {
-                println!("{:?}", payload);
                 LOGGER::INFO(
                     "[POSTGRES] :: Deployment failed. -> ",
                     "FAILED",
                     LogLevel::CRITICAL,
                 );
-                Err(anyhow::anyhow!(
+                results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
                     response
-                ))
+                )));
             }
-        } else if CONFIG.redis.is_some() {
-            let api_url = format!("{}{}", BASE_URL, "/redis");
-            let payload = serde_json::to_string_pretty(&CONFIG.redis).unwrap();
+        }
 
-            //////////////////////
-            //// [DEBUG] logs.
-            //////////////////////
+        if CONFIG.redis.is_some() {
+            let api_url = format!("{}{}", BASE_URL, "/redis");
+
+            let payload = RedisConf {
+                name: CONFIG.redis.clone().unwrap().name,
+                ownerId: owner_id.clone(),
+                plan: CONFIG.redis.clone().unwrap().plan,
+                ipAllowList: Some(CONFIG.redis.clone().unwrap().cidrBlocks),
+            }
+            .CONVERT_TO_JSON_STRING();
+
             LOGGER::INFO(
                 "[REQUEST] :: Creating request -> ",
                 &api_url,
                 LogLevel::WARN,
             );
 
+            LOGGER::INFO(
+                "[PAYLOAD] :: Creating request -> ",
+                &payload,
+                LogLevel::WARN,
+            );
+
             let response = client
-                .post(api_url)
+                .post(&api_url)
                 .header(ACCEPT, "application/json")
                 .header(CONTENT_TYPE, "application/json")
                 .header(AUTHORIZATION, format!("Bearer {}", api_key))
-                .body(payload)
+                .body(payload.clone())
                 .send()
                 .await
                 .context("Config :: [REDIS] -> Error processing request.")?;
@@ -158,25 +146,32 @@ impl DeploymentOperations for Deploy {
                     &result.CONVERT_TO_JSON_STRING(),
                     LogLevel::SUCCESS,
                 );
-                Ok(result)
+                results.push(Ok(result));
             } else {
                 LOGGER::INFO(
                     "[REDIS] :: Deployment failed. -> ",
                     "FAILED",
                     LogLevel::CRITICAL,
                 );
-                Err(anyhow::anyhow!(
+                results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
                     response
-                ))
+                )));
             }
-        } else {
+        }
+
+        if results.is_empty() {
             LOGGER::INFO(
                 "[INFO] :: No configuration to process. -> ",
                 "SKIPPED",
                 LogLevel::WARN,
             );
             Err(anyhow::anyhow!("No configuration to process."))
+        } else {
+            results
+                .into_iter()
+                .find(|r| r.is_err())
+                .unwrap_or_else(|| Ok("All deployments successful".to_string()))
         }
     }
 }

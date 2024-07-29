@@ -10,11 +10,11 @@ pub struct DatabaseConf {
     pub plan: String,
     pub version: String,
     pub name: Option<String>,
-    pub cidrBlocks: Vec<CidrBlock>,
+    pub cidrBlocks: Vec<PostgresCidrAllowList>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CidrBlock {
+pub struct PostgresCidrAllowList {
     pub cidrBlock: String,
     pub description: String,
 }
