@@ -16,8 +16,9 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Set [ENVIRONMENT] variables
-      run: echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV
-      run: echo "OWNER_CREDENTIALS=${{ secrets.OWNER_CREDENTIALS }}" >> $GITHUB_ENV
+      run: |
+        echo "API_KEY=${{ secrets.API_KEY }}" >> $GITHUB_ENV 
+        echo "OWNER_CREDENTIALS=${{ secrets.OWNER_CREDENTIALS }}" >> $GITHUB_ENV
 
     - name: Build
       run: cargo build --verbose
