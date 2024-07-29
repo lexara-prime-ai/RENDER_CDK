@@ -20,7 +20,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.11
+- **Version:** 0.0.12
 - **License:** MIT
 
 ### Current Features
@@ -55,7 +55,7 @@ To use `render_cdk`, include the following in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.11"
+render_cdk = "0.0.12"
 ```
 
 ## Examples
@@ -64,8 +64,6 @@ render_cdk = "0.0.11"
 
 The following examples demonstrate how to query for various deployed services using the `ServiceManager`.
 
-#### List all Services with a Specific Status
-
 ```rust
 use render_cdk::iaas::prelude::*;
 use tokio::main;
@@ -73,46 +71,15 @@ use tokio::main;
 #[main]
 async fn main() {
     let services = ServiceManager::list_services_with_status("suspended", "50").await;
-}
-```
-
-#### List all Services by Name and Type
-
-```rust
-use render_cdk::iaas::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
     let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
-}
-```
-
-#### List all Services by Region
-
-```rust
-use render_cdk::iaas::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
     let services = ServiceManager::find_service_by_region("oregon", "10").await;
-}
-```
-
-#### List all Services by Environment
-
-```rust
-use render_cdk::iaas::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
     let services = ServiceManager::find_service_by_environment("image", "10").await;
 }
 ```
 
 ### Using Configuration Files for Resource Provisioning
+The following section demonstrates how to use a simple configuration file to provision resources on 
+Render Cloud.
 
 ```rust
 use render_cdk::resource_management::prelude::*;
@@ -138,8 +105,6 @@ async fn main() {
 ```
 
 ### Creating Services
-
-
 #### Sample Deployment Configuration
 
 ```rust

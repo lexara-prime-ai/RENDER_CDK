@@ -1,3 +1,4 @@
+#![allow(missing_docs)]
 #![allow(unused)]
 #![allow(non_snake_case)]
 

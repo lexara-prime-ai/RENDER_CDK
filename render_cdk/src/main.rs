@@ -56,9 +56,9 @@ async fn main() {
     //     .await
     //     .unwrap();
 
-    Deploy::deploy_configuration("./samples/sample.conf")
-        .await
-        .unwrap();
+    // Deploy::deploy_configuration("./samples/sample.conf")
+    //     .await
+    //     .unwrap();
 }
 
 /// Mandatory Regression Tests.
