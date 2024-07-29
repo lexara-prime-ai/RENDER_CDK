@@ -9,7 +9,7 @@ pub struct Info {
 }
 
 impl Info {
-    pub async fn get_owner_id() -> Self {
+    pub async fn get_owner_id() -> String {
         let owner_credentials = EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS;
         let authorized_users = Owner::list_authorized_users(&owner_credentials, "100")
             .await
@@ -20,6 +20,6 @@ impl Info {
             .map(|owner_response| owner_response.owner.id.clone())
             .expect("No authorized users found.");
 
-        Self { OWNER_ID: owner_id }
+        owner_id
     }
 }
