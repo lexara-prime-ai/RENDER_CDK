@@ -20,8 +20,7 @@ async fn main() {
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
 
-    let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
-    println!("Sample Configuration: {:?}\n", config);
+    // let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
     // let deployment_config = Template {
     //     type_: "static_site".to_owned(), // Options ->
@@ -57,9 +56,9 @@ async fn main() {
     //     .await
     //     .unwrap();
 
-    // Deploy::deploy_configuration("./samples/sample.conf")
-    //     .await
-    //     .unwrap();
+    Deploy::deploy_configuration("./samples/sample.conf")
+        .await
+        .unwrap();
 }
 
 /// Mandatory Regression Tests.
@@ -78,16 +77,6 @@ async fn main() {
 ///
 ///    // Validate content.
 ///    let services = result.unwrap();
-///     assert!(!services.is_empty());
-/// }
-///
-///  #[tokio::test]
-/// async fn test_find_service_by_name_and_type() {
-///     let result = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
-///     // The result should be Ok().
-///     assert!(result.is_ok());
-///    // Validate content.
-///     let services = result.unwrap();
 ///     assert!(!services.is_empty());
 /// }
 ///
