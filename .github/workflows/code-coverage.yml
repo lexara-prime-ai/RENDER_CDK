@@ -27,6 +27,7 @@ jobs:
     - name: Run tests with coverage
       env:
         API_KEY: ${{ secrets.API_KEY }}
+        OWNER_CREDENTIALS: ${{ secrets.OWNER_CREDENTIALS }}
       run: cargo tarpaulin --out Xml
       working-directory: ./render_cdk
 
