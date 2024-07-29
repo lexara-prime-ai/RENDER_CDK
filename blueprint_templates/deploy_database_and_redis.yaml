@@ -1,0 +1,21 @@
+# Postgres and Redis sample.
+databases:
+- name: <service_name>
+  databaseName: <database_name>
+  user: <service_user>
+  plan: starter
+  region: oregon
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: Everywhere
+  postgresMajorVersion: "12"
+services:
+- type: redis
+  name: <service_name>
+  plan: starter
+  region: oregon
+  maxmemoryPolicy: allkeys-lru
+  ipAllowList:
+  - source: 0.0.0.0/0
+    description: Everywhere
+version: "1"
