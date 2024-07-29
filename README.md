@@ -121,19 +121,21 @@ async fn main() {
 }
 ```
 
-### Retrieving a List of Authorized Users
+### Retrieving the Authorized User's Id
+The Owner Id is used to tie the deployed resource to the _Acting Service Principal_/__*Render Account Owner*__.
 
 ```rust
-use render_cdk::resource_management::prelude::*;
+use crate::authentication::owner::*;
+use tokio::main;
 
 #[main]
 async fn main() {
-    let authorized_user = Owner::list_authorized_users("<user>@<email>.com", "100").await.unwrap();
-    println!("Authorized User: {:?}", authorized_user);
+    let owner_id = Info::get_owner_id().await;
 }
 ```
 
 ### Creating Services
+
 
 #### Sample Deployment Configuration
 
@@ -227,6 +229,7 @@ async fn main() {
 ```
 
 ### Logging
+The logging module has also been made _public_ if you prefer making all application _logs_ consistent.
 
 ```rust
 use render_cdk::logger::prelude::*;
