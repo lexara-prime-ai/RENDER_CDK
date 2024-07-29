@@ -96,7 +96,8 @@ mod state_tests {
 
     #[tokio::test]
     async fn test_list_authorized_users() {
-        let result = Owner::list_authorized_users("<user>@<email>.com", "100").await;
+        let owner_credentials = EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS;
+        let result = Owner::list_authorized_users(&owner_credentials, "100").await;
 
         // The result should be Ok().
         assert!(result.is_ok());
