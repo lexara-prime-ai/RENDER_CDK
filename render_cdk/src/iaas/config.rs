@@ -1,4 +1,6 @@
+#![allow(missing_docs)]
 #![allow(unused)]
+
 use anyhow::Error;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
@@ -6,8 +8,8 @@ use serde::{Deserialize, Serialize};
 use std::fs;
 use toml;
 
-use super::caching::CacheConf;
-use super::storage::{CidrBlock, DatabaseConf};
+use super::caching::{CacheConf, RedisCidrAllowList};
+use super::storage::{DatabaseConf, PostgresCidrAllowList};
 
 // [DEBUG] utils.
 use crate::logger::info::*;
@@ -38,7 +40,7 @@ impl Conf {
 
             // Provide <default> CIDR block.
             if database.cidrBlocks.is_empty() {
-                database.cidrBlocks.push(CidrBlock {
+                database.cidrBlocks.push(PostgresCidrAllowList {
                     cidrBlock: "0.0.0.0/0".to_string(),
                     description: "Everywhere".to_string(),
                 });
@@ -47,7 +49,19 @@ impl Conf {
 
         // Validate [redis] config.
         if let Some(redis) = config.redis.as_mut() {
-            if redis.plan == "" {
+            if redis.name.as_deref() == Some("") {
+                redis.name = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+            }
+
+            // Provide <default> CIDR block.
+            if redis.cidrBlocks.is_empty() {
+                redis.cidrBlocks.push(RedisCidrAllowList {
+                    cidrBlock: "0.0.0.0/0".to_string(),
+                    description: "Everywhere".to_string(),
+                });
+            }
+
+            if redis.plan.is_empty() {
                 redis.plan = "starter".to_owned();
             }
         }
