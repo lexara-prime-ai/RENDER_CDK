@@ -44,9 +44,9 @@ async fn main() {
         }),
     };
 
-    ServiceManager::create_service(deployment_config)
-        .await
-        .unwrap();
+    // ServiceManager::create_service(deployment_config)
+    //     .await
+    //     .unwrap();
 
     Deploy::deploy_configuration("./samples/sample.conf")
         .await
