@@ -1,6 +1,6 @@
 #![allow(missing_docs)]
 #![allow(unused)]
-
+// Evironment varible passing.
 use dotenvy::dotenv;
 
 #[derive(Debug, Clone)]

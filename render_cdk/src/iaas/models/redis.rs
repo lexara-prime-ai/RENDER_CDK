@@ -1,9 +1,10 @@
 #![allow(missing_docs)]
 #![allow(unused)]
 #![allow(non_snake_case)]
-
+// [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
+// [render_cdk] modules.
 use crate::iaas::caching::RedisCidrAllowList;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

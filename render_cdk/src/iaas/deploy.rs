@@ -3,6 +3,7 @@
 #![allow(unused)]
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 // Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
@@ -44,11 +45,11 @@ impl DeploymentOperations for Deploy {
         let api_key = state.API_KEY;
         let CONFIG = Conf::read_configuration_file(config_path).unwrap();
 
-        LOGGER!(
-            "Retrieving [CONFIG] -> ",
-            &CONFIG.CONVERT_TO_JSON_STRING(),
-            LogLevel::WARN
-        );
+        // LOGGER!(
+        //     "Retrieving [CONFIG] -> ",
+        //     &CONFIG.CONVERT_TO_JSON_STRING(),
+        //     LogLevel::WARN
+        // );
 
         // Authorization.
         let owner_id = Info::get_owner_id().await;
@@ -77,11 +78,7 @@ impl DeploymentOperations for Deploy {
                 LogLevel::WARN
             );
 
-            LOGGER!(
-                "[PAYLOAD] :: Creating request -> ",
-                &payload,
-                LogLevel::WARN
-            );
+            LOGGER!("[PAYLOAD] :: -> ", &payload, LogLevel::WARN);
 
             let response = client
                 .post(&api_url)
@@ -95,18 +92,28 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+                let dashboard_url = data
+                    .get("dashboardUrl")
+                    .unwrap()
+                    .as_str()
+                    .expect("Failed to extract [dashboardUrl] from [response].");
+
                 LOGGER!(
                     "[POSTGRES] :: Deployment successful. -> ",
-                    &result.CONVERT_TO_JSON_STRING(),
+                    format!("{:#?}", dashboard_url),
                     LogLevel::SUCCESS
                 );
+
                 results.push(Ok(result));
             } else {
                 LOGGER!(
-                    "[POSTGRES] :: Deployment failed. -> ",
+                    "[POSTGRES] :: Deployment status :: -> ",
                     "FAILED",
                     LogLevel::CRITICAL
                 );
+
                 results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
                     response
@@ -131,11 +138,7 @@ impl DeploymentOperations for Deploy {
                 LogLevel::WARN
             );
 
-            LOGGER!(
-                "[PAYLOAD] :: Creating request -> ",
-                &payload,
-                LogLevel::WARN
-            );
+            LOGGER!("[PAYLOAD] :: -> ", &payload, LogLevel::WARN);
 
             let response = client
                 .post(&api_url)
@@ -149,15 +152,18 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+
                 LOGGER!(
                     "[REDIS] :: Deployment successful. -> ",
-                    &result.CONVERT_TO_JSON_STRING(),
+                    format!("{:#?}", data),
                     LogLevel::SUCCESS
                 );
                 results.push(Ok(result));
             } else {
                 LOGGER!(
-                    "[REDIS] :: Deployment failed. -> ",
+                    "[REDIS] :: Deployment status :: -> ",
                     "FAILED",
                     LogLevel::CRITICAL
                 );

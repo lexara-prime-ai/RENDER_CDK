@@ -1,0 +1,30 @@
+[package]
+name = "examples"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+render_cdk = { path = "../../render_cdk" }
+tokio = "1.38.0"
+
+[[bin]]
+name = "list_all_services"
+path = "src/list_all_services.rs"
+
+[[bin]]
+name = "list_services_with_status"
+path = "src/list_services_with_status.rs"
+
+[[bin]]
+name = "find_service_by_region"
+path = "src/find_service_by_region.rs"
+
+[[bin]]
+name = "find_service_by_name_and_type"
+path ="src/find_service_by_name_and_type.rs"
+
+[[bin]]
+name = "find_service_by_environment"
+path = "src/find_service_by_environment.rs"
+

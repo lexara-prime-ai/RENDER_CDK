@@ -3,6 +3,7 @@
 // [JSON] parsing.
 extern crate serde;
 extern crate serde_json;
+use serde_json::Value;
 
 // Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
@@ -11,12 +12,14 @@ use anyhow::{Context, Error, Ok, Result};
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 
 // [render_cdk] modules.
+use crate::authentication::owner::Info;
 use crate::environment_management::prelude::EnvironmentManager;
-use crate::resource_management::models::template::Template;
+use crate::resource_management::models::prelude::*;
 use crate::state_management::state::State;
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
+use crate::utils::stringify::Stringify;
 use crate::LOGGER;
 use colored::Colorize;
 
@@ -50,7 +53,7 @@ pub trait ServiceManagerOperations {
 
     /// Creating services.
     fn create_service(
-        deployment_config: Template,
+        deployment_config: Static,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
 }
 
@@ -85,7 +88,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate [RESPONSE] status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -108,7 +114,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        /////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!(
@@ -131,7 +136,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -179,7 +187,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -223,7 +234,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -267,7 +281,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -279,7 +296,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Creating services.
-    async fn create_service(deployment_config: Template) -> Result<String, Error> {
+    async fn create_service(deployment_config: Static) -> Result<String, Error> {
         /// Currently supported - Github(https://github.com/username/reponame.git)
         /******************************************************
          *
@@ -289,12 +306,12 @@ impl ServiceManagerOperations for ServiceManager {
                 --header 'Content-Type: application/json' \
                 --header 'Authorization: Bearer {{render_api_token_goes_here}}'
                 --data '
-                    {
+                {
                     "type": "static_site",
                     "autoDeploy": "yes",
                     "serviceDetails": {
                         "pullRequestPreviewsEnabled": "no"
-                    },
+                },
                     "name": "test",
                     "ownerId": "test",
                     "repo": "httpe",
@@ -311,7 +328,21 @@ impl ServiceManagerOperations for ServiceManager {
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!("{}{}", BASE_URL, "/services");
-        let payload = serde_json::to_string_pretty(&deployment_config).unwrap();
+        let payload = Base {
+            type_: deployment_config.type_,
+            name: deployment_config.name,
+            owner_id: Info::get_owner_id().await,
+            repo: deployment_config.repo,
+            auto_deploy: deployment_config.auto_deploy,
+            branch: deployment_config.branch,
+            image: deployment_config.image,
+            build_filter: deployment_config.build_filter,
+            root_dir: deployment_config.root_dir,
+            env_vars: deployment_config.env_vars,
+            secret_files: deployment_config.secret_files,
+            service_details: deployment_config.service_details,
+        }
+        .CONVERT_TO_JSON_STRING();
 
         // [DEBUG] logs.
         LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
@@ -331,7 +362,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let result = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &result, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&result)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(result)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);

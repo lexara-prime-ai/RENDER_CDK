@@ -148,10 +148,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "06ea2b9bc92be3c2baa9334a323ebca2d6f074ff852cd1d7b11064035cd3868f"
 
 [[package]]
-name = "dotenv"
-version = "0.15.0"
+name = "dotenvy"
+version = "0.15.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "77c90badedccf4105eca100756a0b1289e191f6fcbdadd3cee1d2f614f97da8f"
+checksum = "1aaf95b3e5c8f23aa320147307562d361db0ae0d51242340f558153b4eb2439b"
 
 [[package]]
 name = "encoding_rs"
@@ -176,6 +176,14 @@ checksum = "534c5cf6194dfab3db3242765c03bbe257cf92f22b38f6bc0c58d59108a820ba"
 dependencies = [
  "libc",
  "windows-sys 0.52.0",
+]
+
+[[package]]
+name = "examples"
+version = "0.1.0"
+dependencies = [
+ "render_cdk",
+ "tokio",
 ]
 
 [[package]]
@@ -547,14 +555,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "78b3ae25bc7c8c38cec158d1f2757ee79e9b3740fbc7ccf0e59e4b08d793fa89"
 
 [[package]]
-name = "list_all_services"
-version = "0.1.0"
-dependencies = [
- "render_cdk",
- "tokio",
-]
-
-[[package]]
 name = "lock_api"
 version = "0.4.12"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -829,13 +829,13 @@ dependencies = [
 
 [[package]]
 name = "render_cdk"
-version = "0.0.10"
+version = "0.0.13"
 dependencies = [
  "anyhow",
  "base64",
  "chrono",
  "colored",
- "dotenv",
+ "dotenvy",
  "futures",
  "rand",
  "reqwest",
