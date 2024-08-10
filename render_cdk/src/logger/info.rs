@@ -3,6 +3,26 @@
 #![allow(unused)]
 use colored::Colorize;
 
+#[macro_export]
+macro_rules! LOGGER {
+    ($identifier: expr, $message: expr, $level: expr) => {
+        match $level {
+            LogLevel::CRITICAL => {
+                let info = $message.red();
+                println!("{}{}\n", $identifier, info);
+            }
+            LogLevel::SUCCESS => {
+                let info = $message.green();
+                println!("{}{}\n", $identifier, info);
+            }
+            LogLevel::WARN => {
+                let info = $message.yellow();
+                println!("{}{}\n", $identifier, info);
+            }
+        }
+    };
+}
+
 #[derive(Debug)]
 pub enum LogLevel {
     CRITICAL,
@@ -16,28 +36,6 @@ impl LogLevel {
             LogLevel::CRITICAL => "CRITICAL",
             LogLevel::SUCCESS => "SUCCESS",
             LogLevel::WARN => "WARN",
-        }
-    }
-}
-
-#[derive(Debug, Clone)]
-pub struct LOGGER;
-
-impl LOGGER {
-    pub fn INFO(identifier: &str, message: &str, level: LogLevel) {
-        match level {
-            LogLevel::CRITICAL => {
-                let info = message.red();
-                println!("{}{}\n", identifier, info);
-            }
-            LogLevel::SUCCESS => {
-                let info = message.green();
-                println!("{}{}\n", identifier, info);
-            }
-            LogLevel::WARN => {
-                let info = message.yellow();
-                println!("{}{}\n", identifier, info);
-            }
         }
     }
 }

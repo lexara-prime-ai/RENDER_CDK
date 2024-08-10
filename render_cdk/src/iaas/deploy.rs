@@ -1,11 +1,16 @@
 #![allow(missing_docs)]
 #![allow(non_snake_case)]
 #![allow(unused)]
-
-use anyhow::{Context, Error, Ok, Result};
-use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
+// [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
+// Idiomatic [ERROR] handling.
+use anyhow::{Context, Error, Ok, Result};
+
+// HTTP.
+use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
+
+// [render_cdk] modules.
 use super::config::Conf;
 use super::models::postgres::PostgresConf;
 use super::models::redis::RedisConf;
@@ -15,7 +20,10 @@ use crate::state_management::state::{Owner, State};
 // [DEBUG] utils.
 use crate::logger::prelude::*;
 use crate::utils::stringify::Stringify;
+use crate::LOGGER;
+use colored::Colorize;
 
+// Predefined [CONSTANTS].
 const BASE_URL: &str = "https://api.render.com/v1";
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -36,10 +44,10 @@ impl DeploymentOperations for Deploy {
         let api_key = state.API_KEY;
         let CONFIG = Conf::read_configuration_file(config_path).unwrap();
 
-        LOGGER::INFO(
+        LOGGER!(
             "Retrieving [CONFIG] -> ",
             &CONFIG.CONVERT_TO_JSON_STRING(),
-            LogLevel::WARN,
+            LogLevel::WARN
         );
 
         // Authorization.
@@ -63,16 +71,16 @@ impl DeploymentOperations for Deploy {
             }
             .CONVERT_TO_JSON_STRING();
 
-            LOGGER::INFO(
+            LOGGER!(
                 "[REQUEST] :: Creating request -> ",
                 &api_url,
-                LogLevel::WARN,
+                LogLevel::WARN
             );
 
-            LOGGER::INFO(
+            LOGGER!(
                 "[PAYLOAD] :: Creating request -> ",
                 &payload,
-                LogLevel::WARN,
+                LogLevel::WARN
             );
 
             let response = client
@@ -87,17 +95,17 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
-                LOGGER::INFO(
+                LOGGER!(
                     "[POSTGRES] :: Deployment successful. -> ",
                     &result.CONVERT_TO_JSON_STRING(),
-                    LogLevel::SUCCESS,
+                    LogLevel::SUCCESS
                 );
                 results.push(Ok(result));
             } else {
-                LOGGER::INFO(
+                LOGGER!(
                     "[POSTGRES] :: Deployment failed. -> ",
                     "FAILED",
-                    LogLevel::CRITICAL,
+                    LogLevel::CRITICAL
                 );
                 results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
@@ -117,16 +125,16 @@ impl DeploymentOperations for Deploy {
             }
             .CONVERT_TO_JSON_STRING();
 
-            LOGGER::INFO(
+            LOGGER!(
                 "[REQUEST] :: Creating request -> ",
                 &api_url,
-                LogLevel::WARN,
+                LogLevel::WARN
             );
 
-            LOGGER::INFO(
+            LOGGER!(
                 "[PAYLOAD] :: Creating request -> ",
                 &payload,
-                LogLevel::WARN,
+                LogLevel::WARN
             );
 
             let response = client
@@ -141,17 +149,17 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
-                LOGGER::INFO(
+                LOGGER!(
                     "[REDIS] :: Deployment successful. -> ",
                     &result.CONVERT_TO_JSON_STRING(),
-                    LogLevel::SUCCESS,
+                    LogLevel::SUCCESS
                 );
                 results.push(Ok(result));
             } else {
-                LOGGER::INFO(
+                LOGGER!(
                     "[REDIS] :: Deployment failed. -> ",
                     "FAILED",
-                    LogLevel::CRITICAL,
+                    LogLevel::CRITICAL
                 );
                 results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
@@ -161,10 +169,10 @@ impl DeploymentOperations for Deploy {
         }
 
         if results.is_empty() {
-            LOGGER::INFO(
+            LOGGER!(
                 "[INFO] :: No configuration to process. -> ",
                 "SKIPPED",
-                LogLevel::WARN,
+                LogLevel::WARN
             );
             Err(anyhow::anyhow!("No configuration to process."))
         } else {

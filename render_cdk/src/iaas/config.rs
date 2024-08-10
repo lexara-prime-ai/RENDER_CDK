@@ -1,20 +1,29 @@
 #![allow(missing_docs)]
 #![allow(unused)]
+// [JSON] parsing.
+use serde::{Deserialize, Serialize};
 
+// Idiomatic [ERROR] handling.
 use anyhow::Error;
+
+// Randomization.
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
-use serde::{Deserialize, Serialize};
+
+// File parsing.
 use std::fs;
 use toml;
 
+// [render_cdk] modules.
 use super::caching::{CacheConf, RedisCidrAllowList};
 use super::storage::{DatabaseConf, PostgresCidrAllowList};
 
 // [DEBUG] utils.
-use crate::logger::info::*;
+use crate::logger::prelude::*;
 use crate::utils::random::*;
 use crate::utils::stringify::Stringify;
+use crate::LOGGER;
+use colored::Colorize;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
 pub struct Conf {
@@ -77,10 +86,10 @@ impl Conf {
 
         // Validate config. file.
         if config.database.is_none() && config.redis.is_none() {
-            LOGGER::INFO(
+            LOGGER!(
                 "\nFound empty configuration file -> ",
                 &config.CONVERT_TO_JSON_STRING(),
-                LogLevel::CRITICAL,
+                LogLevel::CRITICAL
             );
             return Err(anyhow::anyhow!("Found empty configuration file!"));
         }
@@ -91,10 +100,10 @@ impl Conf {
         ////////////////////////
         // Debug logs.
         ///////////////////////
-        LOGGER::INFO(
+        LOGGER!(
             "\n -> Reading [CONFIG]\n\n",
             &config.CONVERT_TO_JSON_STRING(),
-            LogLevel::SUCCESS,
+            LogLevel::SUCCESS
         );
 
         Ok(Self {
