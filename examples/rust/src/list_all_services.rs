@@ -10,5 +10,4 @@ async fn main() {
     //!   Pre-requisites
     //!   - A valid [API_KEY] from Render Cloud.
     let _services = ServiceManager::list_all_services("50").await;
-    println!("Done processing [request].");
 }

@@ -1,0 +1,13 @@
+[package]
+name = "examples"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+render_cdk = { path = "../../render_cdk" }
+tokio = "1.38.0"
+
+[[bin]]
+name = "list_all_services"
+path = "src/list_all_services.rs"

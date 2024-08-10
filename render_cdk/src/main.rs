@@ -1,5 +1,4 @@
 #![allow(unused)]
-
 use render_cdk::authentication::owner::Info;
 use render_cdk::iaas::prelude::config::*;
 use render_cdk::iaas::prelude::deploy::*;
@@ -9,6 +8,7 @@ use render_cdk::resource_management::prelude::*;
 // [DEBUG] utils.
 use render_cdk::logger::prelude::*;
 
+use std::default::Default;
 use tokio::main;
 
 /// Usage Examples.
@@ -44,13 +44,13 @@ async fn main() {
         }),
     };
 
-    // ServiceManager::create_service(deployment_config)
-    //     .await
-    //     .unwrap();
-
-    Deploy::deploy_configuration("./samples/sample.conf")
+    ServiceManager::create_service(deployment_config)
         .await
         .unwrap();
+
+    // Deploy::deploy_configuration("./samples/sample.conf")
+    //     .await
+    //     .unwrap();
 }
 
 /// Mandatory Regression Tests.

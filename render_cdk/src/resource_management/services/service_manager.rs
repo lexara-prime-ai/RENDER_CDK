@@ -15,6 +15,7 @@ use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use crate::environment_management::prelude::EnvironmentManager;
 use crate::resource_management::models::template::Template;
 use crate::state_management::state::State;
+use crate::authentication::owner::Info;
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
@@ -304,12 +305,12 @@ impl ServiceManagerOperations for ServiceManager {
                 --header 'Content-Type: application/json' \
                 --header 'Authorization: Bearer {{render_api_token_goes_here}}'
                 --data '
-                    {
+                {
                     "type": "static_site",
                     "autoDeploy": "yes",
                     "serviceDetails": {
                         "pullRequestPreviewsEnabled": "no"
-                    },
+                },
                     "name": "test",
                     "ownerId": "test",
                     "repo": "httpe",
@@ -326,7 +327,12 @@ impl ServiceManagerOperations for ServiceManager {
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!("{}{}", BASE_URL, "/services");
-        let payload = serde_json::to_string_pretty(&deployment_config).unwrap();
+        // let payload = serde_json::to_string_pretty(&deployment_config).unwrap();
+        let payload = Template {
+            type_: deployment_config.type_,
+            name: deployment_config.name,
+            owner_id: Info::get_owner_id().await,
+        }
 
         // [DEBUG] logs.
         LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
