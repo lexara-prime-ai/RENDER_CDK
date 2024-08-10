@@ -1,15 +1,22 @@
 #![allow(missing_docs)]
 #![allow(non_snake_case)]
 #![allow(unused)]
+// [JSON] parsing.
+use serde::{Deserialize, Serialize};
 
+// Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
+
+// HTTP.
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 use reqwest::{self};
-use serde::{Deserialize, Serialize};
+
 use std::sync::Arc;
 
+// [render_cdk] modules.
 use crate::environment_management::prelude::*;
 
+// Predefined [CONSTANTS].
 const BASE_URL: &str = "https://api.render.com/v1";
 
 ///////////////////

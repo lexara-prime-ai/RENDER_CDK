@@ -1,5 +1,5 @@
 #![allow(missing_docs)]
-
+// [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -95,10 +95,4 @@ pub struct Route {
     pub source: String,
     pub destination: String,
     pub priority: u32,
-}
-
-impl Template {
-    pub fn to_json_string(&self) -> String {
-        serde_json::to_string(self).unwrap()
-    }
 }

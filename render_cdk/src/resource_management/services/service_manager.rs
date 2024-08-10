@@ -3,6 +3,7 @@
 // [JSON] parsing.
 extern crate serde;
 extern crate serde_json;
+use serde_json::Value;
 
 // Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
@@ -85,7 +86,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate [RESPONSE] status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -108,7 +112,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        /////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!(
@@ -131,7 +134,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -179,7 +185,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -223,7 +232,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -267,7 +279,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&results)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(results)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
@@ -331,7 +346,10 @@ impl ServiceManagerOperations for ServiceManager {
         // Validate response status.
         if response.status().is_success() {
             let result = response.text().await.context("Error parsing response.")?;
-            LOGGER!("[RESPONSE]", &result, LogLevel::SUCCESS);
+            let data: Value = serde_json::from_str(&result)?;
+
+            LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
             Ok(result)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);

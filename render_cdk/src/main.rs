@@ -19,36 +19,34 @@ async fn main() {
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
-    let owner = Info::get_owner_id().await;
-
-    println!("{:?}", owner);
+    // let owner = Info::get_owner_id().await;
 
     // let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
-    // let deployment_config = Template {
-    //     type_: "static_site".to_owned(), // Options ->
-    //     name: "test_deployment".to_owned(),
-    //     owner_id: Info::get_owner_id().await,
-    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-    //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
-    //     branch: None,
-    //     image: None,
-    //     build_filter: None,
-    //     root_dir: Some("./public".to_owned()),
-    //     env_vars: vec![],
-    //     secret_files: vec![],
-    //     service_details: Some(ServiceDetails {
-    //         build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
-    //         headers: vec![],
-    //         publish_path: Some("./".to_owned()), // This will translate to /public/
-    //         pull_request_previews_enabled: Some("yes".to_owned()),
-    //         routes: vec![],
-    //     }),
-    // };
+    let deployment_config = Template {
+        type_: "static_site".to_owned(), // Options ->
+        name: "test_deployment".to_owned(),
+        owner_id: Info::get_owner_id().await,
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
+        branch: None,
+        image: None,
+        build_filter: None,
+        root_dir: Some("./public".to_owned()),
+        env_vars: vec![],
+        secret_files: vec![],
+        service_details: Some(ServiceDetails {
+            build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
+            headers: vec![],
+            publish_path: Some("./".to_owned()), // This will translate to /public/
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            routes: vec![],
+        }),
+    };
 
-    // let service = ServiceManager::create_service(deployment_config)
-    //     .await
-    //     .unwrap();
+    ServiceManager::create_service(deployment_config)
+        .await
+        .unwrap();
 
     // Deploy::deploy_configuration("./samples/sample.conf")
     //     .await

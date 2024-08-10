@@ -3,6 +3,7 @@
 #![allow(unused)]
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
+use serde_json::Value;
 
 // Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
@@ -95,11 +96,15 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+
                 LOGGER!(
                     "[POSTGRES] :: Deployment successful. -> ",
-                    &result.CONVERT_TO_JSON_STRING(),
+                    format!("{:#?}", data["url"]),
                     LogLevel::SUCCESS
                 );
+
                 results.push(Ok(result));
             } else {
                 LOGGER!(
@@ -107,6 +112,7 @@ impl DeploymentOperations for Deploy {
                     "FAILED",
                     LogLevel::CRITICAL
                 );
+
                 results.push(Err(anyhow::anyhow!(
                     "Request failed with status: {:?}",
                     response
@@ -149,9 +155,12 @@ impl DeploymentOperations for Deploy {
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+
                 LOGGER!(
                     "[REDIS] :: Deployment successful. -> ",
-                    &result.CONVERT_TO_JSON_STRING(),
+                    format!("{:#?}", data),
                     LogLevel::SUCCESS
                 );
                 results.push(Ok(result));

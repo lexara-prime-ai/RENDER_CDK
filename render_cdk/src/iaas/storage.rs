@@ -1,7 +1,7 @@
 #![allow(missing_docs)]
 #![allow(unused)]
 #![allow(non_snake_case)]
-
+// [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Deserialize, Serialize)]

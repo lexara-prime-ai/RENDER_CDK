@@ -97,9 +97,7 @@ impl Conf {
         // Populate any <blank>/"" fields.
         Self::populate_blank_values(&mut config);
 
-        ////////////////////////
         // Debug logs.
-        ///////////////////////
         LOGGER!(
             "\n -> Reading [CONFIG]\n\n",
             &config.CONVERT_TO_JSON_STRING(),

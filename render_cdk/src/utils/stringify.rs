@@ -1,5 +1,6 @@
 #![allow(missing_docs)]
 #![allow(non_snake_case)]
+// [JSON] parsing.
 use serde::Serialize;
 
 pub trait Stringify {
@@ -8,6 +9,6 @@ pub trait Stringify {
 
 impl<T: Serialize> Stringify for T {
     fn CONVERT_TO_JSON_STRING(&self) -> String {
-        serde_json::to_string(&self).unwrap()
+        serde_json::to_string_pretty(&self).unwrap()
     }
 }
