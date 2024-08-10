@@ -20,7 +20,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.12
+- **Version:** 0.0.13
 - **License:** MIT
 
 ### Current Features
@@ -55,7 +55,7 @@ To use `render_cdk`, include the following in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.12"
+render_cdk = "0.0.13"
 ```
 
 ## Examples

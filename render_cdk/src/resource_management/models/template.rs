@@ -2,8 +2,8 @@
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct Template {
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct Base {
     #[serde(rename = "type")]
     pub type_: String,
     pub name: String,
@@ -33,7 +33,36 @@ pub struct Template {
     pub service_details: Option<ServiceDetails>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct Static {
+    #[serde(rename = "type")]
+    pub type_: String,
+    pub name: String,
+    pub repo: String,
+    #[serde(rename = "autoDeploy")]
+    pub auto_deploy: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub branch: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub image: Option<Image>,
+    #[serde(rename = "buildFilter")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub build_filter: Option<BuildFilter>,
+    #[serde(rename = "rootDir")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub root_dir: Option<String>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "envVars")]
+    pub env_vars: Vec<EnvVar>,
+    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[serde(rename = "secretFiles")]
+    pub secret_files: Vec<SecretFile>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "serviceDetails")]
+    pub service_details: Option<ServiceDetails>,
+}
+
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct Image {
     #[serde(rename = "ownerId")]
     pub owner_id: String,
@@ -43,14 +72,14 @@ pub struct Image {
     pub image_path: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct BuildFilter {
     pub paths: Vec<String>,
     #[serde(rename = "ignoredPaths")]
     pub ignored_paths: Vec<String>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct EnvVar {
     pub key: String,
     pub value: Option<String>,
@@ -58,13 +87,13 @@ pub struct EnvVar {
     pub generate_value: bool,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct SecretFile {
     pub name: String,
     pub content: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ServiceDetails {
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "buildCommand")]
@@ -81,14 +110,14 @@ pub struct ServiceDetails {
     pub routes: Vec<Route>,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct Header {
     pub path: String,
     pub name: String,
     pub value: String,
 }
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct Route {
     #[serde(rename = "type")]
     pub type_: String,
