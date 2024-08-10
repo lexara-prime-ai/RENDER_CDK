@@ -1,27 +1,32 @@
 #![allow(missing_docs)]
 #![allow(unused)]
+// [JSON] parsing.
 extern crate serde;
 extern crate serde_json;
 
-use std::fmt::format;
-
+// Idiomatic [ERROR] handling.
 use anyhow::{Context, Error, Ok, Result};
+
+// HTTP.
 use reqwest::header::{ACCEPT, AUTHORIZATION, CONTENT_TYPE};
 
+// [render_cdk] modules.
 use crate::environment_management::prelude::EnvironmentManager;
 use crate::resource_management::models::template::Template;
 use crate::state_management::state::State;
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
+use crate::LOGGER;
+use colored::Colorize;
 
+// Predefined [CONSTANTS].
 const BASE_URL: &str = "https://api.render.com/v1";
 
 #[derive(Debug)]
 pub struct ServiceManager;
 
 pub trait ServiceManagerOperations {
-    ///////////////////////////////
     /// Querying services.
     fn list_all_services(
         limit: &str,
@@ -43,9 +48,7 @@ pub trait ServiceManagerOperations {
         limit: &str,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
 
-    ////////////////////////////////
-    ///////////////////////////////
-    // /// Creating services.
+    /// Creating services.
     fn create_service(
         deployment_config: Template,
     ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
@@ -63,17 +66,13 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        //////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!("{}{}{}", BASE_URL, "/services?limit=", limit);
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -83,13 +82,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error sending request.")?;
 
-        //////////////////////////////
+        // Validate [RESPONSE] status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -117,12 +116,9 @@ impl ServiceManagerOperations for ServiceManager {
             BASE_URL, "/services?suspended=", service_status, "&limit=", limit
         );
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -132,13 +128,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error sending request.")?;
 
-        //////////////////////////////
+        // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -161,7 +157,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        //////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!(
@@ -169,12 +164,9 @@ impl ServiceManagerOperations for ServiceManager {
             BASE_URL, "/services?name=", service_name, "&type=", service_type
         );
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -184,13 +176,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error sending request.")?;
 
-        //////////////////////////////
+        // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -209,7 +201,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        //////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!(
@@ -217,12 +208,9 @@ impl ServiceManagerOperations for ServiceManager {
             BASE_URL, "/services?region=", service_region, "&limit=", limit
         );
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -232,13 +220,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error sending request.")?;
 
-        //////////////////////////////
+        // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -257,7 +245,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         *****************************************************************/
 
-        //////////////////////////////////
         let client = State::init().await.CLIENT;
         let api_key = State::init().await.API_KEY;
         let api_url = format!(
@@ -265,12 +252,10 @@ impl ServiceManagerOperations for ServiceManager {
             BASE_URL, "/services?env=", service_env, "&limit=", limit
         );
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
+
         let response = client
             .get(api_url)
             .header(ACCEPT, "application/json")
@@ -279,13 +264,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error sending request.")?;
 
-        //////////////////////////////
+        // Validate response status.
         if response.status().is_success() {
             let results = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &results, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &results, LogLevel::SUCCESS);
             Ok(results)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -293,9 +278,7 @@ impl ServiceManagerOperations for ServiceManager {
         }
     }
 
-    ///////////////////////////
     /// Creating services.
-    //////////////////////////
     async fn create_service(deployment_config: Template) -> Result<String, Error> {
         /// Currently supported - Github(https://github.com/username/reponame.git)
         /******************************************************
@@ -330,13 +313,10 @@ impl ServiceManagerOperations for ServiceManager {
         let api_url = format!("{}{}", BASE_URL, "/services");
         let payload = serde_json::to_string_pretty(&deployment_config).unwrap();
 
-        //////////////////////////////
-        ////// [DEBUG] logs. /////////
-        //////////////////////////////
-        LOGGER::INFO("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
-        // LOGGER::INFO("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
-        LOGGER::INFO("[PAYLOAD] -> ", &payload, LogLevel::WARN);
-        //////////////////////////////
+        // [DEBUG] logs.
+        LOGGER!("Processing [REQUEST] -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
+        LOGGER!("[PAYLOAD] -> ", &payload, LogLevel::WARN);
 
         let response = client
             .post(api_url)
@@ -348,13 +328,13 @@ impl ServiceManagerOperations for ServiceManager {
             .await
             .context("Error processing request.")?;
 
-        ////////////////////////////
+        // Validate response status.
         if response.status().is_success() {
             let result = response.text().await.context("Error parsing response.")?;
-            LOGGER::INFO("[RESPONSE]", &result, LogLevel::SUCCESS);
+            LOGGER!("[RESPONSE]", &result, LogLevel::SUCCESS);
             Ok(result)
         } else {
-            LOGGER::INFO("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {:?}",
                 response

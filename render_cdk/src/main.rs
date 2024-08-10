@@ -19,6 +19,9 @@ async fn main() {
     // let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
+    let owner = Info::get_owner_id().await;
+
+    println!("{:?}", owner);
 
     // let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
@@ -42,15 +45,6 @@ async fn main() {
     //         routes: vec![],
     //     }),
     // };
-
-    //////////////////////////
-    // [DEBUG] logs.
-    /////////////////////////
-    // LOGGER::INFO(
-    //     "Deployment Config. : ",
-    //     &deployment_config.to_json_string(),
-    //     LogLevel::WARN,
-    // );
 
     // let service = ServiceManager::create_service(deployment_config)
     //     .await

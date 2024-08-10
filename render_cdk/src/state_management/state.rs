@@ -82,6 +82,23 @@ impl Owner {
                 .filter(|result| result.owner.email == email)
                 .collect();
 
+            /*
+                Expected [RESPONSE].
+
+                [
+                    {
+                        "owner": {
+                        "id": "string",
+                        "name": "string",
+                        "email": "string",
+                        "twoFactorAuthEnabled": true,
+                        "type": "user"
+                        },
+                        "cursor": "string"
+                    }
+                ]
+            */
+
             Ok(filtered_owners)
         } else {
             Err(anyhow::anyhow!(
