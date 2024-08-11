@@ -33,33 +33,40 @@ pub trait ServiceManagerOperations {
     /// Querying services.
     fn list_all_services(
         limit: &str,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
     fn list_services_with_status(
         service_status: &str,
         limit: &str,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
     fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
     fn find_service_by_region(
         service_region: &str,
         limit: &str,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
     fn find_service_by_environment(
         service_env: &str,
         limit: &str,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
     /// Creating services.
-    fn create_service(
+    /// Create and deploy a static site.
+    fn create_static_site(
         deployment_config: Static,
-    ) -> impl std::future::Future<Output = Result<String, Error>> + Send;
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
+    /// Deleting a service.
+    fn delete_service(
+        service_name: &str,
+        service_type: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 }
 
 impl ServiceManagerOperations for ServiceManager {
     /// List all resources.
-    async fn list_all_services(limit: &str) -> Result<String, Error> {
+    async fn list_all_services(limit: &str) -> Result<Value, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -92,7 +99,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(results)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
@@ -104,7 +111,7 @@ impl ServiceManagerOperations for ServiceManager {
 
     /// Finding all suspended services.
     /// Reqquired arguments: <service_status> i.e suspended/not_suspended.
-    async fn list_services_with_status(service_status: &str, limit: &str) -> Result<String, Error> {
+    async fn list_services_with_status(service_status: &str, limit: &str) -> Result<Value, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -140,7 +147,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(results)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
@@ -155,7 +162,7 @@ impl ServiceManagerOperations for ServiceManager {
     async fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
-    ) -> Result<String, Error> {
+    ) -> Result<Value, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -191,7 +198,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(results)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
@@ -202,7 +209,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Finding services by region.
-    async fn find_service_by_region(service_region: &str, limit: &str) -> Result<String, Error> {
+    async fn find_service_by_region(service_region: &str, limit: &str) -> Result<Value, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -238,7 +245,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(results)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
@@ -249,7 +256,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Filtering for environments.
-    async fn find_service_by_environment(service_env: &str, limit: &str) -> Result<String, Error> {
+    async fn find_service_by_environment(service_env: &str, limit: &str) -> Result<Value, Error> {
         /*****************************************************
          *
             curl --request GET \
@@ -285,7 +292,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(results)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
@@ -296,7 +303,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Creating services.
-    async fn create_service(deployment_config: Static) -> Result<String, Error> {
+    async fn create_static_site(deployment_config: Static) -> Result<Value, Error> {
         /// Currently supported - Github(https://github.com/username/reponame.git)
         /******************************************************
          *
@@ -366,13 +373,72 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
 
-            Ok(result)
+            Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
                 "Request failed with status: {:?}",
                 response
             ))
+        }
+    }
+
+    /// Deleting services.
+    async fn delete_service(service_name: &str, service_type: &str) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request DELETE \
+             --url https://api.render.com/v1/services/serviceId \
+             --header 'accept: application/json' \
+             --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let service =
+            ServiceManager::find_service_by_name_and_type(service_name, service_type).await?;
+
+        // Retrieve <service_id>.
+        let service_id = service[0]["service"]["id"].as_str();
+
+        match service_id {
+            Some(id) => {
+                let client = State::init().await.CLIENT;
+                let api_key = State::init().await.API_KEY;
+                let service_url = format!("{}{}{}", BASE_URL, "/services/", id);
+
+                // // [DEBUG] logs.
+                LOGGER!(
+                    "Processing [REQUEST] :: <delete> -> ",
+                    &service_url,
+                    LogLevel::WARN
+                );
+                // LOGGER!("Processing [REQUEST] -> ", &api_key, LogLevel::WARN);
+
+                let response = client
+                    .delete(service_url)
+                    .header(ACCEPT, "application/json")
+                    .header(AUTHORIZATION, format!("Bearer {}", api_key))
+                    .send()
+                    .await
+                    .context("Error sending request.")?;
+
+                // Validate response status.
+                if response.status().is_success() {
+                    let result = response.text().await.context("Error parsing response.")?;
+                    let data: Value = serde_json::from_str(&result)?;
+
+                    LOGGER!("[RESPONSE] -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+
+                    Ok(data)
+                } else {
+                    LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+                    Err(anyhow::anyhow!(
+                        "Request failed with status: {}",
+                        response.status()
+                    ))
+                }
+            }
+            None => Err(anyhow::anyhow!("Service Id not found.")),
         }
     }
 }

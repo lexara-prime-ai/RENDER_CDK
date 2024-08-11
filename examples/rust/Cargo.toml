@@ -22,9 +22,13 @@ path = "src/find_service_by_region.rs"
 
 [[bin]]
 name = "find_service_by_name_and_type"
-path ="src/find_service_by_name_and_type.rs"
+path = "src/find_service_by_name_and_type.rs"
 
 [[bin]]
 name = "find_service_by_environment"
 path = "src/find_service_by_environment.rs"
+
+[[bin]]
+name = "delete_service"
+path = "src/delete_service.rs"
 
