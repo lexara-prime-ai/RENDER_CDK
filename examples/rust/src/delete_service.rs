@@ -1,4 +1,5 @@
 use render_cdk::resource_management::prelude::*;
+use render_cdk::resource_management::models::template::*;
 use tokio::main;
 use tokio::time::{sleep, Duration};
 
@@ -30,8 +31,9 @@ async fn main() {
         .unwrap();
 
     // Wait until the service is deployed.
+    println!("\nWaiting for deployment...");
     sleep(Duration::from_secs(60)).await;
 
     // Deleting services.
-    ServiceManager::delete_service("test_deployment", "static").await;
+    let _ = ServiceManager::delete_service("test_deployment", "static").await;
 }

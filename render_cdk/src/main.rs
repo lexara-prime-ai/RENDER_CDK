@@ -75,6 +75,7 @@ async fn main() {
 #[cfg(test)]
 mod regression_tests {
     use super::*;
+    use tokio::time::{sleep, Duration};
 
     ///////////////////////
     // Service Management.
@@ -133,5 +134,35 @@ mod regression_tests {
         // Validate data.
         let services = result.unwrap().to_string();
         assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_delete_service() {
+        let deployment_config = Static {
+            type_: "static_site".to_owned(),
+            name: "test_deployment".to_owned(),
+            repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+            auto_deploy: "yes".to_owned(),
+            root_dir: Some("./public".to_owned()),
+            service_details: Some(ServiceDetails {
+                build_command: None,
+                publish_path: Some("./".to_owned()),
+                pull_request_previews_enabled: Some("yes".to_owned()),
+                ..Default::default()
+            }),
+            ..Default::default()
+        };
+
+        // Create and Deploy the service.
+        ServiceManager::create_static_site(deployment_config)
+            .await
+            .unwrap();
+
+        // Wait until the service is deployed.
+        dbg!("\nWaiting for deployment...");
+        sleep(Duration::from_secs(60)).await;
+
+        // Deleting services.
+        ServiceManager::delete_service("test_deployment", "static").await;
     }
 }
