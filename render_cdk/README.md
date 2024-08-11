@@ -19,7 +19,7 @@ Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.13"
+render_cdk = "0.0.14"
 ```
 
 * _Alternatively_, running at the `cargo add render_cdk` **root** of your project will also add **render_cdk** to your project.
@@ -44,6 +44,9 @@ async fn main() {
     let services = ServiceManager::find_service_by_environment("image", "10").await;
 
     // Process the services as needed...
+
+    // Deleting services.
+    ServiceManager::delete_service("my_api", "web_service").await;
 }
 ``` 
 
