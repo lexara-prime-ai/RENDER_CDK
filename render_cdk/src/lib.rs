@@ -34,7 +34,7 @@
 //! ```toml
 //! [dependencies]
 //! tokio = { version = "1", features = ["full"] }
-//! render_cdk = "0.1"
+//! render_cdk = "0.14"
 //! ```
 
 //! Examples:
@@ -240,8 +240,15 @@
 //!     # Add more CIDR blocks here...
 //! ]
 //!
-//! # [redis]
+//! [redis]
+//! # name = ""
 //! # plan = "starter"
+//! # cidrBlocks = [
+//! #     { cidrBlock = "0.0.0.0/0", description = "Everywhere" }
+//! #     # { cidrBlock = "0.0.0.0/0", description = "Everywhere" },
+//! #     # { cidrBlock = "0.0.0.0/0", description = "Everywhere" }
+//! #     # Add more CIDR blocks here...
+//! # ]
 //! ```
 //!
 //! ## 6. Deploying the configuration.
@@ -263,6 +270,21 @@
 //!     assert!(result.is_ok());
 //! }
 //! ```
+//!
+//! ## 7. Deleting deployed services.
+//! The following example demonstrates how to delete deployed services.
+//!
+//! ```rust,ignore
+//! use render_cdk::resource_management::prelude::*;
+//! use tokio::main;
+//!
+//! #[main]
+//! async fn main() {
+//!     // Provide the <service_name> and <service_type>...
+//!     ServiceManager::delete_service("test_deployment", "static").await;
+//! }
+//! ```
+//!
 
 pub mod authentication;
 pub mod environment_management;
