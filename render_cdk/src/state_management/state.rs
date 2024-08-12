@@ -90,7 +90,7 @@ impl Owner {
                 .collect();
 
             /*
-                Expected [RESPONSE].
+                Expected <response>.
 
                 [
                     {

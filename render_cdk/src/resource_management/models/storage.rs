@@ -4,17 +4,22 @@
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
-// [render_cdk] modules.
-use crate::iaas::storage::PostgresCidrAllowList;
+// [DEBUG] utils.
+use colored::Colorize;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PostgresConf {
+pub struct DatabaseConf {
     pub databaseName: Option<String>,
     pub databaseUser: Option<String>,
     pub enableHighAvailability: bool,
     pub plan: String,
     pub version: String,
     pub name: Option<String>,
-    pub ownerId: String,
-    pub ipAllowList: Option<Vec<PostgresCidrAllowList>>,
+    pub cidrBlocks: Vec<PostgresCidrAllowList>,
+}
+
+#[derive(Debug, Clone, Deserialize, Serialize)]
+pub struct PostgresCidrAllowList {
+    pub cidrBlock: String,
+    pub description: String,
 }

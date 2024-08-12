@@ -45,7 +45,7 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
     headers = curl_slist_append(headers, "Accept: application/json");
     headers = curl_slist_append(headers, ("Authorization: " + apiKey).c_str());
 
-    std::cout << "\nCreating [REQUEST] -> " << apiUrl << "\n" << std::endl;
+    std::cout << "\nCreating <request> -> " << apiUrl << "\n" << std::endl;
 
     curl_easy_setopt(curl, CURLOPT_URL, apiUrl.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
@@ -61,7 +61,7 @@ std::vector<Owner> Owner::retrieveAuthorizedUsers(const std::string &email,
 
     /////////////////////////////
     // [DEBUG] logs.
-    // std::cout << "[RESPONSE] ->" << readBuffer << std::endl;
+    // std::cout << "<response> ->" << readBuffer << std::endl;
     /////////////////////////////
 
     curl_easy_cleanup(curl);
