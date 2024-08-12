@@ -2,6 +2,7 @@
 use render_cdk::authentication::owner::Info;
 use render_cdk::resource_management::models::template::*;
 use render_cdk::resource_management::prelude::*;
+use render_cdk::utils::config::Conf;
 
 // [DEBUG] utils.
 use render_cdk::logger::prelude::*;
@@ -12,7 +13,7 @@ use tokio::main;
 /// Usage Examples.
 #[main]
 async fn main() {
-    let services = ServiceManager::list_all_services("50").await;
+    // let services = ServiceManager::list_all_services("50").await;
     // let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
@@ -41,7 +42,7 @@ async fn main() {
     //     .unwrap();
 
     // Deploy existing configuration.
-    // Deploy::deploy_configuration("./samples/sample.conf")
+    // ServiceManager::deploy_configuration("./samples/sample.conf")
     //     .await
     //     .unwrap();
 

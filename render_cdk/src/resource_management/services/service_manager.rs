@@ -139,7 +139,7 @@ impl ServiceManagerOperations for ServiceManager {
         );
 
         // [DEBUG] logs.
-        LOGGER!("Processing <request> -> ", &api_url, LogLevel::WARN);
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
         // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
@@ -190,7 +190,7 @@ impl ServiceManagerOperations for ServiceManager {
         );
 
         // [DEBUG] logs.
-        LOGGER!("Processing <request> -> ", &api_url, LogLevel::WARN);
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
         // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
@@ -237,7 +237,7 @@ impl ServiceManagerOperations for ServiceManager {
         );
 
         // [DEBUG] logs.
-        LOGGER!("Processing <request> -> ", &api_url, LogLevel::WARN);
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
         // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
@@ -284,7 +284,7 @@ impl ServiceManagerOperations for ServiceManager {
         );
 
         // [DEBUG] logs.
-        LOGGER!("Processing <request> -> ", &api_url, LogLevel::WARN);
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
         // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
@@ -362,7 +362,7 @@ impl ServiceManagerOperations for ServiceManager {
         .stringify();
 
         // [DEBUG] logs.
-        LOGGER!("Processing <request> -> ", &api_url, LogLevel::WARN);
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
         // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
         LOGGER!("[PAYLOAD] -> ", &payload, LogLevel::WARN);
 
@@ -427,7 +427,7 @@ impl ServiceManagerOperations for ServiceManager {
             .stringify();
 
             LOGGER!(
-                "<request> :: Creating request -> ",
+                "\n<request> :: Creating request -> ",
                 &api_url,
                 LogLevel::WARN
             );
@@ -487,7 +487,7 @@ impl ServiceManagerOperations for ServiceManager {
             .stringify();
 
             LOGGER!(
-                "<request> :: Creating request -> ",
+                "\n<request> :: Creating request -> ",
                 &api_url,
                 LogLevel::WARN
             );
@@ -568,7 +568,7 @@ impl ServiceManagerOperations for ServiceManager {
 
                 // // [DEBUG] logs.
                 LOGGER!(
-                    "Processing <request> :: <delete> -> ",
+                    "\nProcessing <request> :: <delete> -> ",
                     &service_url,
                     LogLevel::WARN
                 );
