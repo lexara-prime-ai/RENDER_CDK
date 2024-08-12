@@ -15,8 +15,8 @@ use std::fs;
 use toml;
 
 // [render_cdk] modules.
-use super::caching::{CacheConf, RedisCidrAllowList};
-use super::storage::{DatabaseConf, PostgresCidrAllowList};
+use crate::resource_management::models::caching::{CacheConf, RedisCidrAllowList};
+use crate::resource_management::models::storage::{DatabaseConf, PostgresCidrAllowList};
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
@@ -88,7 +88,7 @@ impl Conf {
         if config.database.is_none() && config.redis.is_none() {
             LOGGER!(
                 "\nFound empty configuration file -> ",
-                &config.CONVERT_TO_JSON_STRING(),
+                &config.stringify(),
                 LogLevel::CRITICAL
             );
             return Err(anyhow::anyhow!("Found empty configuration file!"));
@@ -100,7 +100,7 @@ impl Conf {
         // Debug logs.
         LOGGER!(
             "\n -> Reading [CONFIG]\n\n",
-            &config.CONVERT_TO_JSON_STRING(),
+            &config.stringify(),
             LogLevel::SUCCESS
         );
 
@@ -113,7 +113,6 @@ impl Conf {
 
 #[cfg(test)]
 mod config_test {
-    // use crate::iaas::Conf;
     use super::*;
 
     // Constants.
@@ -148,7 +147,7 @@ mod config_test {
     #[test]
     fn test_conf_to_json_string() {
         let config = Conf::read_configuration_file(&CONFIG_PATH).unwrap();
-        let result = config.CONVERT_TO_JSON_STRING();
+        let result = config.stringify();
         // Validate that the output is a String.
         assert_eq!(std::any::type_name_of_val(&result), "alloc::string::String");
     }

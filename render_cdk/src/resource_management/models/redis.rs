@@ -4,15 +4,16 @@
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct CacheConf {
-    pub name: Option<String>,
-    pub plan: String,
-    pub cidrBlocks: Vec<RedisCidrAllowList>,
-}
+// [render_cdk] modules.
+use super::caching::RedisCidrAllowList;
+
+// [DEBUG] utils.
+use colored::Colorize;
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct RedisCidrAllowList {
-    pub cidrBlock: String,
-    pub description: String,
+pub struct RedisConf {
+    pub name: Option<String>,
+    pub plan: String,
+    pub ownerId: String,
+    pub ipAllowList: Option<Vec<RedisCidrAllowList>>,
 }

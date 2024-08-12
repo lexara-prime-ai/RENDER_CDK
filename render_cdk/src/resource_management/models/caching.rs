@@ -4,19 +4,18 @@
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
+// [DEBUG] utils.
+use colored::Colorize;
+
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct DatabaseConf {
-    pub databaseName: Option<String>,
-    pub databaseUser: Option<String>,
-    pub enableHighAvailability: bool,
-    pub plan: String,
-    pub version: String,
+pub struct CacheConf {
     pub name: Option<String>,
-    pub cidrBlocks: Vec<PostgresCidrAllowList>,
+    pub plan: String,
+    pub cidrBlocks: Vec<RedisCidrAllowList>,
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
-pub struct PostgresCidrAllowList {
+pub struct RedisCidrAllowList {
     pub cidrBlock: String,
     pub description: String,
 }
