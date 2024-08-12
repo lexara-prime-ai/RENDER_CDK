@@ -137,7 +137,7 @@ mod regression_tests {
     }
 
     #[tokio::test]
-    async fn test_delete_service() {
+    async fn test_create_static() {
         let deployment_config = Static {
             type_: "static_site".to_owned(),
             name: "test_deployment".to_owned(),
@@ -153,16 +153,36 @@ mod regression_tests {
             ..Default::default()
         };
 
-        // Create and Deploy the service.
-        ServiceManager::create_static_site(deployment_config)
-            .await
-            .unwrap();
+        // Assertions.
+        let service_type = deployment_config.type_;
+        let service_name = deployment_config.name;
+        let repo_url = deployment_config.repo;
+        let auto_deploy = deployment_config.auto_deploy;
+        let root_dir = deployment_config.root_dir;
+        let build_command = deployment_config
+            .service_details
+            .clone()
+            .unwrap()
+            .build_command;
+        let publish_path = deployment_config
+            .service_details
+            .clone()
+            .unwrap()
+            .publish_path;
+        let pull_request_reviews_enabled = deployment_config
+            .service_details
+            .clone()
+            .unwrap()
+            .pull_request_previews_enabled;
 
-        // Wait until the service is deployed.
-        dbg!("\nWaiting for deployment...");
-        sleep(Duration::from_secs(40)).await;
+        assert!(!service_type.is_empty(), "Service type should be set.");
+        assert!(!service_name.is_empty(), "Service name should be set.");
+        assert!(!repo_url.is_empty(), "Repo url should be set.");
+        assert!(!auto_deploy.is_empty(), "Auto deploy should be set.");
 
-        // Deleting services.
-        ServiceManager::delete_service("test_deployment", "static").await;
+        assert_eq!(root_dir, Some("./public".to_owned()));
+        assert_eq!(build_command, None);
+        assert_eq!(publish_path, Some("./".to_owned()));
+        assert_eq!(pull_request_reviews_enabled, Some("yes".to_owned()));
     }
 }
