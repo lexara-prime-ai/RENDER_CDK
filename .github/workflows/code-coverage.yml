@@ -37,11 +37,12 @@ jobs:
         name: coverage-report
         path: ./render_cdk/tarpaulin-report.xml
 
-    # To do -> Implement publish to [Codecov]
-    # - name: Publish coverage to Codecov
-    #   uses: codecov/codecov-action@v3
-    #   with:
-    #     files: ./tarpaulin-report.xml
-    #     flags: unittests
-    #     name: codecov-umbrella
-    #     fail_ci_if_error: true
+    # Publish to [Codecov]
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
+        # files: ./tarpaulin-report.xml
+        # flags: unittests
+        # name: codecov-umbrella
+        # fail_ci_if_error: true
