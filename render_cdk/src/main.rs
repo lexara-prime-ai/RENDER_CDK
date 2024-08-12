@@ -160,7 +160,7 @@ mod regression_tests {
 
         // Wait until the service is deployed.
         dbg!("\nWaiting for deployment...");
-        sleep(Duration::from_secs(60)).await;
+        sleep(Duration::from_secs(40)).await;
 
         // Deleting services.
         ServiceManager::delete_service("test_deployment", "static").await;
