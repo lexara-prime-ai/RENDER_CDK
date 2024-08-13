@@ -34,7 +34,7 @@
 //! ```toml
 //! [dependencies]
 //! tokio = { version = "1", features = ["full"] }
-//! render_cdk = "0.14"
+//! render_cdk = "0.0.16"
 //! ```
 
 //! Examples:
@@ -104,26 +104,19 @@
 //!
 //! #[main]
 //! async fn main() {
-//!     let deployment_config = template::Template {
+//!     let deployment_config = Template {
 //!         type_: "static_site".to_owned(),
 //!         name: "test_deployment".to_owned(),
-//!         owner_id: "owner123",
 //!         repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
 //!         auto_deploy: "yes".to_owned(),
-//!         branch: None,
-//!         image: None,
-//!         build_filter: None,
 //!         root_dir: Some("./public".to_owned()),
-//!         env_vars: vec![],
-//!         secret_files: vec![],
 //!         service_details: Some(ServiceDetails {
-//!             build_command: None,
-//!             headers: vec![],
 //!             publish_path: Some("./".to_owned()),
 //!             pull_request_previews_enabled: Some("yes".to_owned()),
-//!             routes: vec![],
+//!             ..Default::default()
 //!         }),
-//!     };
+//!         ..Default::default()
+//!      };
 //!
 //!
 //!     let service = ServiceManager::create_service(deployment_config)
@@ -138,7 +131,7 @@
 //!
 //! ```rust,ignore
 //! #[main]
-//! asycn fn main() {
+//! async fn main() {
 //!     let template_with_image = Template {
 //!         type_: "static_site".to_owned(),
 //!         name: "test".to_owned(),

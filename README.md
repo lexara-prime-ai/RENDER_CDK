@@ -20,7 +20,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.15
+- **Version:** 0.0.16
 - **License:** MIT
 
 ### Current Features
@@ -55,158 +55,10 @@ To use `render_cdk`, include the following in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.15"
+render_cdk = "0.0.16"
 ```
 
-## Examples
-
-### Querying for Deployed Services
-
-The following examples demonstrate how to query for various deployed services using the `ServiceManager`.
-
-```rust
-use render_cdk::iaas::prelude::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let services = ServiceManager::list_services_with_status("suspended", "50").await;
-    let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
-    let services = ServiceManager::find_service_by_environment("image", "10").await;
-}
-```
-
-### Using Configuration Files for Resource Provisioning
-The following section demonstrates how to use a simple configuration file to provision resources on 
-Render Cloud.
-
-```rust
-use render_cdk::resource_management::prelude::*;
-
-#[main]
-async fn main() {
-    let config = config::Conf::read_configuration_file().unwrap();
-    println!("Sample Configuration: {:?}\n", config);
-}
-```
-
-### Retrieving the Authorized User's Id
-The Owner Id is used to tie the deployed resource to the _Acting Service Principal_/__*Render Account Owner*__.
-
-```rust
-use crate::authentication::owner::*;
-use tokio::main;
-
-#[main]
-async fn main() {
-    let owner_id = Info::get_owner_id().await;
-}
-```
-
-### Creating Services
-#### Sample Deployment Configuration
-
-```rust
-use render_cdk::resource_management::prelude::*;
-
-#[main]
-async fn main() {
-    let deployment_config = template::Template {
-        type_: "static_site".to_owned(),
-        name: "test_deployment".to_owned(),
-        owner_id: "owner_id_value".to_owned(),
-        repo: "https://github.com/<username>/<repo_name>".to_owned(),
-        auto_deploy: "yes".to_owned(),
-        branch: None,
-        image: None,
-        build_filter: None,
-        root_dir: Some("./public".to_owned()),
-        env_vars: vec![],
-        secret_files: vec![],
-        service_details: Some(ServiceDetails {
-            build_command: None,
-            headers: vec![],
-            publish_path: Some("./".to_owned()),
-            pull_request_previews_enabled: Some("yes".to_owned()),
-            routes: vec![],
-        }),
-    };
-
-    let service = ServiceManager::create_service(deployment_config).await.unwrap();
-    println!("Service Created: {:?}", service);
-}
-```
-
-#### Sample Template with Image
-
-```rust
-use render_cdk::resource_management::prelude::*;
-
-#[main]
-async fn main() {
-    let template_with_image = Template {
-        type_: "static_site".to_owned(),
-        name: "test".to_owned(),
-        owner_id: "owner123".to_owned(),
-        repo: "httpe".to_owned(),
-        auto_deploy: true,
-        branch: Some("main".to_owned()),
-        image: Some(Image {
-            owner_id: "owner123".to_owned(),
-            registry_credential_id: "cred123".to_owned(),
-            image_path: "path/to/image".to_owned(),
-        }),
-        build_filter: BuildFilter { /* Initialize your fields here */ },
-        root_dir: "./".to_owned(),
-        env_vars: vec![
-            EnvVar {
-                key: "EXAMPLE".to_owned(),
-                value: Some("EXAMPLE".to_owned()),
-                generate_value: false,
-            }
-        ],
-        secret_files: vec![],
-        service_details: ServiceDetails { /* Initialize your fields here */ },
-    };
-}
-```
-
-#### Sample Template without Image
-
-```rust
-use render_cdk::resource_management::prelude::*;
-
-#[main]
-async fn main() {
-    let template_without_image = Template {
-        type_: "static_site".to_owned(),
-        name: "test".to_owned(),
-        owner_id: "test".to_owned(),
-        repo: "httpe".to_owned(),
-        auto_deploy: true,
-        branch: None,
-        image: None,
-        build_filter: BuildFilter { /* Initialize your fields here */ },
-        root_dir: "./".to_owned(),
-        env_vars: vec![],
-        secret_files: vec![],
-        service_details: ServiceDetails { /* Initialize your fields here */ },
-    };
-}
-```
-
-### Logging
-The logging module has also been made _public_ if you prefer making all application _logs_ consistent.
-
-```rust
-use render_cdk::logger::prelude::*;
-
-#[main]
-async fn main() {
-    LOGGER::INFO("Deployment Config. : ", &deployment_config.to_json_string(), LogLevel::WARN);
-}
-```
+* Examples can be found in the:  [Technical Documentation](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/render_cdk/README.md)
 
 ## Contributing
 
