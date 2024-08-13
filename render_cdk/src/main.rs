@@ -25,21 +25,26 @@ async fn main() {
 
     // let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
-    let deployment_config = Template {
-        type_: "static_site".to_owned(),
-        name: "test_deployment".to_owned(),
-        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-        auto_deploy: "yes".to_owned(),
-        root_dir: Some("./public".to_owned()),
+    /*
 
-        service_details: Some(ServiceDetails {
-            build_command: None,
-            publish_path: Some("./".to_owned()),
-            pull_request_previews_enabled: Some("yes".to_owned()),
-            ..Default::default()
-        }),
-        ..Default::default()
-    };
+        * THE FOLLOWING EXAMPLE DEPLOYS A SIMPLE [STATIC] SITE.
+        > REPO_URL - https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE
+
+    */
+
+    // let deployment_config = Template {
+    //     type_: "static_site".to_owned(),
+    //     name: "test_deployment".to_owned(),
+    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+    //     auto_deploy: "yes".to_owned(),
+    //     root_dir: Some("./public".to_owned()),
+    //     service_details: Some(ServiceDetails {
+    //         publish_path: Some("./".to_owned()),
+    //         pull_request_previews_enabled: Some("yes".to_owned()),
+    //         ..Default::default()
+    //     }),
+    //     ..Default::default()
+    // };
 
     /*
         <build_command>
@@ -55,6 +60,34 @@ async fn main() {
 
     */
 
+    /*
+
+        * THE FOLLOWING EXAMPLE DEPLOYS A SIMPLE [WEB] SERVICE(NodeJs).
+        > REPO_URL - https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE
+
+    */
+
+    // let deployment_config = Template {
+    //     type_: "web_service".to_owned(),
+    //     name: "test_deployment".to_owned(),
+    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE".to_owned(),
+    //     auto_deploy: "yes".to_owned(),
+    //     root_dir: Some("./".to_owned()),
+    //     service_details: Some(ServiceDetails {
+    //         region: "oregon".to_owned(),
+    //         plan: "starter".to_owned(),
+    //         runtime: "node".to_owned(),
+    //         num_instances: 1,
+    //         env_specific_details: Some(EnvSpecificDetails {
+    //             build_command: Some("yarn".to_owned()),
+    //             start_command: Some("npm start".to_owned()),
+    //         }),
+    //         pull_request_previews_enabled: Some("yes".to_owned()),
+    //         ..Default::default()
+    //     }),
+    //     ..Default::default()
+    // };
+
     // ServiceManager::create_static_site(deployment_config)
     //     .await
     //     .unwrap();
@@ -65,7 +98,9 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    ServiceManager::delete_service("test_deployment", "static").await;
+    // ServiceManager::delete_service("test_deployment", "static").await;
+    // ServiceManager::delete_service("test_deployment", "web_service").await;
+
 }
 
 /// Mandatory Regression Tests.

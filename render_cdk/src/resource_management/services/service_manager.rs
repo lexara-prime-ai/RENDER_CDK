@@ -348,8 +348,8 @@ impl ServiceManagerOperations for ServiceManager {
         let payload = Base {
             type_: deployment_config.type_,
             name: deployment_config.name,
-            owner_id: Info::get_owner_id().await,
             repo: deployment_config.repo,
+            owner_id: Info::get_owner_id().await,
             auto_deploy: deployment_config.auto_deploy,
             branch: deployment_config.branch,
             image: deployment_config.image,

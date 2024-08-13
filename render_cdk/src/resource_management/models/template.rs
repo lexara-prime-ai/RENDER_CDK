@@ -49,9 +49,6 @@ pub struct Base {
     pub autoscaling: Option<AutoScaling>,
 }
 
-// #[serde(rename = "ownerId")]
-//     pub owner_id: String,
-
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct Template {
     #[serde(rename = "type")]
@@ -133,6 +130,9 @@ pub struct SecretFile {
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ServiceDetails {
+    pub region: String,
+    pub plan: String,
+
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "buildCommand")]
     pub build_command: Option<String>,
@@ -152,15 +152,28 @@ pub struct ServiceDetails {
     #[serde(rename = "pullRequestPreviewsEnabled")]
     pub pull_request_previews_enabled: Option<String>,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
-    pub runtime: Option<String>,
+    pub runtime: String,
 
-    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "numInstances")]
-    pub num_instances: Option<String>,
+    pub num_instances: i32,
 
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub routes: Vec<Route>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "envSpecificDetails")]
+    pub env_specific_details: Option<EnvSpecificDetails>,
+}
+
+#[derive(Debug, Default, Clone, Deserialize, Serialize)]
+pub struct EnvSpecificDetails {
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "buildCommand")]
+    pub build_command: Option<String>,
+
+    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "startCommand")]
+    pub start_command: Option<String>,
 }
 
 // Autoscaling properties.
