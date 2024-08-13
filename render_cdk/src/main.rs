@@ -18,24 +18,42 @@ async fn main() {
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
+
+    // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
+    // println!("{}", owner);
 
     // let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
-    // let deployment_config = Static {
-    //     type_: "static_site".to_owned(),
-    //     name: "test_deployment".to_owned(),
-    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-    //     auto_deploy: "yes".to_owned(), // By default, Render automatically deploys your service whenever you update its code or configuration.
-    //     root_dir: Some("./public".to_owned()),
-    //     service_details: Some(ServiceDetails {
-    //         build_command: None, // Render runs this command to build your app before each deploy e.g npm run build, yarn build.
-    //         publish_path: Some("./".to_owned()), // This will translate to /public/
-    //         pull_request_previews_enabled: Some("yes".to_owned()),
-    //         ..Default::default()
-    //     }),
-    //     ..Default::default()
-    // };
+    let deployment_config = Template {
+        type_: "static_site".to_owned(),
+        name: "test_deployment".to_owned(),
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        auto_deploy: "yes".to_owned(),
+        root_dir: Some("./public".to_owned()),
+
+        service_details: Some(ServiceDetails {
+            build_command: None,
+            publish_path: Some("./".to_owned()),
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
+
+    /*
+        <build_command>
+        Render runs this command to build your app before each deploy
+        e.g npm run build, yarn build
+
+        <publish_path>
+        The path where the static site will be published
+        This will translate to /public/
+
+        <pull_request_previews_enabled>
+        Whether pull request previews are enabled for this deployment.
+
+    */
 
     // ServiceManager::create_static_site(deployment_config)
     //     .await
@@ -47,7 +65,7 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    // ServiceManager::delete_service("test_deployment", "static").await;
+    ServiceManager::delete_service("test_deployment", "static").await;
 }
 
 /// Mandatory Regression Tests.
@@ -137,7 +155,7 @@ mod regression_tests {
 
     #[tokio::test]
     async fn test_create_static() {
-        let deployment_config = Static {
+        let deployment_config = Template {
             type_: "static_site".to_owned(),
             name: "test_deployment".to_owned(),
             repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
