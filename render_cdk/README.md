@@ -114,7 +114,7 @@ async fn main() {
     };
 
     // Deploy the static site with the specified configuration.
-    ServiceManager::create_static_site(deployment_config).await.unwrap();
+    ServiceManager::create_service(deployment_config).await.unwrap();
 }
 ```
 

@@ -26,7 +26,7 @@ async fn main() {
     };
 
     // Create and Deploy the service.
-    ServiceManager::create_static_site(deployment_config)
+    ServiceManager::create_service(deployment_config)
         .await
         .unwrap();
 

@@ -1,4 +1,5 @@
 #![allow(missing_docs)]
+#![allow(unused)]
 // [JSON] parsing.
 use serde::{Deserialize, Serialize};
 
@@ -12,8 +13,9 @@ pub struct Base {
     #[serde(rename = "ownerId")]
     pub owner_id: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "autoDeploy")]
-    pub auto_deploy: String,
+    pub auto_deploy: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
@@ -56,8 +58,9 @@ pub struct Template {
     pub name: String,
     pub repo: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "autoDeploy")]
-    pub auto_deploy: String,
+    pub auto_deploy: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
@@ -130,8 +133,10 @@ pub struct SecretFile {
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ServiceDetails {
-    pub region: String,
-    pub plan: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "buildCommand")]
@@ -152,10 +157,12 @@ pub struct ServiceDetails {
     #[serde(rename = "pullRequestPreviewsEnabled")]
     pub pull_request_previews_enabled: Option<String>,
 
-    pub runtime: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "numInstances")]
-    pub num_instances: i32,
+    pub num_instances: Option<i32>,
 
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub routes: Vec<Route>,
@@ -216,4 +223,68 @@ pub struct Route {
     pub source: String,
     pub destination: String,
     pub priority: u32,
+}
+
+#[cfg(test)]
+mod model_tests {
+    use super::*;
+
+    #[test]
+    fn test_template_model() {
+        let service_details = ServiceDetails {
+            region: Some("oregon".to_owned()),
+            plan: Some("starter".to_owned()),
+            build_command: Some("yarn".to_owned()),
+            pre_deploy_command: None,
+            headers: vec![],
+            publish_path: Some("./".to_owned()),
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            runtime: Some("node".to_owned()),
+            num_instances: Some(1),
+            routes: vec![],
+            env_specific_details: Some(EnvSpecificDetails {
+                build_command: Some("yarn".to_owned()),
+                start_command: Some("npm start".to_owned()),
+            }),
+        };
+
+        let image = Image {
+            owner_id: "usr-a1b2c3d4".to_owned(),
+            registry_credential_id: "33ef574274c011e4bea40242ac11001b".to_owned(),
+            image_path: "/var/lib/docker".to_owned(),
+        };
+
+        let autoscaling = AutoScaling {
+            min: 1,
+            max: 2,
+            criteria: Some(Criteria {
+                cpu: Some(Cpu { percentage: 60 }),
+                memory: Some(Memory { percentage: 60 }),
+            }),
+        };
+
+        let template = Template {
+            type_: "web_service".to_owned(),
+            name: "test_web_service".to_owned(),
+            repo: "https://github.com/<username>/<repo>".to_owned(),
+            auto_deploy: Some("yes".to_owned()),
+            branch: Some("master".to_owned()),
+            image: Some(image),
+            build_filter: None,
+            root_dir: Some("./".to_owned()),
+            env_vars: vec![],
+            secret_files: vec![],
+            service_details: Some(service_details),
+            health_check_path: Some("".to_owned()),
+            autoscaling: Some(autoscaling),
+        };
+
+        assert_eq!(template.type_, "web_service".to_owned());
+        assert_eq!(template.name, "test_web_service".to_owned());
+        assert_eq!(template.auto_deploy, Some("yes".to_owned()));
+        assert_eq!(
+            template.repo,
+            "https://github.com/<username>/<repo>".to_owned()
+        );
+    }
 }
