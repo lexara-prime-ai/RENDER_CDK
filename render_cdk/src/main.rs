@@ -89,10 +89,10 @@ async fn main() {
     };
 
     // DEPLOY A <static_site>.
-    ServiceManager::create_service(static_site).await.unwrap();
+    // ServiceManager::create_service(static_site).await.unwrap();
 
     // DEPLOY A <web_service>.
-    ServiceManager::create_service(web_service).await.unwrap();
+    // ServiceManager::create_service(web_service).await.unwrap();
 
     // Deploy existing configuration.
     // ServiceManager::deploy_configuration("./samples/sample.conf")
@@ -100,9 +100,8 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    ServiceManager::delete_service("test_deployment", "static").await;
-    ServiceManager::delete_service("test_deployment2", "static").await;
-
+    ServiceManager::delete_service("test_static", "static").await;
+    ServiceManager::delete_service("test_web", "static").await;
     // ServiceManager::delete_service("test_deployment", "web_service").await;
 }
 
