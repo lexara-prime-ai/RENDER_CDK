@@ -58,7 +58,7 @@ pub trait ServiceManagerOperations {
 
     /// Creating services.
     /// Create and deploy a static site.
-    fn create_static_site(
+    fn create_service(
         deployment_config: Template,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
@@ -313,7 +313,7 @@ impl ServiceManagerOperations for ServiceManager {
     }
 
     /// Creating services.
-    async fn create_static_site(deployment_config: Template) -> Result<Value, Error> {
+    async fn create_service(deployment_config: Template) -> Result<Value, Error> {
         /// Currently supported - Github(https://github.com/username/reponame.git)
         /******************************************************
          *

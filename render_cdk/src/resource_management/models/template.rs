@@ -12,8 +12,9 @@ pub struct Base {
     #[serde(rename = "ownerId")]
     pub owner_id: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "autoDeploy")]
-    pub auto_deploy: String,
+    pub auto_deploy: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
@@ -56,8 +57,9 @@ pub struct Template {
     pub name: String,
     pub repo: String,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "autoDeploy")]
-    pub auto_deploy: String,
+    pub auto_deploy: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     pub branch: Option<String>,
@@ -130,8 +132,10 @@ pub struct SecretFile {
 
 #[derive(Debug, Default, Clone, Deserialize, Serialize)]
 pub struct ServiceDetails {
-    pub region: String,
-    pub plan: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub region: Option<String>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub plan: Option<String>,
 
     #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "buildCommand")]
@@ -152,10 +156,12 @@ pub struct ServiceDetails {
     #[serde(rename = "pullRequestPreviewsEnabled")]
     pub pull_request_previews_enabled: Option<String>,
 
-    pub runtime: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub runtime: Option<String>,
 
+    #[serde(skip_serializing_if = "Option::is_none")]
     #[serde(rename = "numInstances")]
-    pub num_instances: i32,
+    pub num_instances: Option<i32>,
 
     #[serde(skip_serializing_if = "Vec::is_empty")]
     pub routes: Vec<Route>,

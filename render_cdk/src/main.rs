@@ -32,19 +32,19 @@ async fn main() {
 
     */
 
-    // let deployment_config = Template {
-    //     type_: "static_site".to_owned(),
-    //     name: "test_deployment".to_owned(),
-    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-    //     auto_deploy: "yes".to_owned(),
-    //     root_dir: Some("./public".to_owned()),
-    //     service_details: Some(ServiceDetails {
-    //         publish_path: Some("./".to_owned()),
-    //         pull_request_previews_enabled: Some("yes".to_owned()),
-    //         ..Default::default()
-    //     }),
-    //     ..Default::default()
-    // };
+    let static_site = Template {
+        type_: "static_site".to_owned(),
+        name: "test_static".to_owned(),
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+        auto_deploy: Some("yes".to_owned()),
+        root_dir: Some("./public".to_owned()),
+        service_details: Some(ServiceDetails {
+            publish_path: Some("./".to_owned()),
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
 
     /*
         <build_command>
@@ -67,30 +67,36 @@ async fn main() {
 
     */
 
-    // let deployment_config = Template {
-    //     type_: "web_service".to_owned(),
-    //     name: "test_deployment".to_owned(),
-    //     repo: "https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE".to_owned(),
-    //     auto_deploy: "yes".to_owned(),
-    //     root_dir: Some("./".to_owned()),
-    //     service_details: Some(ServiceDetails {
-    //         region: "oregon".to_owned(),
-    //         plan: "starter".to_owned(),
-    //         runtime: "node".to_owned(),
-    //         num_instances: 1,
-    //         env_specific_details: Some(EnvSpecificDetails {
-    //             build_command: Some("yarn".to_owned()),
-    //             start_command: Some("npm start".to_owned()),
-    //         }),
-    //         pull_request_previews_enabled: Some("yes".to_owned()),
-    //         ..Default::default()
-    //     }),
-    //     ..Default::default()
-    // };
+    let web_service = Template {
+        type_: "web_service".to_owned(),
+        name: "test_web".to_owned(),
+        repo: "https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE".to_owned(),
+        auto_deploy: Some("yes".to_owned()),
+        root_dir: Some("./".to_owned()),
+        service_details: Some(ServiceDetails {
+            region: Some("oregon".to_owned()),
+            plan: Some("starter".to_owned()),
+            runtime: Some("node".to_owned()),
+            num_instances: Some(1),
+            env_specific_details: Some(EnvSpecificDetails {
+                build_command: Some("yarn".to_owned()),
+                start_command: Some("npm start".to_owned()),
+            }),
+            pull_request_previews_enabled: Some("yes".to_owned()),
+            ..Default::default()
+        }),
+        ..Default::default()
+    };
 
-    // ServiceManager::create_static_site(deployment_config)
-    //     .await
-    //     .unwrap();
+    // DEPLOY A <static_site>.
+    ServiceManager::create_service(static_site)
+        .await
+        .unwrap();
+
+    // DEPLOY A <web_service>.
+    ServiceManager::create_service(web_service)
+        .await
+        .unwrap();
 
     // Deploy existing configuration.
     // ServiceManager::deploy_configuration("./samples/sample.conf")
@@ -98,9 +104,10 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    // ServiceManager::delete_service("test_deployment", "static").await;
-    // ServiceManager::delete_service("test_deployment", "web_service").await;
+    ServiceManager::delete_service("test_deployment", "static").await;
+    ServiceManager::delete_service("test_deployment2", "static").await;
 
+    // ServiceManager::delete_service("test_deployment", "web_service").await;
 }
 
 /// Mandatory Regression Tests.
@@ -194,7 +201,7 @@ mod regression_tests {
             type_: "static_site".to_owned(),
             name: "test_deployment".to_owned(),
             repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-            auto_deploy: "yes".to_owned(),
+            auto_deploy: Some("yes".to_owned()),
             root_dir: Some("./public".to_owned()),
             service_details: Some(ServiceDetails {
                 build_command: None,
@@ -230,7 +237,7 @@ mod regression_tests {
         assert!(!service_type.is_empty(), "Service type should be set.");
         assert!(!service_name.is_empty(), "Service name should be set.");
         assert!(!repo_url.is_empty(), "Repo url should be set.");
-        assert!(!auto_deploy.is_empty(), "Auto deploy should be set.");
+        assert!(auto_deploy.is_some(), "Auto deploy should be set.");
 
         assert_eq!(root_dir, Some("./public".to_owned()));
         assert_eq!(build_command, None);
