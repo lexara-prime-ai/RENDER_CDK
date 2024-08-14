@@ -89,14 +89,10 @@ async fn main() {
     };
 
     // DEPLOY A <static_site>.
-    ServiceManager::create_service(static_site)
-        .await
-        .unwrap();
+    ServiceManager::create_service(static_site).await.unwrap();
 
     // DEPLOY A <web_service>.
-    ServiceManager::create_service(web_service)
-        .await
-        .unwrap();
+    ServiceManager::create_service(web_service).await.unwrap();
 
     // Deploy existing configuration.
     // ServiceManager::deploy_configuration("./samples/sample.conf")
