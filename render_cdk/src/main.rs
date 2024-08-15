@@ -100,8 +100,8 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    ServiceManager::delete_service("test_deployment", "static").await;
-    ServiceManager::delete_service("test_deployment2", "static").await;
+    // ServiceManager::delete_service("test_deployment", "static").await;
+    // ServiceManager::delete_service("test_deployment2", "static").await;
 
     // ServiceManager::delete_service("test_deployment", "web_service").await;
 }
