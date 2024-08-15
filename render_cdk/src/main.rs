@@ -5,10 +5,13 @@ use render_cdk::resource_management::prelude::*;
 use render_cdk::utils::config::Conf;
 
 // [DEBUG] utils.
+use colored::Colorize;
 use render_cdk::logger::prelude::*;
+use render_cdk::LOGGER;
 
 use std::default::Default;
 use tokio::main;
+use tokio::time::{sleep, Duration};
 
 /// Usage Examples.
 #[main]
@@ -100,10 +103,16 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    // ServiceManager::delete_service("test_deployment", "static").await;
-    // ServiceManager::delete_service("test_deployment2", "static").await;
+    // Wait for the specified amount of time before deleting the deployed resources.
+    LOGGER!(
+        ":: [Status] ::",
+        "Waiting for deployment...",
+        LogLevel::WARN
+    );
 
-    // ServiceManager::delete_service("test_deployment", "web_service").await;
+    sleep(Duration::from_secs(150)).await;
+    ServiceManager::delete_service("test_static", "static").await;
+    ServiceManager::delete_service("test_web", "web_service").await;
 }
 
 /// Mandatory Regression Tests.
