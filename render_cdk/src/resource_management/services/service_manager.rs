@@ -45,6 +45,12 @@ pub trait ServiceManagerOperations {
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    fn find_postgres_instance_by_name(
+        name: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     fn list_services_with_status(
         service_status: &str,
         limit: &str,
@@ -131,7 +137,7 @@ impl ServiceManagerOperations for ServiceManager {
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -171,7 +177,7 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            // Check if the response contains a list of services.
+            // Check if the response contains a list of databases.
             if data.is_array() && data.as_array().unwrap().is_empty() {
                 LOGGER!(
                     "<response> ->",
@@ -179,13 +185,77 @@ impl ServiceManagerOperations for ServiceManager {
                     LogLevel::WARN
                 );
             } else {
-                LOGGER!("<response> ->", format!("{}", data), LogLevel::SUCCESS);
+                LOGGER!("<response> ->", format!("{:#?}", data), LogLevel::SUCCESS);
             }
 
             Ok(data)
         } else {
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
+                response.status()
+            ))
+        }
+    }
+
+    async fn find_postgres_instance_by_name(
+        name: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url 'https://api.render.com/v1/postgres?name=mydb&includeReplicas=true&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}{}{}",
+            BASE_URL,
+            "/postgres?name=",
+            name,
+            "&includeReplicas=",
+            include_replicas,
+            "&limit=",
+            limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
+
+        let response = client
+            .get(api_url)
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error processing request.")?;
+
+        // Validate response.
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&results)?;
+
+            // Check if response contains a list of databases.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "🛢 :: No <postgres> instances found.",
+                    LogLevel::WARN
+                )
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
+
+            Ok(data)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -227,6 +297,7 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
+            // Check if the response contains a list of services.
             if data.is_array() && data.as_array().unwrap().is_empty() {
                 LOGGER!(
                     "<reponse> -> ",
@@ -241,7 +312,7 @@ impl ServiceManagerOperations for ServiceManager {
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -286,13 +357,22 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
 
             Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -333,13 +413,22 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
 
             Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -380,13 +469,22 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
 
             Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {}",
+                "Request failed with status: {:#?}",
                 response.status()
             ))
         }
@@ -469,7 +567,7 @@ impl ServiceManagerOperations for ServiceManager {
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
             Err(anyhow::anyhow!(
-                "Request failed with status: {:?}",
+                "Request failed with status: {:#?}",
                 response
             ))
         }
@@ -551,7 +649,7 @@ impl ServiceManagerOperations for ServiceManager {
                 );
 
                 results.push(Err(anyhow::anyhow!(
-                    "Request failed with status: {:?}",
+                    "Request failed with status: {:#?}",
                     response
                 )));
             }
@@ -604,7 +702,7 @@ impl ServiceManagerOperations for ServiceManager {
                     LogLevel::CRITICAL
                 );
                 results.push(Err(anyhow::anyhow!(
-                    "Request failed with status: {:?}",
+                    "Request failed with status: {:#?}",
                     response
                 )));
             }
@@ -675,7 +773,7 @@ impl ServiceManagerOperations for ServiceManager {
                 } else {
                     LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
                     Err(anyhow::anyhow!(
-                        "Request failed with status: {}",
+                        "Request failed with status: {:#?}",
                         response.status()
                     ))
                 }
