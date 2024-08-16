@@ -5,16 +5,20 @@ use render_cdk::resource_management::prelude::*;
 use render_cdk::utils::config::Conf;
 
 // [DEBUG] utils.
+use colored::Colorize;
 use render_cdk::logger::prelude::*;
+use render_cdk::LOGGER;
 
 use std::default::Default;
 use tokio::main;
+use tokio::time::{sleep, Duration};
 
 /// Usage Examples.
 #[main]
 async fn main() {
     // let services = ServiceManager::list_all_services("50").await;
-    // let services = ServiceManager::list_services_with_status("suspended", "50").await;
+    // let databases = ServiceManager::list_postgres_instances(true, "50").await;
+    let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
@@ -100,9 +104,16 @@ async fn main() {
     //     .unwrap();
 
     // Deleting services.
-    ServiceManager::delete_service("test_static", "static").await;
-    ServiceManager::delete_service("test_web", "static").await;
-    // ServiceManager::delete_service("test_deployment", "web_service").await;
+    // Wait for the specified amount of time before deleting the deployed resources.
+    // LOGGER!(
+    //     ":: [Status] ::",
+    //     "Waiting for deployment...",
+    //     LogLevel::WARN
+    // );
+
+    // sleep(Duration::from_secs(150)).await;
+    // ServiceManager::delete_service("test_static", "static").await;
+    // ServiceManager::delete_service("test_web", "web_service").await;
 }
 
 /// Mandatory Regression Tests.
