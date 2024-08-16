@@ -39,18 +39,27 @@ pub trait ServiceManagerOperations {
     fn list_all_services(
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
+    fn list_postgres_instances(
+        include_replicas: bool,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     fn list_services_with_status(
         service_status: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     fn find_service_by_region(
         service_region: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     fn find_service_by_environment(
         service_env: &str,
         limit: &str,
@@ -107,11 +116,74 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
 
             Ok(data)
         } else {
             LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
+            Err(anyhow::anyhow!(
+                "Request failed with status: {}",
+                response.status()
+            ))
+        }
+    }
+
+    async fn list_postgres_instances(include_replicas: bool, limit: &str) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url 'https://api.render.com/v1/postgres?includeReplicas=true&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/postgres?includeReplicas=", include_replicas, "&limit=", limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
+
+        let response = client
+            .get(api_url)
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error processing reuquest.")?;
+
+        // Validate response.
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&results)?;
+
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<response> ->",
+                    "🛢 :: No <postgres> instances found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> ->", format!("{}", data), LogLevel::SUCCESS);
+            }
+
+            Ok(data)
+        } else {
             Err(anyhow::anyhow!(
                 "Request failed with status: {}",
                 response.status()
@@ -155,7 +227,15 @@ impl ServiceManagerOperations for ServiceManager {
             let results = response.text().await.context("Error parsing response.")?;
             let data: Value = serde_json::from_str(&results)?;
 
-            LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
 
             Ok(data)
         } else {

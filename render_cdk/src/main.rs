@@ -17,7 +17,8 @@ use tokio::time::{sleep, Duration};
 #[main]
 async fn main() {
     // let services = ServiceManager::list_all_services("50").await;
-    // let services = ServiceManager::list_services_with_status("suspended", "50").await;
+    // let databases = ServiceManager::list_postgres_instances(true, "50").await;
+    let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "10").await;
     // let services = ServiceManager::find_service_by_environment("image", "10").await;
@@ -92,10 +93,10 @@ async fn main() {
     };
 
     // DEPLOY A <static_site>.
-    ServiceManager::create_service(static_site).await.unwrap();
+    // ServiceManager::create_service(static_site).await.unwrap();
 
     // DEPLOY A <web_service>.
-    ServiceManager::create_service(web_service).await.unwrap();
+    // ServiceManager::create_service(web_service).await.unwrap();
 
     // Deploy existing configuration.
     // ServiceManager::deploy_configuration("./samples/sample.conf")
@@ -104,15 +105,15 @@ async fn main() {
 
     // Deleting services.
     // Wait for the specified amount of time before deleting the deployed resources.
-    LOGGER!(
-        ":: [Status] ::",
-        "Waiting for deployment...",
-        LogLevel::WARN
-    );
+    // LOGGER!(
+    //     ":: [Status] ::",
+    //     "Waiting for deployment...",
+    //     LogLevel::WARN
+    // );
 
-    sleep(Duration::from_secs(150)).await;
-    ServiceManager::delete_service("test_static", "static").await;
-    ServiceManager::delete_service("test_web", "web_service").await;
+    // sleep(Duration::from_secs(150)).await;
+    // ServiceManager::delete_service("test_static", "static").await;
+    // ServiceManager::delete_service("test_web", "web_service").await;
 }
 
 /// Mandatory Regression Tests.
