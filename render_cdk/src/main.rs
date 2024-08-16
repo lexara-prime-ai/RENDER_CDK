@@ -18,10 +18,11 @@ use tokio::time::{sleep, Duration};
 async fn main() {
     // let services = ServiceManager::list_all_services("50").await;
     // let databases = ServiceManager::list_postgres_instances(true, "50").await;
-    let services = ServiceManager::list_services_with_status("suspended", "50").await;
+    // let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
-    // let services = ServiceManager::find_service_by_region("oregon", "10").await;
-    // let services = ServiceManager::find_service_by_environment("image", "10").await;
+    // let databases = ServiceManager::find_postgres_instance_by_name("gearednova", true, "100").await;
+    // let services = ServiceManager::find_service_by_region("oregon", "50").await;
+    // let services = ServiceManager::find_service_by_environment("image", "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
