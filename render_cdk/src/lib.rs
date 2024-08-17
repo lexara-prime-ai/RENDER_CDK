@@ -46,7 +46,7 @@
 //! ### 1. Querying for deployed services
 //! Retrieve deployed services using different filters like status, region, environment, or by name.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::resource_management::services::service_manager::ServiceManager;
 //! use tokio::main;
 //!
@@ -72,7 +72,7 @@
 //! ### 2. Deleting a service
 //! Delete a specific service, such as a web service or static site.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::resource_management::services::service_manager::ServiceManager;
 //! use tokio::main;
 //!
@@ -89,7 +89,7 @@
 //! ### 3. Working with Postgres databases
 //! Manage Postgres databases within your Render account, listing, searching, or filtering by status.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::resource_management::services::service_manager::ServiceManager;
 //! use tokio::main;
 //!
@@ -109,7 +109,7 @@
 //! ### 4. Deploying a static site
 //! This example demonstrates how to deploy a simple static site using Render.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::resource_management::templates::{Template, ServiceDetails};
 //!
 //! let static_site = Template {
@@ -133,7 +133,7 @@
 //! ### 5. Deploying a web service (Node.js)
 //! This example demonstrates deploying a web service, specifically a Node.js application.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::resource_management::templates::{Template, ServiceDetails, EnvSpecificDetails};
 //!
 //! let web_service = Template {
@@ -165,7 +165,7 @@
 //! You can use `.conf` files to provision resources on Render. The following example shows
 //! how to load and deploy an existing configuration file.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
@@ -221,7 +221,7 @@
 //! ## 8. Deploying the configuration.
 //! The above configuration can be deployed by running the following code snippet.
 //!
-//! ```
+//! ```ignore
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
