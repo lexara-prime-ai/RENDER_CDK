@@ -17,196 +17,170 @@
 #![cfg_attr(docsrs, allow(unused_attributes))]
 #![cfg_attr(loom, allow(dead_code, unreachable_pub))]
 
+//! # Render CDK
 //! Render CDK provides a streamlined interface for interacting with Render Cloud,
 //! a platform that allows you to build, deploy, and scale your applications with ease.
 //! This crate abstracts Render's API, facilitating effortless programmatic interaction
 //! with Render's robust cloud infrastructure.
-
+//!
 //! [website]: https://cdk-c1wu.onrender.com/
-
-//! ## Reference documentation can be found on the [website].
-
+//!
+//! Reference documentation can be found on the [website].
+//!
 //! Render CDK comprises several modules that encapsulate
-//! the functionalities of the Render API.
-
-//! To get started, ensure that tokio and render_cdk are added to the dependencies in your Cargo.toml:
+//! the functionalities of the Render API, enabling you to manage services, databases,
+//! and other cloud resources through simple Rust code.
+//!
+//! ## Usage
+//! Add `tokio` and `render_cdk` to your `Cargo.toml`:
 //!
 //! ```toml
 //! [dependencies]
 //! tokio = { version = "1", features = ["full"] }
-//! render_cdk = "0.0.16"
+//! render_cdk = "0.0.17"
 //! ```
-
-//! Examples:
-//! - Querying for deployed services.
-//! - Using simple .conf files for resource provisioning.
-//! - Retrieving the Owner Id to tie a resource to the user who created it.
-//! - Creating and deploying services.
-
-//! ## 1. Querying for deployed Services.
-//! This example demonstrates how to retrieve a list of deployed services
-//! based on specified criteria.
 //!
-//! ```rust,ignore
+//! ## Examples
+//! The following examples demonstrate various ways to interact with Render Cloud using this crate.
+//!
+//! ### 1. Querying for deployed services
+//! Retrieve deployed services using different filters like status, region, environment, or by name.
+//!
+//! ```
 //! use render_cdk::resource_management::services::service_manager::ServiceManager;
 //! use tokio::main;
 //!
 //! #[main]
 //! async fn main() {
-//!     let services = ServiceManager::list_all_services("50").await;
-//!     let services = ServiceManager::list_services_with_status("suspended", "50").await;
-//!     let services = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
-//!     let services = ServiceManager::find_service_by_region("oregon", "10").await;
-//!     let services = ServiceManager::find_service_by_environment("image", "10").await;
+//!     // List all services, limiting to 50 results
+//!     let services = ServiceManager::list_all_services("50").await.unwrap();
+//!     
+//!     // List services by status (e.g., suspended)
+//!     let suspended_services = ServiceManager::list_services_with_status("suspended", "50").await.unwrap();
 //!
-//!     // Additional processing...
-//!}
+//!     // Find a specific service by name and type
+//!     let service = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await.unwrap();
+//!
+//!     // Find services by region
+//!     let services_in_region = ServiceManager::find_service_by_region("oregon", "10").await.unwrap();
+//!
+//!     // Find services by environment
+//!     let services_in_env = ServiceManager::find_service_by_environment("image", "10").await.unwrap();
+//! }
 //! ```
-
-//! ## 2. Using simple .conf files for resource provisioning.
 //!
-//! ```rust,ignore
+//! ### 2. Deleting a service
+//! Delete a specific service, such as a web service or static site.
+//!
+//! ```
+//! use render_cdk::resource_management::services::service_manager::ServiceManager;
+//! use tokio::main;
+//!
+//! #[main]
+//! async fn main() {
+//!     // Delete a web service
+//!     ServiceManager::delete_service("test_web", "web_service").await.unwrap();
+//!
+//!     // Delete a static site
+//!     ServiceManager::delete_service("test_static", "static").await.unwrap();
+//! }
+//! ```
+//!
+//! ### 3. Working with Postgres databases
+//! Manage Postgres databases within your Render account, listing, searching, or filtering by status.
+//!
+//! ```
+//! use render_cdk::resource_management::services::service_manager::ServiceManager;
+//! use tokio::main;
+//!
+//! #[main]
+//! async fn main() {
+//!     // List all Postgres instances, limit results to 50
+//!     let databases = ServiceManager::list_postgres_instances(true, "50").await.unwrap();
+//!
+//!     // Find a Postgres instance by name
+//!     let database = ServiceManager::find_postgres_instance_by_name("agilecomet", true, "100").await.unwrap();
+//!
+//!     // Find Postgres instances by status (e.g., suspended)
+//!     let suspended_databases = ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
+//! }
+//! ```
+//!
+//! ### 4. Deploying a static site
+//! This example demonstrates how to deploy a simple static site using Render.
+//!
+//! ```
+//! use render_cdk::resource_management::templates::{Template, ServiceDetails};
+//!
+//! let static_site = Template {
+//!     type_: "static_site".to_owned(),
+//!     name: "test_static".to_owned(),
+//!     repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
+//!     auto_deploy: Some("yes".to_owned()),
+//!     root_dir: Some("./public".to_owned()),
+//!     service_details: Some(ServiceDetails {
+//!         publish_path: Some("./".to_owned()),
+//!         pull_request_previews_enabled: Some("yes".to_owned()),
+//!         ..Default::default()
+//!     }),
+//!     ..Default::default()
+//! };
+//!
+//! // Deploy the static site
+//! // ServiceManager::create_service(static_site).await.unwrap();
+//! ```
+//!
+//! ### 5. Deploying a web service (Node.js)
+//! This example demonstrates deploying a web service, specifically a Node.js application.
+//!
+//! ```
+//! use render_cdk::resource_management::templates::{Template, ServiceDetails, EnvSpecificDetails};
+//!
+//! let web_service = Template {
+//!     type_: "web_service".to_owned(),
+//!     name: "test_web".to_owned(),
+//!     repo: "https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE".to_owned(),
+//!     auto_deploy: Some("yes".to_owned()),
+//!     root_dir: Some("./".to_owned()),
+//!     service_details: Some(ServiceDetails {
+//!         region: Some("oregon".to_owned()),
+//!         plan: Some("starter".to_owned()),
+//!         runtime: Some("node".to_owned()),
+//!         num_instances: Some(1),
+//!         env_specific_details: Some(EnvSpecificDetails {
+//!             build_command: Some("yarn".to_owned()),
+//!             start_command: Some("npm start".to_owned()),
+//!         }),
+//!         pull_request_previews_enabled: Some("yes".to_owned()),
+//!         ..Default::default()
+//!     }),
+//!     ..Default::default()
+//! };
+//!
+//! // Deploy the web service
+//! // ServiceManager::create_service(web_service).await.unwrap();
+//! ```
+//!
+//! ### 6. Using configuration files for resource provisioning
+//! You can use `.conf` files to provision resources on Render. The following example shows
+//! how to load and deploy an existing configuration file.
+//!
+//! ```
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
 //! #[main]
 //! async fn main() {
-//!     // You can manually preview the configuration files
-//!     // to verify that the file has been setup properly...
-//!     let config = config::Conf::read_configuration_file().unwrap();
-//!     println!("Sample Configuration: {:?}\n", config);
+//!     // Read the configuration file
+//!     let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
+//!     println!("Loaded Configuration: {:?}", config);
 //!
-//!     // Additional processing...
+//!     // Deploy the configuration
+//!     // ServiceManager::deploy_configuration("./samples/sample.conf").await.unwrap();
 //! }
 //! ```
 
-//! ## 3. Retrieving the owner_id.
-//! The `owner_id` is used to tie the resource/service to the Owner
-//! or Acting Service Principal.
-//!
-//! ```rust,ignore
-//! use render_cdk::authentication::owner::Info;
-//! use tokio::main;
-//!
-//! #[main]
-//! async fn main() {
-//!     let owner_id = Info::get_owner_id().await;
-//!     assert!(!owner_id.is_empty());
-//! }
-//! ```
-//!
-//! ## 4. Creating services.
-//! The following is a sample deployment configuration.
-//!
-//! ```rust,ignore
-//! use render_cdk::resource_management::{models::prelude::*, prelude::*};
-//! use tokio::main;
-//!
-//! #[main]
-//! async fn main() {
-//!     let deployment_config = Template {
-//!         type_: "static_site".to_owned(),
-//!         name: "test_deployment".to_owned(),
-//!         repo: "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE".to_owned(),
-//!         auto_deploy: "yes".to_owned(),
-//!         root_dir: Some("./public".to_owned()),
-//!         service_details: Some(ServiceDetails {
-//!             publish_path: Some("./".to_owned()),
-//!             pull_request_previews_enabled: Some("yes".to_owned()),
-//!             ..Default::default()
-//!         }),
-//!         ..Default::default()
-//!      };
-//!
-//!
-//!     let service = ServiceManager::create_service(deployment_config)
-//!         .await
-//!         .unwrap();
-//! }
-//! ```
-
-//! #### Here are other sample configurations that include image configurations.
-//!
-//! `NOTE` - The following section demostrates functionality that's currently under development.
-//!
-//! ```rust,ignore
-//! #[main]
-//! async fn main() {
-//!     let template_with_image = Template {
-//!         type_: "static_site".to_owned(),
-//!         name: "test".to_owned(),
-//!         owner_id: "test".to_owned(),
-//!         repo: "https://link/to/your/repository".to_owned(),
-//!         auto_deploy: true,
-//!         branch: Some("main".to_owned()),
-//!         image: Some(Image {
-//!             owner_id: "owner123".to_owned(),
-//!             registry_credential_id: "cred123".to_owned(),
-//!             image_path: "path/to/image".to_owned(),
-//!         }),
-//!         build_filter: BuildFilter {
-//!             // Initialize your fields here...
-//!         },
-//!         root_dir: "./".to_owned(),
-//!         env_vars: vec![
-//!             EnvVar {
-//!                 key: "EXAMPLE".to_owned(),
-//!                 value: Some("EXAMPLE".to_owned()),
-//!                 generate_value: false,
-//!             }
-//!         ],
-//!         secret_files: vec![],
-//!         service_details: ServiceDetails {
-//!             // Initialize your fields here...
-//!         },
-//!     };
-//!
-//!     // Deploy the configuration...
-//!     let service = ServiceManager::create_service(template_with_image)
-//!         .await
-//!         .unwrap();
-//!     
-//!     assert!(service.is_ok());
-//! }
-//! ```
-
-//!
-//! #### The following example does not contain an image, branch, env_vars and secret_files.
-//!
-//! ```rust,ignore
-//! use tokio::main;
-//!
-//! #[main]
-//! async fn main() {
-//!     let template_without_image = Template {
-//!         type_: "static_site".to_owned(),
-//!         name: "test".to_owned(),
-//!         owner_id: "test".to_owned(),
-//!         repo: "httpe".to_owned(),
-//!         auto_deploy: true,
-//!         branch: None,
-//!         image: None,
-//!         build_filter: BuildFilter {
-//!             // Initialize your fields here...
-//!         },
-//!         root_dir: "./".to_owned(),
-//!         env_vars: vec![],
-//!         secret_files: vec![],
-//!         service_details: ServiceDetails {
-//!             // Initialize your fields here...
-//!         },
-//!     };
-//!
-//!     // Deploy the configuration...
-//!     let service = ServiceManager::create_service(template_without_image)
-//!         .await
-//!         .unwrap();
-//!
-//!     assert!(services.is_ok());
-//! }
-//! ```
-
-//! ## 5. Deploying services via .conf files.
+//! ## 7. Deploying services via .conf files.
 //!
 //! This method makes everything easier, the only thing you need to have setup is the
 //! `.conf` file, your Render `API_KEY` and `OWNER_CREDENTIALS`
@@ -244,10 +218,10 @@
 //! # ]
 //! ```
 //!
-//! ## 6. Deploying the configuration.
+//! ## 8. Deploying the configuration.
 //! The above configuration can be deployed by running the following code snippet.
 //!
-//! ```rust,ignore
+//! ```
 //! use render_cdk::iaas::config::Conf;
 //! use tokio::main;
 //!
@@ -261,20 +235,6 @@
 //!
 //!     assert!(conf.is_ok());
 //!     assert!(result.is_ok());
-//! }
-//! ```
-//!
-//! ## 7. Deleting deployed services.
-//! The following example demonstrates how to delete deployed services.
-//!
-//! ```rust,ignore
-//! use render_cdk::resource_management::prelude::*;
-//! use tokio::main;
-//!
-//! #[main]
-//! async fn main() {
-//!     // Provide the <service_name> and <service_type>...
-//!     ServiceManager::delete_service("test_deployment", "static").await;
 //! }
 //! ```
 //!
