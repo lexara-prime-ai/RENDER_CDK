@@ -73,7 +73,7 @@ async fn main() {
         * THE FOLLOWING EXAMPLE DEPLOYS A SIMPLE [WEB] SERVICE(NodeJs).
         > REPO_URL - https://github.com/lexara-prime-ai/SAMPLE_WEB_SERVICE
 
-    */ 
+    */
 
     let web_service = Template {
         type_: "web_service".to_owned(),
@@ -97,7 +97,7 @@ async fn main() {
     };
 
     // DEPLOY A <static_site>.
-    // ServiceManager::create_service(static_site).await.unwrap();
+    // ServiceManager::create_service(static_site).await;
 
     // DEPLOY A <web_service>.
     // ServiceManager::create_service(web_service).await;
@@ -117,7 +117,7 @@ async fn main() {
 
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
-    ServiceManager::delete_service("test_web", "web_service").await;
+    // ServiceManager::delete_service("test_web", "web_service").await;
 }
 
 /// Mandatory Regression Tests.
