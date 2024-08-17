@@ -36,36 +36,50 @@ pub struct ServiceManager;
 
 pub trait ServiceManagerOperations {
     /// Querying services.
+    /// List all services.
     fn list_all_services(
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all postgres instances.
     fn list_postgres_instances(
         include_replicas: bool,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List the postgres instance matching the specified name.
     fn find_postgres_instance_by_name(
         name: &str,
         include_replicas: bool,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all postgres instances with the specified status.
+    fn find_postgres_instance_with_status(
+        status: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
+    /// List all services with the specified status.
     fn list_services_with_status(
         service_status: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// Find a service by name and type.
     fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List services that match specified region.
     fn find_service_by_region(
         service_region: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List services that match specified environment.
     fn find_service_by_environment(
         service_env: &str,
         limit: &str,
@@ -261,6 +275,68 @@ impl ServiceManagerOperations for ServiceManager {
         }
     }
 
+    async fn find_postgres_instance_with_status(
+        status: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url  'https://api.render.com/v1/postgres?suspended=suspended&includeReplicas=true&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}{}{}",
+            BASE_URL,
+            "/postgres?suspended=",
+            status,
+            "&includeReplicas=",
+            include_replicas,
+            "&limit=",
+            limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+
+        let response = client
+            .get(api_url)
+            .header(ACCEPT, "application/json")
+            .header(AUTHORIZATION, format!("Bearer {}", api_key))
+            .send()
+            .await
+            .context("Error processing request.")?;
+
+        // Validate response.
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&results)?;
+
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "🛢 :: No <postgres> instances found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<request> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
+
+            Ok(data)
+        } else {
+            Err(anyhow::anyhow!(
+                "Request failed with status:{:#?}",
+                response.status()
+            ))
+        }
+    }
+
     /// Finding all suspended services.
     /// Reqquired arguments: <service_status> i.e suspended/not_suspended.
     async fn list_services_with_status(service_status: &str, limit: &str) -> Result<Value, Error> {
@@ -282,7 +358,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -342,7 +417,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -398,7 +472,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -454,7 +527,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
         let response = client
             .get(api_url)
@@ -543,7 +615,6 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
         LOGGER!("[PAYLOAD] -> ", &payload, LogLevel::WARN);
 
         let response = client
@@ -578,12 +649,6 @@ impl ServiceManagerOperations for ServiceManager {
         let client = state.CLIENT;
         let api_key = state.API_KEY;
         let CONFIG = Conf::read_configuration_file(config_path).unwrap();
-
-        // LOGGER!(
-        //     "Retrieving [CONFIG] -> ",
-        //     &CONFIG.stringify(),
-        //     LogLevel::WARN
-        // );
 
         // Authorization.
         let owner_id = Info::get_owner_id().await;
@@ -752,7 +817,6 @@ impl ServiceManagerOperations for ServiceManager {
                     &service_url,
                     LogLevel::WARN
                 );
-                // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
                 let response = client
                     .delete(service_url)
