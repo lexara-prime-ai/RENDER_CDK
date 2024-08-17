@@ -23,9 +23,9 @@ async fn main() {
     // let services = ServiceManager::find_service_by_environment("image", "50").await;
 
     // let databases = ServiceManager::list_postgres_instances(true, "50").await;
-    // let databases = ServiceManager::find_postgres_instance_by_name("gearednova", true, "100").await;
-    let databases =
-        ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+    // let databases = ServiceManager::find_postgres_instance_by_name("agilecomet", true, "100").await;
+    // let databases =
+    //     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
@@ -100,7 +100,7 @@ async fn main() {
     // ServiceManager::create_service(static_site).await.unwrap();
 
     // DEPLOY A <web_service>.
-    // ServiceManager::create_service(web_service).await.unwrap();
+    // ServiceManager::create_service(web_service).await;
 
     // Deploy existing configuration.
     // ServiceManager::deploy_configuration("./samples/sample.conf")
@@ -117,7 +117,7 @@ async fn main() {
 
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
-    // ServiceManager::delete_service("test_web", "web_service").await;
+    ServiceManager::delete_service("test_web", "web_service").await;
 }
 
 /// Mandatory Regression Tests.

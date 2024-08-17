@@ -36,15 +36,15 @@ impl Conf {
         // Validate [postgres] config.
         if let Some(database) = config.database.as_mut() {
             if database.databaseName.as_deref() == Some("") {
-                database.databaseName = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+                database.databaseName = Some(GENERATE_UNIQUE_NAME());
             }
 
             if database.databaseUser.as_deref() == Some("") {
-                database.databaseUser = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+                database.databaseUser = Some(GENERATE_UNIQUE_NAME());
             }
 
             if database.name.as_deref() == Some("") {
-                database.name = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+                database.name = Some(GENERATE_UNIQUE_NAME());
             }
 
             // Provide <default> CIDR block.
@@ -59,7 +59,7 @@ impl Conf {
         // Validate [redis] config.
         if let Some(redis) = config.redis.as_mut() {
             if redis.name.as_deref() == Some("") {
-                redis.name = Some(format!("{}", GENERATE_UNIQUE_NAME()));
+                redis.name = Some(GENERATE_UNIQUE_NAME());
             }
 
             // Provide <default> CIDR block.
@@ -78,11 +78,11 @@ impl Conf {
 
     pub fn read_configuration_file(config_path: &str) -> Result<Self, Error> {
         let contents = fs::read_to_string(config_path)
-            .expect(format!("Unable to READ configuration: {config_path:?}").as_str());
+            .unwrap_or_else(|_| panic!("Unable to READ configuration: {:?}", config_path));
 
         // Parse config. file.
         let mut config: Conf = toml::from_str(&contents)
-            .expect(format!("Unable to PARSE configuration: {config_path:?}").as_str());
+            .unwrap_or_else(|_| panic!("Unable to PARSE configuration: {:?}", config_path));
 
         // Validate config. file.
         if config.database.is_none() && config.redis.is_none() {
