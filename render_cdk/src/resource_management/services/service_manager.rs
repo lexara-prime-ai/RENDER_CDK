@@ -21,11 +21,12 @@ use crate::resource_management::models::prelude::*;
 use crate::resource_management::models::redis::RedisConf;
 use crate::state_management::state::{Owner, State};
 use crate::utils::config::Conf;
+use crate::utils::request_manager;
 
 // [DEBUG] utils.
 use crate::logger::prelude::*;
 use crate::utils::stringify::Stringify;
-use crate::LOGGER;
+use crate::{create_request, create_request_with_body, LOGGER};
 use colored::Colorize;
 
 // Predefined [CONSTANTS].
@@ -36,36 +37,50 @@ pub struct ServiceManager;
 
 pub trait ServiceManagerOperations {
     /// Querying services.
+    /// List all services.
     fn list_all_services(
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all postgres instances.
     fn list_postgres_instances(
         include_replicas: bool,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List the postgres instance matching the specified name.
     fn find_postgres_instance_by_name(
         name: &str,
         include_replicas: bool,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all postgres instances with the specified status.
+    fn find_postgres_instance_with_status(
+        status: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
+    /// List all services with the specified status.
     fn list_services_with_status(
         service_status: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// Find a service by name and type.
     fn find_service_by_name_and_type(
         service_name: &str,
         service_type: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List services that match specified region.
     fn find_service_by_region(
         service_region: &str,
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List services that match specified environment.
     fn find_service_by_environment(
         service_env: &str,
         limit: &str,
@@ -107,15 +122,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error sending request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate <response> status.
         if response.status().is_success() {
@@ -135,11 +143,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <list_all_services>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -162,15 +178,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error processing reuquest.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response.
         if response.status().is_success() {
@@ -190,10 +199,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <list_postgres_instances>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -226,15 +244,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error processing request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response.
         if response.status().is_success() {
@@ -254,10 +265,84 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <find_postgres_instance_by_name>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
+        }
+    }
+
+    async fn find_postgres_instance_with_status(
+        status: &str,
+        include_replicas: bool,
+        limit: &str,
+    ) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url  'https://api.render.com/v1/postgres?suspended=suspended&includeReplicas=true&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}{}{}",
+            BASE_URL,
+            "/postgres?suspended=",
+            status,
+            "&includeReplicas=",
+            include_replicas,
+            "&limit=",
+            limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+
+        let response = create_request!(client, api_url, api_key)?;
+
+        // Validate response.
+        if response.status().is_success() {
+            let results = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&results)?;
+
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "🛢 :: No <postgres> instances found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<request> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
+
+            Ok(data)
+        } else {
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <find_postgres_instance_with_status>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -282,15 +367,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error sending request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response status.
         if response.status().is_success() {
@@ -310,11 +388,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <list_services_with_status>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -342,15 +428,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error sending request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response status.
         if response.status().is_success() {
@@ -370,11 +449,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <find_service_by_name_and_type>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -398,15 +485,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error sending request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response status.
         if response.status().is_success() {
@@ -426,11 +506,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <find_service_by_region>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -454,15 +542,8 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
-        let response = client
-            .get(api_url)
-            .header(ACCEPT, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .send()
-            .await
-            .context("Error sending request.")?;
+        let response = create_request!(client, api_url, api_key)?;
 
         // Validate response status.
         if response.status().is_success() {
@@ -482,11 +563,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response.status()
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <find_service_by_environment>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -543,18 +632,10 @@ impl ServiceManagerOperations for ServiceManager {
 
         // [DEBUG] logs.
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
-        // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
         LOGGER!("[PAYLOAD] -> ", &payload, LogLevel::WARN);
 
-        let response = client
-            .post(api_url)
-            .header(ACCEPT, "application/json")
-            .header(CONTENT_TYPE, "application/json")
-            .header(AUTHORIZATION, format!("Bearer {}", api_key))
-            .body(payload)
-            .send()
-            .await
-            .context("Error processing request.")?;
+        let response =
+            create_request_with_body!(client, api_url, api_key, payload, "<create_service>")?;
 
         // Validate response status.
         if response.status().is_success() {
@@ -565,11 +646,19 @@ impl ServiceManagerOperations for ServiceManager {
 
             Ok(data)
         } else {
-            LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-            Err(anyhow::anyhow!(
-                "Request failed with status: {:#?}",
-                response
-            ))
+            let result = response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or("An error occured :: Process -> <create_service>");
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
     }
 
@@ -579,18 +668,13 @@ impl ServiceManagerOperations for ServiceManager {
         let api_key = state.API_KEY;
         let CONFIG = Conf::read_configuration_file(config_path).unwrap();
 
-        // LOGGER!(
-        //     "Retrieving [CONFIG] -> ",
-        //     &CONFIG.stringify(),
-        //     LogLevel::WARN
-        // );
-
         // Authorization.
         let owner_id = Info::get_owner_id().await;
 
         // [CONFIG] validation.
         let mut results = Vec::new();
 
+        // [POSTGRES]
         if CONFIG.database.is_some() {
             let api_url = format!("{}{}", BASE_URL, "/postgres");
 
@@ -614,15 +698,8 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[PAYLOAD] :: -> ", &payload, LogLevel::WARN);
 
-            let response = client
-                .post(&api_url)
-                .header(ACCEPT, "application/json")
-                .header(CONTENT_TYPE, "application/json")
-                .header(AUTHORIZATION, format!("Bearer {}", api_key))
-                .body(payload.clone())
-                .send()
-                .await
-                .context("Config :: [POSTGRES] -> Error processing request.")?;
+            let response =
+                create_request_with_body!(client, api_url, api_key, payload, "<postgres>")?;
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
@@ -642,19 +719,28 @@ impl ServiceManagerOperations for ServiceManager {
 
                 results.push(Ok(result));
             } else {
+                let result = response
+                    .text()
+                    .await
+                    .context("Error parsing response :: <deploy_configuration>")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+
+                let message = data["message"]
+                    .as_str()
+                    .unwrap_or("An error occured :: Process -> <list_all_services>");
+
                 LOGGER!(
                     "[POSTGRES] :: Deployment status :: -> ",
-                    "FAILED",
+                    format!("{:#?}", message),
                     LogLevel::CRITICAL
                 );
 
-                results.push(Err(anyhow::anyhow!(
-                    "Request failed with status: {:#?}",
-                    response
-                )));
+                results.push(Err(anyhow::anyhow!("<Error>: {:#?}", message)));
             }
         }
 
+        // [REDIS]
         if CONFIG.redis.is_some() {
             let api_url = format!("{}{}", BASE_URL, "/redis");
 
@@ -674,15 +760,7 @@ impl ServiceManagerOperations for ServiceManager {
 
             LOGGER!("[PAYLOAD] :: -> ", &payload, LogLevel::WARN);
 
-            let response = client
-                .post(&api_url)
-                .header(ACCEPT, "application/json")
-                .header(CONTENT_TYPE, "application/json")
-                .header(AUTHORIZATION, format!("Bearer {}", api_key))
-                .body(payload)
-                .send()
-                .await
-                .context("Config :: [REDIS] -> Error processing request.")?;
+            let response = create_request_with_body!(client, api_url, api_key, payload, "<redis>")?;
 
             if response.status().is_success() {
                 let result = response.text().await.context("Error parsing response.")?;
@@ -696,15 +774,24 @@ impl ServiceManagerOperations for ServiceManager {
                 );
                 results.push(Ok(result));
             } else {
+                let result = response
+                    .text()
+                    .await
+                    .context("Error parsing response :: <deploy_configuration>")?;
+
+                let data: Value = serde_json::from_str(&result)?;
+
+                let message = data["message"]
+                    .as_str()
+                    .unwrap_or("An error occured :: Process -> <list_all_services>");
+
                 LOGGER!(
                     "[REDIS] :: Deployment status :: -> ",
-                    "FAILED",
+                    format!("{:#?}", message),
                     LogLevel::CRITICAL
                 );
-                results.push(Err(anyhow::anyhow!(
-                    "Request failed with status: {:#?}",
-                    response
-                )));
+
+                results.push(Err(anyhow::anyhow!("<Error>: {:#?}", message)));
             }
         }
 
@@ -752,7 +839,6 @@ impl ServiceManagerOperations for ServiceManager {
                     &service_url,
                     LogLevel::WARN
                 );
-                // LOGGER!("Processing <request> -> ", &api_key, LogLevel::WARN);
 
                 let response = client
                     .delete(service_url)
@@ -771,11 +857,19 @@ impl ServiceManagerOperations for ServiceManager {
 
                     Ok(data)
                 } else {
-                    LOGGER!("[RESPONSE STATUS] -> ", "FAILED", LogLevel::CRITICAL);
-                    Err(anyhow::anyhow!(
-                        "Request failed with status: {:#?}",
-                        response.status()
-                    ))
+                    let result = response.text().await.context("Error parsing response.")?;
+                    let data: Value = serde_json::from_str(&result)?;
+                    let message = data["message"]
+                        .as_str()
+                        .unwrap_or("An error occured :: Process -> <create_service>");
+
+                    LOGGER!(
+                        "<response status> -> ",
+                        format!("{:#?}", message),
+                        LogLevel::CRITICAL
+                    );
+
+                    Err(anyhow::anyhow!("<Error>: {:#?}", data))
                 }
             }
             None => Err(anyhow::anyhow!("Service Id not found.")),
