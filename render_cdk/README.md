@@ -19,7 +19,7 @@ Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.18"
+render_cdk = "0.0.19"
 ```
 
 * _Alternatively_, running at the `cargo add render_cdk` **root** of your project will also add **render_cdk** to your project.

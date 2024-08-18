@@ -37,7 +37,7 @@
 //! ```toml
 //! [dependencies]
 //! tokio = { version = "1.37.0", features = ["full"] }
-//! render_cdk = "0.0.18"
+//! render_cdk = "0.0.19"
 //! ```
 //!
 //! ## Examples
