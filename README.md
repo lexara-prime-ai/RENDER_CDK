@@ -20,7 +20,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.18
+- **Version:** 0.0.19
 - **License:** MIT
 
 ### Current Features
@@ -55,7 +55,7 @@ To use `render_cdk`, include the following in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.18"
+render_cdk = "0.0.19"
 ```
 
 * Examples can be found in the:  [Technical Documentation](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/render_cdk/README.md)
