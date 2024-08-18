@@ -23,7 +23,8 @@ async fn main() {
     // let services = ServiceManager::find_service_by_environment("image", "50").await;
 
     // let databases = ServiceManager::list_postgres_instances(true, "50").await;
-    // let databases = ServiceManager::find_postgres_instance_by_name("agilecomet", true, "100").await;
+    // let databases =
+    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "100").await;
     // let databases =
     //     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
 
@@ -118,6 +119,7 @@ async fn main() {
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
     // ServiceManager::delete_service("test_web", "web_service").await;
+    // ServiceManager::delete_postgres_instance("xenialterra").await;
 }
 
 /// Mandatory Regression Tests.
