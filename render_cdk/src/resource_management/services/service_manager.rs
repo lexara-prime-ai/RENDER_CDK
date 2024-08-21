@@ -27,7 +27,8 @@ use crate::utils::request_manager;
 use crate::logger::prelude::*;
 use crate::utils::stringify::Stringify;
 use crate::{
-    create_delete_request, create_get_request, create_post_request, handle_response, LOGGER,
+    create_delete_request, create_get_request, create_post_request, handle_response,
+    handle_response_data, LOGGER,
 };
 use colored::Colorize;
 
@@ -341,7 +342,7 @@ impl ServiceManagerOperations for ServiceManager {
             let data: Value = serde_json::from_str(&result)?;
             let message = data["message"]
                 .as_str()
-                .unwrap_or("An error occured :: Process -> <find_postgres_instance_with_status>");
+                .unwrap_or("An error occured :: Process -> ");
 
             LOGGER!(
                 "<response status> -> ",
@@ -376,39 +377,7 @@ impl ServiceManagerOperations for ServiceManager {
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
 
         let response = create_get_request!(client, api_url, api_key)?;
-
-        // Validate response status.
-        if response.status().is_success() {
-            let results = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&results)?;
-
-            // Check if the response contains a list of services.
-            if data.is_array() && data.as_array().unwrap().is_empty() {
-                LOGGER!(
-                    "<reponse> -> ",
-                    "⚙️ :: No <services> found.",
-                    LogLevel::WARN
-                );
-            } else {
-                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
-            }
-
-            Ok(data)
-        } else {
-            let result = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&result)?;
-            let message = data["message"]
-                .as_str()
-                .unwrap_or("An error occured :: Process -> <list_services_with_status>");
-
-            LOGGER!(
-                "<response status> -> ",
-                format!("{:#?}", message),
-                LogLevel::CRITICAL
-            );
-
-            Err(anyhow::anyhow!("<Error>: {:#?}", data))
-        }
+        handle_response_data!(response, "<list_services_with_status>")
     }
 
     /// Finding services by type.
@@ -437,39 +406,7 @@ impl ServiceManagerOperations for ServiceManager {
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
 
         let response = create_get_request!(client, api_url, api_key)?;
-
-        // Validate response status.
-        if response.status().is_success() {
-            let results = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&results)?;
-
-            // Check if the response contains a list of services.
-            if data.is_array() && data.as_array().unwrap().is_empty() {
-                LOGGER!(
-                    "<reponse> -> ",
-                    "⚙️ :: No <services> found.",
-                    LogLevel::WARN
-                );
-            } else {
-                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
-            }
-
-            Ok(data)
-        } else {
-            let result = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&result)?;
-            let message = data["message"]
-                .as_str()
-                .unwrap_or("An error occured :: Process -> <find_service_by_name_and_type>");
-
-            LOGGER!(
-                "<response status> -> ",
-                format!("{:#?}", message),
-                LogLevel::CRITICAL
-            );
-
-            Err(anyhow::anyhow!("<Error>: {:#?}", data))
-        }
+        handle_response_data!(response, "<find_service_by_name_and_type>")
     }
 
     /// Finding services by region.
@@ -494,39 +431,7 @@ impl ServiceManagerOperations for ServiceManager {
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
 
         let response = create_get_request!(client, api_url, api_key)?;
-
-        // Validate response status.
-        if response.status().is_success() {
-            let results = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&results)?;
-
-            // Check if the response contains a list of services.
-            if data.is_array() && data.as_array().unwrap().is_empty() {
-                LOGGER!(
-                    "<reponse> -> ",
-                    "⚙️ :: No <services> found.",
-                    LogLevel::WARN
-                );
-            } else {
-                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
-            }
-
-            Ok(data)
-        } else {
-            let result = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&result)?;
-            let message = data["message"]
-                .as_str()
-                .unwrap_or("An error occured :: Process -> <find_service_by_region>");
-
-            LOGGER!(
-                "<response status> -> ",
-                format!("{:#?}", message),
-                LogLevel::CRITICAL
-            );
-
-            Err(anyhow::anyhow!("<Error>: {:#?}", data))
-        }
+        handle_response_data!(response, "<find_service_by_region>")
     }
 
     /// Filtering for environments.
@@ -551,39 +456,7 @@ impl ServiceManagerOperations for ServiceManager {
         LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
 
         let response = create_get_request!(client, api_url, api_key)?;
-
-        // Validate response status.
-        if response.status().is_success() {
-            let results = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&results)?;
-
-            // Check if the response contains a list of services.
-            if data.is_array() && data.as_array().unwrap().is_empty() {
-                LOGGER!(
-                    "<reponse> -> ",
-                    "⚙️ :: No <services> found.",
-                    LogLevel::WARN
-                );
-            } else {
-                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
-            }
-
-            Ok(data)
-        } else {
-            let result = response.text().await.context("Error parsing response.")?;
-            let data: Value = serde_json::from_str(&result)?;
-            let message = data["message"]
-                .as_str()
-                .unwrap_or("An error occured :: Process -> <find_service_by_environment>");
-
-            LOGGER!(
-                "<response status> -> ",
-                format!("{:#?}", message),
-                LogLevel::CRITICAL
-            );
-
-            Err(anyhow::anyhow!("<Error>: {:#?}", data))
-        }
+        handle_response_data!(response, "<find_service_by_environment>")
     }
 
     /// Creating services.
@@ -642,7 +515,6 @@ impl ServiceManagerOperations for ServiceManager {
         LOGGER!("[PAYLOAD] -> ", &payload, LogLevel::WARN);
 
         let response = create_post_request!(client, api_url, api_key, payload, "<create_service>")?;
-
         handle_response!(response, "<create_service>")
     }
 
@@ -824,7 +696,6 @@ impl ServiceManagerOperations for ServiceManager {
                 );
 
                 let response = create_delete_request!(client, service_url, api_key)?;
-
                 handle_response!(response, "<delete_service>")
             }
             None => Err(anyhow::anyhow!("Service Id not found.")),
@@ -862,7 +733,6 @@ impl ServiceManagerOperations for ServiceManager {
                 );
 
                 let response = create_delete_request!(client, postgres_url, api_key)?;
-
                 handle_response!(response, "<delete_postgres_instance>")
             }
             None => Err(anyhow::anyhow!("Postgres Id not found.")),

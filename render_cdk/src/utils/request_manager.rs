@@ -144,3 +144,40 @@ macro_rules! handle_response {
         }
     };
 }
+
+#[macro_export]
+macro_rules! handle_response_data {
+    ($response: expr, $process: expr) => {
+        if $response.status().is_success() {
+            let result = $response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+
+            // Check if the response contains a list of services.
+            if data.is_array() && data.as_array().unwrap().is_empty() {
+                LOGGER!(
+                    "<reponse> -> ",
+                    "⚙️ :: No <services> found.",
+                    LogLevel::WARN
+                );
+            } else {
+                LOGGER!("<response> -> ", format!("{:#?}", data), LogLevel::SUCCESS);
+            }
+
+            Ok(data)
+        } else {
+            let result = $response.text().await.context("Error parsing response.")?;
+            let data: Value = serde_json::from_str(&result)?;
+            let message = data["message"]
+                .as_str()
+                .unwrap_or(concat!("An error occurred :: Process -> ", $process));
+
+            LOGGER!(
+                "<response status> -> ",
+                format!("{:#?}", message),
+                LogLevel::CRITICAL
+            );
+
+            Err(anyhow::anyhow!("<Error>: {:#?}", data))
+        }
+    };
+}
