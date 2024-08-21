@@ -119,7 +119,7 @@ async fn main() {
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
     // ServiceManager::delete_service("test_web", "web_service").await;
-    // ServiceManager::delete_postgres_instance("xenialterra").await;
+    // ServiceManager::delete_postgres_instance("gearednimbus").await;
 }
 
 /// Mandatory Regression Tests.
@@ -163,6 +163,17 @@ mod regression_tests {
     }
 
     #[tokio::test]
+    async fn test_list_all_postgres_instances() {
+        let result = ServiceManager::list_postgres_instances(true, "10").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let services = result.unwrap().to_string();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
     async fn test_list_services_with_status() {
         let results = ServiceManager::list_services_with_status("suspended", "10").await;
         // The result should be Ok().
@@ -174,8 +185,32 @@ mod regression_tests {
     }
 
     #[tokio::test]
+    async fn test_find_postgres_instance_with_status() {
+        let results =
+            ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+        // The result should be Ok().
+        assert!(results.is_ok());
+
+        // Validate content.
+        let services = results.unwrap().to_string();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
     async fn test_find_service_by_name_and_type() {
         let result = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let services = result.unwrap().to_string();
+        assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_postgres_instance_by_name() {
+        let result =
+            ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "100").await;
         // The result should be Ok().
         assert!(result.is_ok());
 
