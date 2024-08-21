@@ -51,6 +51,12 @@ pub trait ServiceManagerOperations {
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all redis instances.
+    fn find_redis_instance_by_name(
+        name: &str,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     /// List the postgres instance matching the specified name.
     fn find_postgres_instance_by_name(
         name: &str,
@@ -108,6 +114,11 @@ pub trait ServiceManagerOperations {
 
     /// Delete postgres instance.
     fn delete_postgres_instance(
+        name: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
+    /// Delete redis instance.
+    fn delete_redis_instance(
         name: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 }
@@ -352,6 +363,30 @@ impl ServiceManagerOperations for ServiceManager {
 
             Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
+    }
+
+    async fn find_redis_instance_by_name(name: &str, limit: &str) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url  https://api.render.com/v1/redis?name=<instance_name>&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/redis?name=", name, "&limit=", limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+
+        let response = create_get_request!(client, api_url, api_key)?;
+        handle_response_data!(response, "<find_redis_instance_by_name>")
     }
 
     /// Finding all suspended services.
@@ -736,6 +771,42 @@ impl ServiceManagerOperations for ServiceManager {
                 handle_response!(response, "<delete_postgres_instance>")
             }
             None => Err(anyhow::anyhow!("Postgres Id not found.")),
+        }
+    }
+
+    /// Deleting postgres instances.
+    async fn delete_redis_instance(name: &str) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request DELETE \
+             --url https://api.render.com/v1/redis/redisId \
+             --header 'accept: application/json' \
+             --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let redis_instance = ServiceManager::find_redis_instance_by_name(name, "100").await?;
+
+        // Retrieve <redis_id>.
+        let redis_id = redis_instance[0]["redis"]["id"].as_str();
+
+        match redis_id {
+            Some(id) => {
+                let client = State::init().await.CLIENT;
+                let api_key = State::init().await.API_KEY;
+                let redis_url = format!("{}{}{}", BASE_URL, "/redis/", id);
+
+                // [DEBUG] logs.
+                LOGGER!(
+                    "\nProcessing <request> :: <delete> -> ",
+                    &redis_url,
+                    LogLevel::WARN
+                );
+
+                let response = create_delete_request!(client, redis_url, api_key)?;
+                handle_response!(response, "<delete_redis_instance>")
+            }
+            None => Err(anyhow::anyhow!("Redis Id not found.")),
         }
     }
 }

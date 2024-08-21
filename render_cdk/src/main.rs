@@ -16,17 +16,51 @@ use tokio::time::{sleep, Duration};
 /// Usage Examples.
 #[main]
 async fn main() {
+    /*
+      _____                 _
+     / ____|               (_)
+    | (___   ___ _ ____   ___  ___ ___  ___
+     \___ \ / _ \ '__\ \ / / |/ __/ _ \/ __|
+     ____) |  __/ |   \ V /| | (_|  __/\__ \
+    |_____/ \___|_|    \_/ |_|\___\___||___/
+
+    */
+
     // let services = ServiceManager::list_all_services("50").await;
     // let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "50").await;
     // let services = ServiceManager::find_service_by_environment("image", "50").await;
 
+    /*
+     _____          _
+    |  __ \        | |
+    | |__) |__  ___| |_ __ _ _ __ ___  ___
+    |  ___/ _ \/ __| __/ _` | '__/ _ \/ __|
+    | |  | (_) \__ \ || (_| | | |  __/\__ \
+    |_|   \___/|___/\__\__, |_|  \___||___/
+                        __/ |
+                       |___/
+
+    */
+
     // let databases = ServiceManager::list_postgres_instances(true, "50").await;
     // let databases =
-    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "100").await;
+    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "50").await;
     // let databases =
     //     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+
+    /*
+    _____          _ _
+    |  __ \        | (_)
+    | |__) |___  __| |_ ___
+    |  _  // _ \/ _` | / __|
+    | | \ \  __/ (_| | \__ \
+    |_|  \_\___|\__,_|_|___/
+
+    */
+
+    // let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
@@ -116,10 +150,16 @@ async fn main() {
     //     LogLevel::WARN
     // );
 
+    /*
+
+        DELETING SERVICES.
+
+    */
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
     // ServiceManager::delete_service("test_web", "web_service").await;
-    // ServiceManager::delete_postgres_instance("xenialterra").await;
+    // ServiceManager::delete_postgres_instance("gearednimbus").await;
+    // ServiceManager::delete_redis_instance("cyberplasma").await;
 }
 
 /// Mandatory Regression Tests.
@@ -163,6 +203,17 @@ mod regression_tests {
     }
 
     #[tokio::test]
+    async fn test_list_all_postgres_instances() {
+        let result = ServiceManager::list_postgres_instances(true, "10").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
+    }
+
+    #[tokio::test]
     async fn test_list_services_with_status() {
         let results = ServiceManager::list_services_with_status("suspended", "10").await;
         // The result should be Ok().
@@ -174,6 +225,18 @@ mod regression_tests {
     }
 
     #[tokio::test]
+    async fn test_find_postgres_instance_with_status() {
+        let results =
+            ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+        // The result should be Ok().
+        assert!(results.is_ok());
+
+        // Validate content.
+        let instances = results.unwrap().to_string();
+        assert!(!instances.is_empty());
+    }
+
+    #[tokio::test]
     async fn test_find_service_by_name_and_type() {
         let result = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await;
         // The result should be Ok().
@@ -182,6 +245,29 @@ mod regression_tests {
         // Validate content.
         let services = result.unwrap().to_string();
         assert!(!services.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_postgres_instance_by_name() {
+        let result =
+            ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "100").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_redis_instance_by_name() {
+        let result = ServiceManager::find_redis_instance_by_name("fluentcomet", "100").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
     }
 
     #[tokio::test]

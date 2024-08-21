@@ -20,7 +20,7 @@
 ### Crate Information
 
 - **Name:** render_cdk
-- **Version:** 0.0.19
+- **Version:** 0.0.20
 - **License:** MIT
 
 ### Current Features
@@ -29,8 +29,8 @@ Work on the resource management module is currently under way. The API supports 
 
 - Services
 - Deploys
-- Custom domains
-- Jobs
+- Custom domains _(Coming Soon)_
+- Jobs _(Coming Soon)_
 
 The CDK will provide an abstraction that will make it easier to work with the Render cloud programmatically.
 
@@ -55,7 +55,7 @@ To use `render_cdk`, include the following in your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.19"
+render_cdk = "0.0.20"
 ```
 
 * Examples can be found in the:  [Technical Documentation](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/render_cdk/README.md)

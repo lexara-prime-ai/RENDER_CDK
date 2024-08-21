@@ -19,7 +19,7 @@ Add `render_cdk` to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-render_cdk = "0.0.19"
+render_cdk = "0.0.20"
 ```
 
 * _Alternatively_, running at the `cargo add render_cdk` **root** of your project will also add **render_cdk** to your project.
@@ -39,8 +39,8 @@ use tokio::main;
 
 #[main]
 async fn main() {
-    // List all deployed services, limiting the result to 10.
-    let services = ServiceManager::list_all_services("10").await;
+    // List all deployed services, limiting the result to 50.
+    let services = ServiceManager::list_all_services("50").await;
 
     // List all services with the status "suspended", limiting the result to 50.
     let services = ServiceManager::list_services_with_status("suspended", "50").await;
@@ -48,11 +48,11 @@ async fn main() {
     // Find a specific service by its name and type.
     let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
 
-    // Find services deployed in a specific region (e.g., Oregon), limiting the result to 10.
-    let services = ServiceManager::find_service_by_region("oregon", "10").await;
+    // Find services deployed in a specific region (e.g., Oregon), limiting the result to 50.
+    let services = ServiceManager::find_service_by_region("oregon", "50").await;
 
-    // Find services based on the environment they are deployed in, limiting the result to 10.
-    let services = ServiceManager::find_service_by_environment("image", "10").await;
+    // Find services based on the environment they are deployed in, limiting the result to 50.
+    let services = ServiceManager::find_service_by_environment("image", "50").await;
 
     // Deleting a web service by name and type.
     ServiceManager::delete_service("my_api", "web_service").await.unwrap();
@@ -64,25 +64,36 @@ async fn main() {
     let databases = ServiceManager::list_postgres_instances(true, "50").await.unwrap();
 
     // Find a specific Postgres database instance by name.
-    let database = ServiceManager::find_postgres_instance_by_name("my_database", true, "100").await.unwrap();
+    let database = ServiceManager::find_postgres_instance_by_name("my_database", true, "50").await.unwrap();
 
     // Find Postgres database instances with a specific status (e.g., suspended), limiting the result to 50.
     let suspended_databases = ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
+
+    // Find redis instances by name.
+    let redis_instances = ServiceManager::find_redis_instance_by_name("my_redis_instance", "50").await;
 }
 ``` 
 
-### 2. Retrieving Owner Information
+### 2. Deleting Services
 
-You can retrieve the owner ID of the current account with a simple API call.
+You can delete services that are no longer needed as well.
 
 ```rust
-use render_cdk::environment_management::prelude::*;
+use render_cdk::service_management::ServiceManager;
 
 #[tokio::main]
 async fn main() {
-    // Retrieve the owner ID of the current Render account.
-    let owner = Info::get_owner_id().await;
-    println!("{}", owner);
+    // Delete a static site deployment.
+    ServiceManager::delete_service("test_deployment", "static").await;
+
+    // Delete a web service deployment.
+    ServiceManager::delete_service("test_deployment", "web_service").await;
+
+    // Delete a postgres instance.
+    ServiceManager::delete_postgres_instance("test_postgres").await;
+
+    // Delete a redis instance.
+    ServiceManager::delete_redis_instance("test_redis").await;
 }
 ``` 
 
@@ -101,7 +112,21 @@ fn main() {
 }
 ``` 
 
-### 4. Deploying a Static Site
+### 4. Deploying an Existing Configuration
+
+If you already have a configuration file, you can deploy it directly using the `ServiceManager`.
+
+```rust
+use render_cdk::service_management::ServiceManager;
+
+#[tokio::main]
+async fn main() {
+    // Deploy services as specified in the configuration file.
+    ServiceManager::deploy_configuration("./samples/sample.conf").await.unwrap();
+}
+``` 
+
+### 5. Deploying a Static Site
 
 The following example demonstrates how to deploy a simple static site using a configuration template.
 
@@ -136,7 +161,7 @@ async fn main() {
 -   **publish_path**: The directory path where the static site will be published, e.g., `/public/`.
 -   **pull_request_previews_enabled**: Indicates whether pull request previews are enabled for this deployment.
 
-### 5. Deploying a Web Service
+### 6. Deploying a Web Service
 
 Here’s an example of deploying a simple Node.js web service.
 
@@ -172,34 +197,18 @@ async fn main() {
 }
 ``` 
 
-### 6. Deploying an Existing Configuration
+### 7. Retrieving Owner Information
 
-If you already have a configuration file, you can deploy it directly using the `ServiceManager`.
+Finally, you can retrieve the owner ID of the current account with a simple API call.
 
 ```rust
-use render_cdk::service_management::ServiceManager;
+use render_cdk::environment_management::prelude::*;
 
 #[tokio::main]
 async fn main() {
-    // Deploy services as specified in the configuration file.
-    ServiceManager::deploy_configuration("./samples/sample.conf").await.unwrap();
-}
-``` 
-
-### 7. Deleting Services
-
-Finally, you can delete services that are no longer needed.
-
-```rust
-use render_cdk::service_management::ServiceManager;
-
-#[tokio::main]
-async fn main() {
-    // Delete a static site deployment.
-    ServiceManager::delete_service("test_deployment", "static").await;
-
-    // Delete a web service deployment.
-    ServiceManager::delete_service("test_deployment", "web_service").await;
+    // Retrieve the owner ID of the current Render account.
+    let owner = Info::get_owner_id().await;
+    println!("{}", owner);
 }
 ``` 
 
@@ -266,8 +275,12 @@ cidrBlocks = [
     -   **user**: The user for the Postgres database.
     -   **enable_high_availability**: Boolean value to enable or disable high availability for the database.
     -   **plan**: The pricing plan for the Postgres instance. Options may include "starter", "standard", "premium", etc.
-        
+
+        <br/>
+
         > **_Note_**: The **free** plan will result in failed deployments.
+
+        <br/>
         
     -   **version**: The version of Postgres to be used.
     -   **cidrBlocks**: A list of CIDR blocks for controlling access to the database. This ensures that only allowed IP ranges can access the instance.
@@ -277,8 +290,12 @@ cidrBlocks = [
     
     -   **name**: The name of the Redis instance.
     -   **plan**: The pricing plan for the Redis instance. Options may include "starter", "standard", "premium", etc.
+
+        <br/>
         
         > **_Note_**: The **free** plan will result in failed deployments.
+
+        <br/>
         
     -   **cidrBlocks**: A list of CIDR blocks for controlling access to the Redis instance, similar to the database configuration.
 
