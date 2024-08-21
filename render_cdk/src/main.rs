@@ -16,17 +16,51 @@ use tokio::time::{sleep, Duration};
 /// Usage Examples.
 #[main]
 async fn main() {
+    /*
+      _____                 _
+     / ____|               (_)
+    | (___   ___ _ ____   ___  ___ ___  ___
+     \___ \ / _ \ '__\ \ / / |/ __/ _ \/ __|
+     ____) |  __/ |   \ V /| | (_|  __/\__ \
+    |_____/ \___|_|    \_/ |_|\___\___||___/
+
+    */
+
     // let services = ServiceManager::list_all_services("50").await;
     // let services = ServiceManager::list_services_with_status("suspended", "50").await;
     // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
     // let services = ServiceManager::find_service_by_region("oregon", "50").await;
     // let services = ServiceManager::find_service_by_environment("image", "50").await;
 
+    /*
+     _____          _
+    |  __ \        | |
+    | |__) |__  ___| |_ __ _ _ __ ___  ___
+    |  ___/ _ \/ __| __/ _` | '__/ _ \/ __|
+    | |  | (_) \__ \ || (_| | | |  __/\__ \
+    |_|   \___/|___/\__\__, |_|  \___||___/
+                        __/ |
+                       |___/
+
+    */
+
     // let databases = ServiceManager::list_postgres_instances(true, "50").await;
     // let databases =
-    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "100").await;
+    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "50").await;
     // let databases =
     //     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+
+    /*
+    _____          _ _
+    |  __ \        | (_)
+    | |__) |___  __| |_ ___
+    |  _  // _ \/ _` | / __|
+    | | \ \  __/ (_| | \__ \
+    |_|  \_\___|\__,_|_|___/
+
+    */
+
+    let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;

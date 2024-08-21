@@ -51,6 +51,12 @@ pub trait ServiceManagerOperations {
         limit: &str,
     ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
 
+    /// List all redis instances.
+    fn find_redis_instance_by_name(
+        name: &str,
+        limit: &str,
+    ) -> impl std::future::Future<Output = Result<Value, Error>> + Send;
+
     /// List the postgres instance matching the specified name.
     fn find_postgres_instance_by_name(
         name: &str,
@@ -352,6 +358,30 @@ impl ServiceManagerOperations for ServiceManager {
 
             Err(anyhow::anyhow!("<Error>: {:#?}", data))
         }
+    }
+
+    async fn find_redis_instance_by_name(name: &str, limit: &str) -> Result<Value, Error> {
+        /*****************************************************
+         *
+            curl --request GET \
+            --url  https://api.render.com/v1/redis?name=<instance_name>&limit=20' \
+            --header 'Accept: application/json' \
+            --header 'Authorization: Bearer {{render_api_token_goes_here}}'
+
+        *****************************************************************/
+
+        let client = State::init().await.CLIENT;
+        let api_key = State::init().await.API_KEY;
+        let api_url = format!(
+            "{}{}{}{}{}",
+            BASE_URL, "/redis?name=", name, "&limit=", limit
+        );
+
+        // [DEBUG] logs.
+        LOGGER!("\nProcessing <request> -> ", &api_url, LogLevel::WARN);
+
+        let response = create_get_request!(client, api_url, api_key)?;
+        handle_response_data!(response, "<find_redis_instance_by_name>")
     }
 
     /// Finding all suspended services.
