@@ -209,8 +209,8 @@ mod regression_tests {
         assert!(result.is_ok());
 
         // Validate content.
-        let services = result.unwrap().to_string();
-        assert!(!services.is_empty());
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
     }
 
     #[tokio::test]
@@ -232,8 +232,8 @@ mod regression_tests {
         assert!(results.is_ok());
 
         // Validate content.
-        let services = results.unwrap().to_string();
-        assert!(!services.is_empty());
+        let instances = results.unwrap().to_string();
+        assert!(!instances.is_empty());
     }
 
     #[tokio::test]
@@ -255,8 +255,19 @@ mod regression_tests {
         assert!(result.is_ok());
 
         // Validate content.
-        let services = result.unwrap().to_string();
-        assert!(!services.is_empty());
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
+    }
+
+    #[tokio::test]
+    async fn test_find_redis_instance_by_name() {
+        let result = ServiceManager::find_redis_instance_by_name("fluentcomet", "100").await;
+        // The result should be Ok().
+        assert!(result.is_ok());
+
+        // Validate content.
+        let instances = result.unwrap().to_string();
+        assert!(!instances.is_empty());
     }
 
     #[tokio::test]
