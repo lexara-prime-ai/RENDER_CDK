@@ -145,6 +145,44 @@ macro_rules! handle_response {
     };
 }
 
+/// A macro for handling API response data and logging results.
+///
+/// # Parameters
+///
+/// - `$response`: The HTTP response object to process. This is expected to be an asynchronous response.
+/// - `$process`: A string representing the process or context in which the response is being handled. This is used for logging error messages.
+///
+/// # Behavior
+///
+/// The macro performs the following actions:
+///
+/// - If the response status indicates success:
+///   - It attempts to read the response body as text and deserialize it into a `serde_json::Value`.
+///   - If the deserialized data is an array and is empty, a warning is logged indicating that no services were found.
+///   - Otherwise, it logs the response data as a success.
+///   - The deserialized data is returned as `Ok(data)`.
+///
+/// - If the response status indicates failure:
+///   - It attempts to read the response body as text and deserialize it into a `serde_json::Value`.
+///   - It tries to extract a `"message"` field from the deserialized data and logs it as a critical error. If no message is found, it logs a generic error message that includes the process context.
+///   - An `Err` containing the deserialized data is returned.
+///
+/// # Example
+///
+/// ```ignore
+/// use your_crate_name::handle_response_data;
+///
+/// async fn handle_api_response(response: Response) -> Result<Value, Error> {
+///     handle_response_data!(response, "Fetching Redis Instances")
+/// }
+/// ```
+///
+/// # Errors
+///
+/// The macro will return an `Err(anyhow::Error)` if:
+/// - The response cannot be parsed as text.
+/// - The deserialization of the response into JSON fails.
+/// - The response status is not successful and an error message is returned.
 #[macro_export]
 macro_rules! handle_response_data {
     ($response: expr, $process: expr) => {

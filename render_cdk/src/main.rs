@@ -159,7 +159,7 @@ async fn main() {
     // ServiceManager::delete_service("test_static", "static").await;
     // ServiceManager::delete_service("test_web", "web_service").await;
     // ServiceManager::delete_postgres_instance("gearednimbus").await;
-    ServiceManager::delete_redis_instance("cyberplasma").await;
+    // ServiceManager::delete_redis_instance("cyberplasma").await;
 }
 
 /// Mandatory Regression Tests.
