@@ -60,7 +60,7 @@ async fn main() {
 
     */
 
-    let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
+    // let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
@@ -150,10 +150,16 @@ async fn main() {
     //     LogLevel::WARN
     // );
 
+    /*
+
+        DELETING SERVICES.
+
+    */
     // sleep(Duration::from_secs(150)).await;
     // ServiceManager::delete_service("test_static", "static").await;
     // ServiceManager::delete_service("test_web", "web_service").await;
     // ServiceManager::delete_postgres_instance("gearednimbus").await;
+    ServiceManager::delete_redis_instance("cyberplasma").await;
 }
 
 /// Mandatory Regression Tests.
