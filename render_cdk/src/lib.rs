@@ -237,10 +237,10 @@
 //!     assert!(result.is_ok());
 //! }
 //! ```
-//! 
+//!
 //! ## 9. Deleting services.
 //! This example demonstrates how to use the ServiceManager to delete various services.
-//! 
+//!
 //! ```ignore
 //! use render_cdk::service_management::ServiceManager;
 //!
@@ -259,7 +259,6 @@
 //!     ServiceManager::delete_redis_instance("test_redis").await;
 //! }
 //!
-
 
 pub mod authentication;
 pub mod environment_management;
