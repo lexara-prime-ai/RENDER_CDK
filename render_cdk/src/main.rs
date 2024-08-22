@@ -26,11 +26,11 @@ async fn main() {
 
     */
 
-    // let services = ServiceManager::list_all_services("50").await;
-    // let services = ServiceManager::list_services_with_status("suspended", "50").await;
-    // let services = ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
-    // let services = ServiceManager::find_service_by_region("oregon", "50").await;
-    // let services = ServiceManager::find_service_by_environment("image", "50").await;
+    // ServiceManager::list_all_services("50").await;
+    // ServiceManager::list_services_with_status("suspended", "50").await;
+    // ServiceManager::find_service_by_name_and_type("test_deployment", "static").await;
+    // ServiceManager::find_service_by_region("oregon", "50").await;
+    // ServiceManager::find_service_by_environment("image", "50").await;
 
     /*
      _____          _
@@ -44,11 +44,9 @@ async fn main() {
 
     */
 
-    // let databases = ServiceManager::list_postgres_instances(true, "50").await;
-    // let databases =
-    //     ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "50").await;
-    // let databases =
-    //     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
+    // ServiceManager::list_postgres_instances(true, "50").await;
+    // ServiceManager::find_postgres_instance_by_name("fluentcomet", true, "50").await;
+    // ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await;
 
     /*
     _____          _ _
@@ -60,7 +58,7 @@ async fn main() {
 
     */
 
-    // let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
+    // ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
 
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;

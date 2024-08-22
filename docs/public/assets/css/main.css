@@ -197,8 +197,8 @@ pre {
     background: var(--purple-level-5);
     color: var(--dark-blue-level-1);
     font-size: .6rem;
-    font-weight: 400;
-    width: 120px;
+    font-weight: 500;
+    width: 130px;
     padding: 5px;
     border-radius: 3px;
     text-align: center;
@@ -227,4 +227,25 @@ pre {
 .contribution-info a {
     color: var(--purple-level-3);
     font-weight: 900;
+}
+
+
+/* Responsiveness */
+@media (max-width: 768px) {
+    .side-bar {
+        display: none;
+    }
+
+    .main-container {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .main-content {
+        flex-basis: auto;
+    }
+    
+    .section-content {
+        width: 100%;
+    }
 }

@@ -5,10 +5,11 @@
 [![Publish to Docker Hub](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml/badge.svg)](https://github.com/lexara-prime-ai/RENDER_CDK/actions/workflows/docker-publish.yml)
 
 
-# Render CDK Documentation
+# Introduction
 
 - Reference Documentation - [Reference](https://cdk-c1wu.onrender.com/)
 - Technical Documentation(Rust) - [Markdown](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/render_cdk/README.md)
+- An article showcasing multiple usage examples - [DEV Community](https://dev.to/irfanghat/a-new-era-of-simplified-deployment-51hg)
 - Technical Documentation(CPP) - _Coming Soon_
 
 ![docs](https://github.com/lexara-prime-ai/RENDER_CDK/blob/master/docs/previews/docs.jpeg?raw=true)
@@ -33,9 +34,6 @@ Work on the resource management module is currently under way. The API supports 
 - Jobs _(Coming Soon)_
 
 The CDK will provide an abstraction that will make it easier to work with the Render cloud programmatically.
-
-### To do
-_Automate_ tests for deployed services _e.g Connecting and running queries on created database instances etc._
 
 # Render CDK Crate Documentation
 
@@ -73,3 +71,8 @@ This project is licensed under the MIT License. See the [LICENSE](https://github
 For questions, issues, or suggestions, please open an issue on the [repository](https://github.com/lexara-prime-ai/RENDER_CDK).
 
 Thank you for using `render_cdk`! We hope this documentation helps you get started quickly.
+
+_______
+
+### To do
+_Automate_ tests for deployed services _e.g Connecting and running queries on created database instances etc._

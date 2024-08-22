@@ -1,8 +1,7 @@
-![crates.io](https://img.shields.io/crates/v/render_cdk.svg)
+[Render](https://render.com/) is an all-in-one cloud platform designed to streamline the **development** and **deployment** of your apps and websites. It offers seamless integration with **free TLS certificates**, **a global CDN**, **private networks**, and **automatic deployments directly from Git**. _Build_, _run_, and _scale_ with ease, all in one **unified** solution.
 
-# Technical Documentation
-
-## Configuration
+### Getting Started
+#### Configuration
 
 To configure the environment variables for use with `render_cdk`, you need to set the `API_KEY` and `OWNER_CREDENTIALS` environment variables. You can do this by creating a `.env` file in the root of your project with the following content:
 
@@ -22,7 +21,7 @@ Add `render_cdk` to your `Cargo.toml`:
 render_cdk = "0.0.20"
 ```
 
-* _Alternatively_, running at the `cargo add render_cdk` **root** of your project will also add **render_cdk** to your project.
+* Alternatively, running `cargo add render_cdk` at the root of your project will also add it to your project.
 
 ### Usage Examples
 
@@ -40,19 +39,19 @@ use tokio::main;
 #[main]
 async fn main() {
     // List all deployed services, limiting the result to 50.
-    let services = ServiceManager::list_all_services("50").await;
+    ServiceManager::list_all_services("50").await;
 
     // List all services with the status "suspended", limiting the result to 50.
-    let services = ServiceManager::list_services_with_status("suspended", "50").await;
+    ServiceManager::list_services_with_status("suspended", "50").await;
 
     // Find a specific service by its name and type.
-    let services = ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
+    ServiceManager::find_service_by_name_and_type("my_api", "web_service").await;
 
     // Find services deployed in a specific region (e.g., Oregon), limiting the result to 50.
-    let services = ServiceManager::find_service_by_region("oregon", "50").await;
+    ServiceManager::find_service_by_region("oregon", "50").await;
 
     // Find services based on the environment they are deployed in, limiting the result to 50.
-    let services = ServiceManager::find_service_by_environment("image", "50").await;
+    ServiceManager::find_service_by_environment("image", "50").await;
 
     // Deleting a web service by name and type.
     ServiceManager::delete_service("my_api", "web_service").await.unwrap();
@@ -61,16 +60,16 @@ async fn main() {
     ServiceManager::delete_service("my_static_site", "static").await.unwrap();
 
     // List all Postgres database instances, limiting the result to 50.
-    let databases = ServiceManager::list_postgres_instances(true, "50").await.unwrap();
+    ServiceManager::list_postgres_instances(true, "50").await.unwrap();
 
     // Find a specific Postgres database instance by name.
-    let database = ServiceManager::find_postgres_instance_by_name("my_database", true, "50").await.unwrap();
+    ServiceManager::find_postgres_instance_by_name("my_database", true, "50").await.unwrap();
 
     // Find Postgres database instances with a specific status (e.g., suspended), limiting the result to 50.
-    let suspended_databases = ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
+    ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
 
     // Find redis instances by name.
-    let redis_instances = ServiceManager::find_redis_instance_by_name("my_redis_instance", "50").await;
+    ServiceManager::find_redis_instance_by_name("my_redis_instance", "50").await;
 }
 ``` 
 
@@ -108,7 +107,7 @@ fn main() {
     // Read and parse a configuration file from a specified path.
     let config = Conf::read_configuration_file("./samples/sample.conf").unwrap();
 
-    // Use the configuration as needed...
+    // Process the configuration as needed...
 }
 ``` 
 
@@ -154,6 +153,7 @@ async fn main() {
     ServiceManager::create_service(deployment_config).await.unwrap();
 }
 ```
+
 
 **Description of Fields:**
 
@@ -207,8 +207,7 @@ use render_cdk::environment_management::prelude::*;
 #[tokio::main]
 async fn main() {
     // Retrieve the owner ID of the current Render account.
-    let owner = Info::get_owner_id().await;
-    println!("{}", owner);
+    Info::get_owner_id().await;
 }
 ``` 
 
@@ -216,14 +215,14 @@ async fn main() {
 
 ### 8. Using Simple .conf Files for Resource Provisioning
 
-* `.conf` files offer a convenient alternative to _programmatic resource provisioning_, allowing you to **define** and **manage** resources through _simple_ configuration settings.
+* `.conf` files offer a convenient alternative to _programmatic resource provisioning_, allowing you to define and manage resources through _simple_ configuration settings.
 
 ### Configuration File Example
 
-The following is a _sample configuration_ file that will be used to provision a managed **Postgres** instance and a managed **Redis** instance.
+The following is a _sample configuration_ file that will be used to provision a managed _Postgres_ instance and a managed _Redis_ instance.
 
 * The `[database]` section specifies the configuration for a managed **Postgres** instance:
- * The `name` and `user` fields should be filled with the desired **database name** and **user**.
+ * The `name` and `user` fields should be filled with the desired database name and user.
  * `enable_high_availability` indicates whether high availability should be enabled.
  * `plan` specifies the pricing plan for the instance, and `version` indicates the Postgres version.
  * `cidrBlocks` defines which IP ranges are allowed to access the database, using CIDR notation.
@@ -310,6 +309,8 @@ fn main() {
 }
 ``` 
 
-----------
+This guide should have given you a solid understanding of how to streamline your cloud development with Render Cloud using Render CDK. 
 
-This documentation should help guide you through the basic usage of the `render_cdk` crate for managing your services on Render Cloud.
+By leveraging Render CDK’s powerful features, you can simplify the process of provisioning, managing, and scaling your cloud resources. 
+
+With its declarative approach and seamless integration, Render CDK empowers you to focus more on building and innovating, while it handles the complexities of cloud infrastructure.
