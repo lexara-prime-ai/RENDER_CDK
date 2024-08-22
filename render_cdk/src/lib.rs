@@ -53,19 +53,19 @@
 //! #[main]
 //! async fn main() {
 //!     // List all services, limiting to 50 results
-//!     let services = ServiceManager::list_all_services("50").await.unwrap();
+//!     ServiceManager::list_all_services("50").await.unwrap();
 //!     
 //!     // List services by status (e.g., suspended)
-//!     let suspended_services = ServiceManager::list_services_with_status("suspended", "50").await.unwrap();
+//!     ServiceManager::list_services_with_status("suspended", "50").await.unwrap();
 //!
 //!     // Find a specific service by name and type
-//!     let service = ServiceManager::find_service_by_name_and_type("whoami", "web_service").await.unwrap();
+//!     ServiceManager::find_service_by_name_and_type("whoami", "web_service").await.unwrap();
 //!
 //!     // Find services by region
-//!     let services_in_region = ServiceManager::find_service_by_region("oregon", "10").await.unwrap();
+//!     ServiceManager::find_service_by_region("oregon", "10").await.unwrap();
 //!
 //!     // Find services by environment
-//!     let services_in_env = ServiceManager::find_service_by_environment("image", "10").await.unwrap();
+//!     ServiceManager::find_service_by_environment("image", "10").await.unwrap();
 //! }
 //! ```
 //!
@@ -96,13 +96,13 @@
 //! #[main]
 //! async fn main() {
 //!     // List all Postgres instances, limit results to 50
-//!     let databases = ServiceManager::list_postgres_instances(true, "50").await.unwrap();
+//!     ServiceManager::list_postgres_instances(true, "50").await.unwrap();
 //!
 //!     // Find a Postgres instance by name
-//!     let database = ServiceManager::find_postgres_instance_by_name("agilecomet", true, "100").await.unwrap();
+//!     ServiceManager::find_postgres_instance_by_name("agilecomet", true, "100").await.unwrap();
 //!
 //!     // Find Postgres instances by status (e.g., suspended)
-//!     let suspended_databases = ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
+//!     ServiceManager::find_postgres_instance_with_status("suspended", true, "50").await.unwrap();
 //! }
 //! ```
 //!
@@ -127,7 +127,7 @@
 //! };
 //!
 //! // Deploy the static site
-//! // ServiceManager::create_service(static_site).await.unwrap();
+//! ServiceManager::create_service(static_site).await.unwrap();
 //! ```
 //!
 //! ### 5. Deploying a web service (Node.js)
@@ -158,7 +158,7 @@
 //! };
 //!
 //! // Deploy the web service
-//! // ServiceManager::create_service(web_service).await.unwrap();
+//! ServiceManager::create_service(web_service).await.unwrap();
 //! ```
 //!
 //! ### 6. Using configuration files for resource provisioning
@@ -176,7 +176,7 @@
 //!     println!("Loaded Configuration: {:?}", config);
 //!
 //!     // Deploy the configuration
-//!     // ServiceManager::deploy_configuration("./samples/sample.conf").await.unwrap();
+//!     ServiceManager::deploy_configuration("./samples/sample.conf").await.unwrap();
 //! }
 //! ```
 
@@ -237,7 +237,29 @@
 //!     assert!(result.is_ok());
 //! }
 //! ```
+//! 
+//! ## 9. Deleting services.
+//! This example demonstrates how to use the ServiceManager to delete various services.
+//! 
+//! ```ignore
+//! use render_cdk::service_management::ServiceManager;
 //!
+//! #[tokio::main]
+//! async fn main() {
+//!     // Delete a static site deployment.
+//!     ServiceManager::delete_service("test_deployment", "static").await;
+//!
+//!    // Delete a web service deployment.
+//!     ServiceManager::delete_service("test_deployment", "web_service").await;
+//!
+//!     // Delete a postgres instance.
+//!     ServiceManager::delete_postgres_instance("test_postgres").await;
+//!
+//!     // Delete a redis instance.
+//!     ServiceManager::delete_redis_instance("test_redis").await;
+//! }
+//!
+
 
 pub mod authentication;
 pub mod environment_management;
