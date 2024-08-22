@@ -60,6 +60,18 @@ async fn main() {
 
     // ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
 
+    /*
+    _____          _ _
+    |  __ \        | (_)
+    | |__) |___  __| |_ ___
+    |  _  // _ \/ _` | / __|
+    | | \ \  __/ (_| | \__ \
+    |_|  \_\___|\__,_|_|___/
+
+    */
+
+    // let instances = ServiceManager::find_redis_instance_by_name("cyberplasma", "50").await;
+
     // Retrieve Owner Id.
     // let owner = Info::get_owner_id().await;
     // println!("{}", owner);
