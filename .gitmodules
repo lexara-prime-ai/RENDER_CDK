@@ -1,0 +1,3 @@
+[submodule "librender_cdk/cpp-httplib"]
+	path = librender_cdk/cpp-httplib
+	url = https://github.com/lexara-prime-ai/cpp-httplib
