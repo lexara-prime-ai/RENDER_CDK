@@ -25,23 +25,16 @@ test:
 CPP_SRC_DIR = ./librender_cdk/src
 CPP_BUILD_DIR = build
 CPP_LIBRARY_DIR = librender_cdk
+CPP_INCLUDE_DIRS = -I./librender_cdk/extern/cpp-httplib -I./librender_cdk/include
+CPP_FLAGS = -std=c++17 -Wall
+CPP_LIBS = -lssl -lcrypto # OpenSSL for HTTPS
 
 
 # Identifier for the static library.
 CPP_LIB_NAME = librender_cdk.a
 
-
 # Identifier for the shared library.
-CPP_SHARED_LIB_NAME = librender_cdk.so 
-
-
-CPP_INCLUDE_DIRS = -I./librender_cdk/cpp-httplib
-CPP_FLAGS = -std=c++17
-
-
-# OpenSSL for HTTPS.
-CPP_LIBS = -lssl -lcrypto 
-
+CPP_SHARED_LIB_NAME = librender_cdk.so
 
 # Ensure the C++ build directory exists.
 $(CPP_BUILD_DIR):
@@ -78,5 +71,6 @@ run-all: build
 	cargo run
 
 
+# Clean all build files, both Rust and C++.
 clean: cpp-clean
 	cargo clean
