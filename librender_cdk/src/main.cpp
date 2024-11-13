@@ -12,6 +12,9 @@ int main() {
   return 0;
 }
 
+// Testing
+// g++ -std=c++17 -I./librender_cdk/extern/dotenv-cpp/include -o test_env src/main.cpp src/environment_manager.cpp -lssl -lcrypto
+
 // #include "../cpp-httplib/httplib.h"
 // #include <iostream>
 
