@@ -125,7 +125,6 @@ mod state_tests {
         let owner_credentials = EnvironmentManager::retrieve_env_config().OWNER_CREDENTIALS;
         let result = Owner::list_authorized_users(&owner_credentials, "100").await;
 
-        println!("{:?}", result);
         // The result should be Ok().
         assert!(result.is_ok());
     }

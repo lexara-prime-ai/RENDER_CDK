@@ -1,14 +1,82 @@
+# Rust target config.
+RUST_MANIFEST_PATH = ./render_cdk/Cargo.toml
+
+# Rust targets.
 format:
-	cargo fmt --quiet
+	cargo fmt --quiet --manifest-path=$(RUST_MANIFEST_PATH)
 
 lint:
-	cargo clippy
+	cargo clippy --manifest-path=$(RUST_MANIFEST_PATH)
 
 release:
-	cargo build --release
+	cargo build --manifest-path=$(RUST_MANIFEST_PATH) --release
 
 debug:
-	cargo build
+	cargo build --manifest-path=$(RUST_MANIFEST_PATH)
 
 run:
+	cargo run --manifest-path=$(RUST_MANIFEST_PATH)
+
+test:
+	cargo test --manifest-path=$(RUST_MANIFEST_PATH) -- --nocapture
+
+
+# C++ target config.
+CPP_SRC_DIR = ./librender_cdk/src
+CPP_BUILD_DIR = build
+CPP_LIBRARY_DIR = librender_cdk
+
+
+# Identifier for the static library.
+CPP_LIB_NAME = librender_cdk.a
+
+
+# Identifier for the shared library.
+CPP_SHARED_LIB_NAME = librender_cdk.so 
+
+
+CPP_INCLUDE_DIRS = -I./librender_cdk/cpp-httplib
+CPP_FLAGS = -std=c++17
+
+
+# OpenSSL for HTTPS.
+CPP_LIBS = -lssl -lcrypto 
+
+
+# Ensure the C++ build directory exists.
+$(CPP_BUILD_DIR):
+	mkdir -p $(CPP_BUILD_DIR)
+
+
+# Static library build target.
+cpp-static-lib: $(CPP_BUILD_DIR)
+	ar rcs $(CPP_BUILD_DIR)/$(CPP_LIB_NAME) $(CPP_SRC_DIR)/*.cpp
+
+
+# Shared library build target.
+cpp-shared-lib: $(CPP_BUILD_DIR)
+	g++ -shared -fPIC $(CPP_FLAGS) $(CPP_INCLUDE_DIRS) $(CPP_SRC_DIR)/*.cpp -o $(CPP_BUILD_DIR)/$(CPP_SHARED_LIB_NAME) $(CPP_LIBS)
+
+
+# Clean C++ build files and libraries.
+cpp-clean:
+	rm -rf $(CPP_BUILD_DIR)
+
+
+# Combined targets.
+build: debug cpp-static-lib
+release-build: release cpp-static-lib
+
+
+# Optionally build shared library.
+build-shared: debug cpp-shared-lib
+release-build-shared: release cpp-shared-lib
+
+
+# Run both Rust and C++ executables.
+run-all: build
 	cargo run
+
+
+clean: cpp-clean
+	cargo clean
