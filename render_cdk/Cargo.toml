@@ -29,10 +29,6 @@ tokio = { version = "1.37.0", features = ["full"] }
 toml = "0.8.14"
 url = "2.5.0"
 
-[lib]
-name = "render_cdk"
-path = "src/lib.rs"
-
 [profile.release]
 debug = false
 
