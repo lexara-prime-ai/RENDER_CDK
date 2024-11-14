@@ -25,9 +25,11 @@ test:
 CPP_SRC_DIR = ./librender_cdk/src
 CPP_BUILD_DIR = build
 CPP_LIBRARY_DIR = librender_cdk
-CPP_INCLUDE_DIRS = -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/cpp-httplib -I./librender_cdk/include
+CPP_INCLUDE_DIRS = -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/include
 CPP_FLAGS = -std=c++17 -Wall
-CPP_LIBS = -lssl -lcrypto # OpenSSL for HTTPS
+
+# OpenSSL for HTTPS, json for de/serialization.
+CPP_LIBS = -lssl -lcrypto -ljsoncpp
 
 
 # Identifier for the static library.
@@ -74,3 +76,9 @@ run-all: build
 # Clean all build files, both Rust and C++.
 clean: cpp-clean
 	cargo clean
+
+
+
+# deps:
+# apt-get install libjsoncpp-dev
+#

@@ -10,4 +10,4 @@ struct Config {
 
 Config load_config();
 
-#endif // ENVIRONMENT_MANAGER_H
+#endif

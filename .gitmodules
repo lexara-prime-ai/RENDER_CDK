@@ -1,6 +1,3 @@
-[submodule "librender_cdk/extern/cpp-httplib"]
-	path = librender_cdk/extern/cpp-httplib
-	url = https://github.com/lexara-prime-ai/cpp-httplib
 [submodule "librender_cdk/extern/dotenv-cpp"]
 	path = librender_cdk/extern/dotenv-cpp
 	url = https://github.com/lexara-prime-ai/dotenv-cpp
