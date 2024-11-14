@@ -1,5 +1,5 @@
-#include "authorization.h"
-#include "environment_manager.h"
+#include "../src/authorization.h"
+#include "../src/environment_manager.h"
 #include <iostream>
 
 int main() {
@@ -33,7 +33,17 @@ int main() {
   return 0;
 }
 
-// Testing
-// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp
-// src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl
-// -ljsoncpp
+// Compiling and running unit tests for the project:
+// The following command compiles the source files `unit_tests.cpp`,
+// `environment_manager.cpp`, and `authorization.cpp`
+// into an executable named `unit_tests`. The following options are used:
+
+// - `-I../extern/dotenv-cpp/include/`: Includes the
+// directory containing the `dotenv-cpp` header files.
+
+// - `-lcurl`: Links the `libcurl` library required for making HTTP requests in
+// `authorization.cpp`.
+// - `-ljsoncpp`: Links the `jsoncpp` library for parsing JSON responses.
+// The resulting `unit_tests` executable can be run to execute the unit tests.
+
+// g++ -I../extern/dotenv-cpp/include/ unit_tests.cpp ../src/environment_manager.cpp ../src/authorization.cpp -o unit_tests -lcurl -ljsoncpp

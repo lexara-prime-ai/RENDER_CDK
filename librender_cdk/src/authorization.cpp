@@ -1,7 +1,7 @@
 #include "authorization.h"
 #include <curl/curl.h>
 #include <iostream>
-#include <jsoncpp/json/json.h> // Include this if using a JSON parsing library like JSON for Modern C++
+#include <jsoncpp/json/json.h>
 #include <sstream>
 
 namespace {
@@ -13,7 +13,7 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb,
   return size * nmemb;
 }
 
-} // anonymous namespace
+} // anonymous namespace.
 
 std::vector<OwnerResponse>
 AuthorizationManager::list_authorized_users(const std::string &email,
@@ -25,27 +25,27 @@ AuthorizationManager::list_authorized_users(const std::string &email,
     std::string response;
     std::string api_url = base_url + "/owners?limit=" + limit;
 
-    // Set up headers
+    // Set up headers.
     struct curl_slist *headers = nullptr;
     headers = curl_slist_append(headers, "Content-Type: application/json");
     headers = curl_slist_append(headers,
                                 ("Authorization: Bearer " + api_key_).c_str());
 
-    // Configure CURL options
+    // Configure CURL options.
     curl_easy_setopt(curl, CURLOPT_URL, api_url.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-    // Perform the request
+    // Perform the request.
     CURLcode res = curl_easy_perform(curl);
 
-    // Check if request was successful
+    // Request validation.
     if (res == CURLE_OK) {
       long http_code = 0;
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
       if (http_code == 200) {
-        // Parse JSON response
+        // JSON response parsing.
         Json::Value jsonData;
         Json::CharReaderBuilder reader;
         std::string errs;
@@ -61,7 +61,7 @@ AuthorizationManager::list_authorized_users(const std::string &email,
 
             OwnerResponse ownerResponse{owner, item["cursor"].asString()};
 
-            // Filter owners based on the provided email
+            // Filter owners based on the owner's credentials.
             if (owner.email == email) {
               ownerResponses.push_back(ownerResponse);
             }
@@ -78,11 +78,14 @@ AuthorizationManager::list_authorized_users(const std::string &email,
                 << std::endl;
     }
 
-    // Clean up
+    // Clean up.
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
   }
 
   return ownerResponses;
 }
-// g++ -I./librender_cdk/extern/dotenv-cpp src/main.cpp src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl -ljsoncpp -ldotenv
+
+
+// Quick compilation:
+// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl -ljsoncpp
