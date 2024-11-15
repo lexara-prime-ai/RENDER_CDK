@@ -1,3 +1,6 @@
 [submodule "librender_cdk/extern/dotenv-cpp"]
 	path = librender_cdk/extern/dotenv-cpp
 	url = https://github.com/lexara-prime-ai/dotenv-cpp
+[submodule "librender_cdk/extern/json"]
+	path = librender_cdk/extern/json
+	url = https://github.com/lexara-prime-ai/json.git

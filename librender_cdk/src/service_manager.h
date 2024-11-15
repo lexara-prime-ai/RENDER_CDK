@@ -3,7 +3,7 @@
 #define SERVICE_MANAGER_H
 
 #include <curl/curl.h>
-#include <jsoncpp/json/json.h>
+#include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
 

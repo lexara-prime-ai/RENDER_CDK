@@ -1,4 +1,5 @@
 #include "service_manager.h"
+#include <jsoncpp/json/json.h>
 #include <iostream>
 #include <sstream>
 

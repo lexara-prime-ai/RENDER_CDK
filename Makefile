@@ -80,5 +80,5 @@ clean: cpp-clean
 
 
 # deps:
-# apt-get install libjsoncpp-dev
+# sudo apt -y install nlohmann-json3-dev
 #
