@@ -2,18 +2,18 @@
 #include <curl/curl.h>
 #include <iostream>
 #include <jsoncpp/json/json.h>
+#include <nlohmann/json.hpp>
 #include <sstream>
 
+// Define an anonymous namespace for the WriteCallback function.
 namespace {
-
 // Callback function for handling the data received from `libcurl`.
 size_t WriteCallback(void *contents, size_t size, size_t nmemb,
                      std::string *response) {
   response->append((char *)contents, size * nmemb);
   return size * nmemb;
 }
-
-} // anonymous namespace.
+} // namespace
 
 std::vector<OwnerResponse>
 AuthorizationManager::list_authorized_users(const std::string &email,
@@ -45,6 +45,7 @@ AuthorizationManager::list_authorized_users(const std::string &email,
       long http_code = 0;
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
       if (http_code == 200) {
+
         // JSON response parsing.
         Json::Value jsonData;
         Json::CharReaderBuilder reader;
@@ -52,6 +53,18 @@ AuthorizationManager::list_authorized_users(const std::string &email,
         std::istringstream s(response);
 
         if (Json::parseFromStream(reader, s, &jsonData, &errs)) {
+
+          // Pretty print JSON.
+          try {
+            nlohmann::json prettyJson = nlohmann::json::parse(response);
+            std::cout << "<response> -> \n"
+                      << prettyJson.dump(4)
+                      << std::endl; // 4 spaces for indentation
+          } catch (const nlohmann::json::parse_error &e) {
+            std::cerr << "Failed to parse JSON with nlohmann::json: "
+                      << e.what() << std::endl;
+          }
+
           for (const auto &item : jsonData) {
             Owner owner{item["owner"]["id"].asString(),
                         item["owner"]["name"].asString(),
@@ -86,6 +99,7 @@ AuthorizationManager::list_authorized_users(const std::string &email,
   return ownerResponses;
 }
 
-
 // Quick compilation:
-// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl -ljsoncpp
+// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp
+// src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl
+// -ljsoncpp

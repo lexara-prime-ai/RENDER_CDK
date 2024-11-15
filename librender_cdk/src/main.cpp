@@ -78,4 +78,4 @@ int main() {
 // main_executable -lcurl -ljsoncpp
 
 // sudo apt-get install libjsoncpp-dev
-// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o main_executable -lcurl -ljsoncpp
+// g++ -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include src/main.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o main_executable -lcurl -ljsoncpp

@@ -5,7 +5,7 @@
 
 To configure the environment variables for use with `render_cdk`, you need to set the `API_KEY` and `OWNER_CREDENTIALS` environment variables. You can do this by creating a `.env` file in the root of your project with the following content:
 
-```.env
+```toml
 API_KEY=rnd_xxxxXXXXxxxxXXXXxxxXX
 OWNER_CREDENTIALS=<render>@<email>.com
 ```
@@ -22,6 +22,9 @@ render_cdk = "0.0.21"
 ```
 
 * Alternatively, running `cargo add render_cdk` at the root of your project will also add it to your project.
+
+## Building from source
+To build both the `rust` crate and `cpp` library, simply clone the repository, and run `make release-build`.
 
 ### Usage Examples
 

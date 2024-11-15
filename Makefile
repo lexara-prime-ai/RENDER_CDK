@@ -81,4 +81,4 @@ clean: cpp-clean
 
 # deps:
 # sudo apt -y install nlohmann-json3-dev
-#
+# Quick build command: g++ -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include src/main.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o main_executable -lcurl -ljsoncpp
