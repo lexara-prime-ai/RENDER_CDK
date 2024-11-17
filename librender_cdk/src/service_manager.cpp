@@ -1,6 +1,7 @@
 #include "service_manager.h"
 #include <iostream>
 #include <jsoncpp/json/json.h>
+#include <map>
 #include <nlohmann/json.hpp>
 #include <sstream>
 
@@ -15,15 +16,37 @@ size_t ServiceManager::WriteCallback(void *contents, size_t size, size_t nmemb,
   return size * nmemb;
 }
 
-std::vector<Service> ServiceManager::list_services() {
+std::string
+build_query_string(const std::map<std::string, std::string> &options) {
+  std::ostringstream query;
+  for (const auto &option : options) {
+    query << "&" << option.first << "=" << option.second;
+  }
+  return query.str();
+}
+
+std::vector<Service> ServiceManager::list_services(
+    const std::map<std::string, std::string> &options) {
   CURL *curl = curl_easy_init();
   std::vector<Service> services;
 
   if (curl) {
     std::string response;
+
+    // Base API URL
     std::string api_url =
-        "https://api.render.com/v1/services?includePreviews=true&limit=" +
-        limit_;
+        "https://api.render.com/v1/services?includePreviews=true";
+
+    // Add the limit if it's not overridden by options
+    if (options.find("limit") == options.end()) {
+      api_url += "&limit=" + limit_;
+    }
+
+    // Append additional query parameters from options
+    api_url += build_query_string(options);
+
+    // Print <request> url
+    std::cout << "\n<request> -> " + api_url + "\n" << std::endl;
 
     // Set up headers
     struct curl_slist *headers = nullptr;
@@ -45,6 +68,7 @@ std::vector<Service> ServiceManager::list_services() {
     if (res == CURLE_OK) {
       long http_code = 0;
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
+
       if (http_code == 200) {
         // JSON response parsing
         Json::Value jsonData;

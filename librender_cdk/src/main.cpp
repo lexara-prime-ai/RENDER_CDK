@@ -2,6 +2,7 @@
 #include "environment_manager.h"
 #include "service_manager.h"
 #include <iostream>
+#include <map>
 #include <nlohmann/json.hpp>
 
 int test_list_services() {
@@ -12,11 +13,18 @@ int test_list_services() {
     return -1;
   }
 
-  // Initialize the ServiceManager with the loaded API key.
-  ServiceManager service_manager(config.api_key, "1");
+  std::map<std::string, std::string> OPTIONS_A = {{"type", "web_service"},
+                                                  {"limit", "10"}};
 
-  // Get a list of services.
-  auto services = service_manager.list_services();
+  std::map<std::string, std::string> OPTIONS_B = {{"name", "twitt3r"}};
+
+  // Initialize the ServiceManager with the loaded API key with custom options.
+  ServiceManager service_manager(config.api_key);
+  // ServiceManager service_manager(config.api_key, "1");
+
+  // Get a list of services with OPTIONS.
+  auto service_list_A = service_manager.list_services(OPTIONS_A);
+  auto service_list_B = service_manager.list_services(OPTIONS_B);
 
   // // Process the response and convert to JSON.
   // if (!services.empty()) {

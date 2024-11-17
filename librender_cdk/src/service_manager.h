@@ -3,6 +3,7 @@
 #define SERVICE_MANAGER_H
 
 #include <curl/curl.h>
+#include <map>
 #include <nlohmann/json.hpp>
 #include <string>
 #include <vector>
@@ -21,7 +22,9 @@ struct Service {
 class ServiceManager {
 public:
   ServiceManager(const std::string &api_key, const std::string &limit = "100");
-  std::vector<Service> list_services();
+
+  std::vector<Service>
+  list_services(const std::map<std::string, std::string> &options = {});
 
 private:
   std::string api_key_;
