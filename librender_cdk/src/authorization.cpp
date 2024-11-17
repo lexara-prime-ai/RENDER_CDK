@@ -37,16 +37,16 @@ AuthorizationManager::list_authorized_users(const std::string &email,
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION, WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-    // Perform the request.
+    // Perform <request>.
     CURLcode res = curl_easy_perform(curl);
 
-    // Request validation.
+    // Validate <request>.
     if (res == CURLE_OK) {
       long http_code = 0;
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
       if (http_code == 200) {
 
-        // JSON response parsing.
+        // JSON <response> parsing.
         Json::Value jsonData;
         Json::CharReaderBuilder reader;
         std::string errs;
@@ -54,12 +54,11 @@ AuthorizationManager::list_authorized_users(const std::string &email,
 
         if (Json::parseFromStream(reader, s, &jsonData, &errs)) {
 
-          // Pretty print JSON.
+          // Format <debug> logs.
           try {
             nlohmann::json prettyJson = nlohmann::json::parse(response);
-            std::cout << "<response> -> \n"
-                      << prettyJson.dump(4)
-                      << std::endl; // 4 spaces for indentation
+            std::cout << "<response>::<Authorized Users> -> \n"
+                      << prettyJson.dump(4) << std::endl;
           } catch (const nlohmann::json::parse_error &e) {
             std::cerr << "Failed to parse JSON with nlohmann::json: "
                       << e.what() << std::endl;
@@ -98,8 +97,3 @@ AuthorizationManager::list_authorized_users(const std::string &email,
 
   return ownerResponses;
 }
-
-// Quick compilation:
-// g++ -I./librender_cdk/extern/dotenv-cpp/include src/main.cpp
-// src/environment_manager.cpp src/authorization.cpp -o main_executable -lcurl
-// -ljsoncpp

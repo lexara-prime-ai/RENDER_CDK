@@ -20,11 +20,12 @@ struct Service {
 
 class ServiceManager {
 public:
-  ServiceManager(const std::string &api_key);
+  ServiceManager(const std::string &api_key, const std::string &limit = "100");
   std::vector<Service> list_services();
 
 private:
   std::string api_key_;
+  std::string limit_;
 
   // Declare WriteCallback as a static member function.
   static size_t WriteCallback(void *contents, size_t size, size_t nmemb,

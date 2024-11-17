@@ -1,12 +1,14 @@
 #include "service_manager.h"
-#include <jsoncpp/json/json.h>
 #include <iostream>
+#include <jsoncpp/json/json.h>
+#include <nlohmann/json.hpp>
 #include <sstream>
 
-ServiceManager::ServiceManager(const std::string &api_key)
-    : api_key_(api_key) {}
+// Define constructor with default limit value.
+ServiceManager::ServiceManager(const std::string &api_key,
+                               const std::string &limit)
+    : api_key_(api_key), limit_(limit.empty() ? "100" : limit) {}
 
-// Define WriteCallback as a static member function.
 size_t ServiceManager::WriteCallback(void *contents, size_t size, size_t nmemb,
                                      std::string *response) {
   response->append((char *)contents, size * nmemb);
@@ -20,36 +22,48 @@ std::vector<Service> ServiceManager::list_services() {
   if (curl) {
     std::string response;
     std::string api_url =
-        "https://api.render.com/v1/services?includePreviews=true&limit=20";
+        "https://api.render.com/v1/services?includePreviews=true&limit=" +
+        limit_;
 
-    // Set up headers.
+    // Set up headers
     struct curl_slist *headers = nullptr;
     headers = curl_slist_append(headers, "accept: application/json");
     headers = curl_slist_append(headers,
                                 ("Authorization: Bearer " + api_key_).c_str());
 
-    // Configure CURL options.
+    // Configure CURL options
     curl_easy_setopt(curl, CURLOPT_URL, api_url.c_str());
     curl_easy_setopt(curl, CURLOPT_HTTPHEADER, headers);
     curl_easy_setopt(curl, CURLOPT_WRITEFUNCTION,
                      ServiceManager::WriteCallback);
     curl_easy_setopt(curl, CURLOPT_WRITEDATA, &response);
 
-    // Perform the request.
+    // Perform the request
     CURLcode res = curl_easy_perform(curl);
 
-    // Request validation.
+    // Request validation
     if (res == CURLE_OK) {
       long http_code = 0;
       curl_easy_getinfo(curl, CURLINFO_RESPONSE_CODE, &http_code);
       if (http_code == 200) {
-        // JSON response parsing.
+        // JSON response parsing
         Json::Value jsonData;
         Json::CharReaderBuilder reader;
         std::string errs;
         std::istringstream s(response);
 
         if (Json::parseFromStream(reader, s, &jsonData, &errs)) {
+
+          // Format <debug> logs
+          try {
+            nlohmann::json prettyJson = nlohmann::json::parse(response);
+            std::cout << "<response>::<Services> -> \n"
+                      << prettyJson.dump(4) << std::endl;
+          } catch (const nlohmann::json::parse_error &e) {
+            std::cerr << "Failed to parse JSON with nlohmann::json: "
+                      << e.what() << std::endl;
+          }
+
           for (const auto &item : jsonData) {
             const auto &serviceData = item["service"];
             Service service{serviceData["id"].asString(),
@@ -74,7 +88,7 @@ std::vector<Service> ServiceManager::list_services() {
                 << std::endl;
     }
 
-    // Clean up.
+    // Clean up
     curl_slist_free_all(headers);
     curl_easy_cleanup(curl);
   }
