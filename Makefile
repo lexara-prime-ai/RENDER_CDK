@@ -21,70 +21,43 @@ test:
 	cargo test --manifest-path=$(RUST_MANIFEST_PATH) -- --nocapture
 
 
-# C++ target config.
-CPP_SRC_DIR = ./librender_cdk/src
-CPP_BUILD_DIR = build
-CPP_LIBRARY_DIR = librender_cdk
-CPP_INCLUDE_DIRS = -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/include
-CPP_FLAGS = -std=c++17 -Wall
+# CPP Compiler and flags.
+CXX = g++
+CXX_FLAGS = -std=c++17 -fPIC -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include
+LD_FLAGS = -lcurl -ljsoncpp
+CPP_SRC = ./librender_cdk/src/authorization.cpp ./librender_cdk/src/environment_manager.cpp ./librender_cdk/src/service_manager.cpp
+CPP_OUTPUT_DIR = ./librender_cdk/build
+UNIT_TEST_SRC = ./tests/unit_tests.cpp
 
-# OpenSSL for HTTPS, json for de/serialization.
-CPP_LIBS = -lssl -lcrypto -ljsoncpp
+# Install missing dependencies.
+check-dependencies:
+	@dpkg -l | grep -E 'nlohmann-json3-dev|libjsoncpp-dev' || (echo "Installing missing dependencies..." && sudo apt update && sudo apt -y install nlohmann-json3-dev libjsoncpp-dev)
 
+# CPP targets.
+shared: $(CPP_OUTPUT_DIR) check-dependencies
+	$(CXX) $(CXX_FLAGS) -shared $(CPP_SRC) -o $(CPP_OUTPUT_DIR)/librender_cdk.so $(LD_FLAGS)
 
-# Identifier for the static library.
-CPP_LIB_NAME = librender_cdk.a
+$(CPP_OUTPUT_DIR):
+	mkdir -p $(CPP_OUTPUT_DIR)
 
-# Identifier for the shared library.
-CPP_SHARED_LIB_NAME = librender_cdk.so
+unit_test: shared $(UNIT_TEST_SRC)
+	$(CXX) $(CXX_FLAGS) $(UNIT_TEST_SRC) -L$(CPP_OUTPUT_DIR) -lrender_cdk -o $(CPP_OUTPUT_DIR)/unit_tests
+# Set the LD_LIBRARY_PATH to include the directory where the shared library is located
+	export LD_LIBRARY_PATH=$(CPP_OUTPUT_DIR):$$LD_LIBRARY_PATH && ./$(CPP_OUTPUT_DIR)/unit_tests
 
-# Ensure the C++ build directory exists.
-$(CPP_BUILD_DIR):
-	mkdir -p $(CPP_BUILD_DIR)
+# Clean all build artifacts (Rust and CPP).
+clean:
+	rm -rf $(CPP_OUTPUT_DIR) $(CPP_OUTPUT_DIR)/unit_tests
+	cargo clean --manifest-path=$(RUST_MANIFEST_PATH)
 
+# Targets to build both Rust and CPP together.
+build-debug: shared debug
+build-release: shared release
 
-# Static library build target.
-cpp-static-lib: $(CPP_BUILD_DIR)
-	ar rcs $(CPP_BUILD_DIR)/$(CPP_LIB_NAME) $(CPP_SRC_DIR)/*.cpp
-
-
-# Shared library build target.
-cpp-shared-lib: $(CPP_BUILD_DIR)
-	g++ -shared -fPIC $(CPP_FLAGS) $(CPP_INCLUDE_DIRS) $(CPP_SRC_DIR)/*.cpp -o $(CPP_BUILD_DIR)/$(CPP_SHARED_LIB_NAME) $(CPP_LIBS)
-
-
-# Clean C++ build files and libraries.
-cpp-clean:
-	rm -rf $(CPP_BUILD_DIR)
-
-
-# Combined targets.
-build: debug cpp-static-lib
-release-build: release cpp-static-lib
-
-
-# Optionally build shared library.
-build-shared: debug cpp-shared-lib
-release-build-shared: release cpp-shared-lib
-
-
-# Run both Rust and C++ executables.
-run-all: build
-	cargo run
-
-
-# Clean all build files, both Rust and C++.
-clean: cpp-clean
-	cargo clean
-
-
+# Quick build for CPP (used for testing).
 quick-build:
-	cd ./librender_cdk && g++ -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include src/main.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o main_executable -lcurl -ljsoncpp
+	cd ./librender_cdk && g++ -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include src/debug-build.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o librender_cdk_DEBUG -lcurl -ljsoncpp
 
-
-# deps:
+# Dependencies:
 # sudo apt -y install nlohmann-json3-dev
 # sudo apt -y install libjsoncpp-dev
-# sudo apt-get install doxygen
-
-# Quick build command: g++ -I./librender_cdk/extern/dotenv-cpp/include -I./librender_cdk/extern/nlohmann-json/include src/main.cpp src/environment_manager.cpp src/authorization.cpp src/service_manager.cpp -o librender_cdk_DEBUG -lcurl -ljsoncpp
