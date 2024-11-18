@@ -8,7 +8,7 @@ int test_retrieve_authorized_user() {
   try {
     Config config = load_config();
     AuthorizationManager auth_manager(config.api_key);
-    auth_manager.list_authorized_users(config.owner_credentials, "10");
+    auth_manager.list_authorized_users(config.owner_credentials);
   } catch (const std::exception &e) {
     std::cerr << "Error: " << e.what() << "\n";
     return 1;
@@ -24,10 +24,9 @@ int test_create_service() {
   }
 
   AuthorizationManager auth_manager(config.api_key);
-  std::string email = config.owner_credentials;
-  std::string limit = "10";
 
-  auto authorized_users = auth_manager.list_authorized_users(email, limit);
+  auto authorized_users =
+      auth_manager.list_authorized_users(config.owner_credentials);
 
   std::string owner_id;
 

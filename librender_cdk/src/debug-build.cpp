@@ -34,12 +34,11 @@ int test_create_service() {
   // variables.
   AuthorizationManager auth_manager(config.api_key);
 
-  // Set the owner email and limit (as request parameters).
+  // Set the owner email (as a request parameter).
   std::string email = config.owner_credentials;
-  std::string limit = "10";
 
   // Get a list of authorized users.
-  auto authorized_users = auth_manager.list_authorized_users(email, limit);
+  auto authorized_users = auth_manager.list_authorized_users(email);
 
   // Find the owner with the matching email, <owner credentials>.
   std::string owner_id;
@@ -146,12 +145,11 @@ int test_list_authorized_users() {
   // variables.
   AuthorizationManager auth_manager(config.api_key);
 
-  // Set the owner email and limit (as request parameters).
+  // Set the owner email (as a request parameter).
   std::string email = config.owner_credentials;
-  std::string limit = "10";
 
   // Get a list of authorized users.
-  auto authorized_users = auth_manager.list_authorized_users(email, limit);
+  auto authorized_users = auth_manager.list_authorized_users(email);
 
   // Process the response and print output for debugging.
   // if (!authorized_users.empty()) {

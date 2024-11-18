@@ -15,10 +15,11 @@ size_t WriteCallback(void *contents, size_t size, size_t nmemb,
 } // namespace
 
 std::vector<OwnerResponse>
-AuthorizationManager::list_authorized_users(const std::string &email,
-                                            const std::string &limit) {
+AuthorizationManager::list_authorized_users(const std::string &email) {
   CURL *curl = curl_easy_init();
   std::vector<OwnerResponse> ownerResponses;
+
+  std::string limit = "100";
 
   if (curl) {
     std::string response;

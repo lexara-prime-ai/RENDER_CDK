@@ -24,8 +24,7 @@ class AuthorizationManager {
 public:
   AuthorizationManager(const std::string &api_key) : api_key_(api_key) {}
 
-  std::vector<OwnerResponse> list_authorized_users(const std::string &email,
-                                                   const std::string &limit);
+  std::vector<OwnerResponse> list_authorized_users(const std::string &email);
 
 private:
   std::string api_key_;
