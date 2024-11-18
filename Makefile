@@ -41,7 +41,7 @@ $(CPP_OUTPUT_DIR):
 	mkdir -p $(CPP_OUTPUT_DIR)
 
 unit_test: shared $(UNIT_TEST_SRC)
-	$(CXX) $(CXX_FLAGS) $(UNIT_TEST_SRC) -L$(CPP_OUTPUT_DIR) -lrender_cdk -o $(CPP_OUTPUT_DIR)/unit_tests
+	$(CXX) $(CXX_FLAGS) $(UNIT_TEST_SRC) -L$(CPP_OUTPUT_DIR) -lrender_cdk -ljsoncpp -o $(CPP_OUTPUT_DIR)/unit_tests
 # Set the LD_LIBRARY_PATH to include the directory where the shared library is located
 	export LD_LIBRARY_PATH=$(CPP_OUTPUT_DIR):$$LD_LIBRARY_PATH && ./$(CPP_OUTPUT_DIR)/unit_tests
 

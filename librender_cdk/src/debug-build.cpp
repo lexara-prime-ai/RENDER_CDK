@@ -16,7 +16,7 @@ int test_delete_service() {
   }
 
   ServiceManager service_manager = ServiceManager(config.api_key);
-  std::string service_id = "srv-csth5l5ds78s73cita7g";
+  std::string service_id = "srv-xxXXxxXXxx";
   service_manager.delete_service(service_id);
 
   return 0;
