@@ -5,7 +5,7 @@ provider "github" {
 
 resource "github_repository" "RENDER_CDK" {
     name = "RENDER_CDK"
-    description = "A crate for interacting with Render."
+    description = "A simple approach to deploying and managing resources on Render Cloud."
     visibility = "public"
 }
 

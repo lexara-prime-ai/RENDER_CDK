@@ -5,7 +5,6 @@
 #include <nlohmann/json.hpp>
 #include <sstream>
 
-// Define an anonymous namespace for the WriteCallback function.
 namespace {
 // Callback function for handling the data received from `libcurl`.
 size_t WriteCallback(void *contents, size_t size, size_t nmemb,
@@ -57,10 +56,10 @@ AuthorizationManager::list_authorized_users(const std::string &email,
           // Format <debug> logs.
           try {
             nlohmann::json prettyJson = nlohmann::json::parse(response);
-            std::cout << "<response>::<Authorized Users> -> \n"
+            std::cout << "\n<response>::<Authorized Users> -> \n"
                       << prettyJson.dump(4) << std::endl;
           } catch (const nlohmann::json::parse_error &e) {
-            std::cerr << "Failed to parse JSON with nlohmann::json: "
+            std::cerr << "\nFailed to parse JSON with nlohmann::json: "
                       << e.what() << std::endl;
           }
 
@@ -79,14 +78,14 @@ AuthorizationManager::list_authorized_users(const std::string &email,
             }
           }
         } else {
-          std::cerr << "Error parsing JSON response: " << errs << std::endl;
+          std::cerr << "\nError parsing JSON response: " << errs << std::endl;
         }
       } else {
-        std::cerr << "Request failed with HTTP status code: " << http_code
+        std::cerr << "\nRequest failed with HTTP status code: " << http_code
                   << std::endl;
       }
     } else {
-      std::cerr << "curl_easy_perform() failed: " << curl_easy_strerror(res)
+      std::cerr << "\ncurl_easy_perform() failed: " << curl_easy_strerror(res)
                 << std::endl;
     }
 

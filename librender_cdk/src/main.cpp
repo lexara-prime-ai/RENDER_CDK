@@ -1,15 +1,92 @@
 #include "authorization.h"
 #include "environment_manager.h"
 #include "service_manager.h"
+#include <curl/curl.h>
 #include <iostream>
+#include <jsoncpp/json/json.h>
 #include <map>
 #include <nlohmann/json.hpp>
 
-int test_list_services() {
-  // Load environment configuration.
+int test_delete_service() {
+  // Load <environment> configuration.
   Config config = load_config();
   if (config.api_key.empty()) {
-    std::cerr << "API key is missing in the configuration." << std::endl;
+    std::cerr << "\nAPI key is missing in the configuration." << std::endl;
+    return -1;
+  }
+
+  ServiceManager service_manager = ServiceManager(config.api_key);
+  std::string service_id = "srv-csth5l5ds78s73cita7g";
+  service_manager.delete_service(service_id);
+
+  return 0;
+}
+
+int test_create_service() {
+  // Load <environment> configuration.
+  Config config = load_config();
+  if (config.api_key.empty()) {
+    std::cerr << "\nAPI key is missing in the configuration." << std::endl;
+    return -1;
+  }
+
+  // Initialize the AuthorizationManager with the loaded <environment>
+  // variables.
+  AuthorizationManager auth_manager(config.api_key);
+
+  // Set the owner email and limit (as request parameters).
+  std::string email = config.owner_credentials;
+  std::string limit = "10";
+
+  // Get a list of authorized users.
+  auto authorized_users = auth_manager.list_authorized_users(email, limit);
+
+  // Find the owner with the matching email, <owner credentials>.
+  std::string owner_id;
+
+  for (const auto &owner_response : authorized_users) {
+    const auto &owner = owner_response.owner;
+    if (owner.email == config.owner_credentials) {
+      owner_id = owner.id;
+      break;
+    }
+  }
+
+  if (owner_id.empty()) {
+    std::cerr << "\nNo authorized user found..." << std::endl;
+    return -1;
+  }
+
+  // Sample <service data>.
+  Json::Value service_data;
+  service_data["type"] = "static_site";
+  service_data["autoDeploy"] = "yes";
+  service_data["serviceDetails"]["pullRequestPreviewsEnabled"] = "no";
+  service_data["serviceDetails"]["previews"]["generation"] = "off";
+  service_data["name"] = "cpp_site";
+  service_data["ownerId"] = owner_id;
+  service_data["repo"] =
+      "https://github.com/lexara-prime-ai/SAMPLE_STATIC_SITE";
+  service_data["branch"] = "main";
+  service_data["rootDir"] = "./";
+
+  // Sample <environment> variables.
+  Json::Value envVar;
+  envVar["key"] = "SAMPLE_KEY";
+  envVar["value"] = "SAMPLE_VALUE";
+  service_data["envVars"].append(envVar);
+
+  ServiceManager service_manager(config.api_key);
+  service_manager.create_service(service_data);
+
+  return 0;
+}
+
+int test_list_services() {
+  // Load <environment> configuration.
+  Config config = load_config();
+  if (config.api_key.empty()) {
+    std::cerr << "\nAPI key is missing in the configuration." << std::endl;
     return -1;
   }
 
@@ -58,14 +135,15 @@ int test_list_services() {
 }
 
 int test_list_authorized_users() {
-  // Load environment configuration.
+  // Load <environment> configuration.
   Config config = load_config();
   if (config.api_key.empty()) {
-    std::cerr << "API key is missing in the configuration." << std::endl;
+    std::cerr << "\nAPI key is missing in the configuration." << std::endl;
     return -1;
   }
 
-  // Initialize the AuthorizationManager with the loaded environment variables.
+  // Initialize the AuthorizationManager with the loaded <environment>
+  // variables.
   AuthorizationManager auth_manager(config.api_key);
 
   // Set the owner email and limit (as request parameters).
@@ -93,6 +171,8 @@ int test_list_authorized_users() {
 }
 
 int main() {
-  test_list_authorized_users();
-  test_list_services();
+  // test_create_service();
+  // test_list_authorized_users();
+  // test_list_services();
+  test_delete_service();
 }
