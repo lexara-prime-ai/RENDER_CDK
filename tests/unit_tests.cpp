@@ -2,7 +2,7 @@
 #include "../librender_cdk/src/environment_manager.h"
 #include "../librender_cdk/src/service_manager.h"
 #include <iostream>
-#include <jsoncpp/json/json.h>
+#include <jsoncpp/json/json.h> 
 
 int test_retrieve_authorized_user() {
   try {
